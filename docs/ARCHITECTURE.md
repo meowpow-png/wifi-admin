@@ -2,22 +2,21 @@
 
 ## Vision
 
-The objective of this architecture is to demonstrate how a relatively small integration service can be designed using the same engineering principles expected of larger enterprise systems. Rather than optimizing solely for completing the assignment, the design prioritizes clear boundaries, maintainability, extensibility, and operational readiness, ensuring the solution remains easy to evolve as new requirements are introduced.
+The goal of this architecture is to build a production-quality integration service rather than a minimal assignment solution. The design emphasizes clear module boundaries, maintainability, extensibility, and operational readiness while remaining simple and easy to understand.
 
 ## Architectural Principles
 
 The architecture is guided by the following principles:
 
 - **Separation of Concerns** – Each module has a single, well-defined responsibility
-- **External Systems Are Isolated** – SOAP communication and generated classes remain encapsulated behind a dedicated integration boundary
-- **Business-Centric Design** – Application logic is expressed in terms of the domain, independent of REST or SOAP
-- **Observability by Default** – Logging, correlation identifiers, metrics, and consistent error reporting are built into every operation
-- **Evolutionary Architecture** – New capabilities, such as persistence, synchronization, and security, should integrate without fundamental structural changes    
-- **Production Readiness** – Validation, configuration, testing, and error handling are treated as first-class architectural concerns
+- **Business-Centric Design** – Business logic remains independent of REST, SOAP, and persistence
+- **Encapsulated Integrations** – External systems are isolated behind dedicated integration boundaries
+- **Observability by Default** – Logging, metrics, and tracing are built into every operation
+- **Production Readiness** – Validation, configuration, testing, and error handling are first-class concerns
 
 ## System Context
 
-The application acts as an integration layer between REST clients and the external WiFi platform. It exposes a REST API, persists WiFi configurations in a local PostgreSQL database, and synchronizes changes with the external SOAP platform.
+The application acts as a bridge between REST clients and the external WiFi platform. It exposes a REST API, caches WiFi configurations in PostgreSQL, and synchronizes data with the external SOAP platform.
 
 ```mermaid
 flowchart LR
@@ -48,9 +47,7 @@ flowchart LR
 
 ## Logical Architecture
 
-The application is organized around a single bounded context, **WiFi Administration**, following Domain-Driven Design principles. Rather than adopting a traditional layered package structure, the bounded context encapsulates all business functionality while exposing a minimal public API and hiding implementation details behind explicit module boundaries.
-
-Cross-cutting abstractions and technical concerns are separated into dedicated top-level modules to prevent infrastructure concerns from leaking into the business domain.
+The application follows a Domain-Driven Design approach centered around a single bounded context, **WiFi Administration**. Business functionality is encapsulated within the bounded context, while shared abstractions and infrastructure concerns are isolated into dedicated top-level modules to maintain clear architectural boundaries.
 
 ```text
 src/main/java
@@ -72,10 +69,6 @@ src/main/java
 | `infra`         | Application infrastructure          |
 
 ## Dependency Rules
-
-The architecture enforces the following dependency rules to preserve clear module boundaries and prevent unnecessary coupling.
-
-The following rules apply:
 
 - The `wifi` bounded context may depend only on `common`
 - The `common` module must not depend on any other module
@@ -180,58 +173,58 @@ sequenceDiagram
 
 ## Platform Integration
 
-The external WiFi platform is isolated behind a dedicated SOAP client, forming an anti-corruption layer between the domain and the platform. This ensures that SOAP-specific concerns, generated classes, and platform contracts remain encapsulated and do not leak into the business domain.
+The external WiFi platform is isolated behind a dedicated SOAP client, forming an anti-corruption layer that prevents SOAP-specific concerns from leaking into the business domain.
 
 The following integration principles are applied:
 
-- All communication with the external platform is performed exclusively through the SOAP client
+- All platform communication is performed through the SOAP client
 - Generated SOAP classes remain confined to the integration layer
-- SOAP requests and responses are mapped to the domain model before crossing module boundaries
+- SOAP models are mapped to the domain model before crossing module boundaries
 - Platform-specific failures are translated into domain-specific exceptions
 
 ## Cross-Cutting Concerns
 
 ### Validation
 
-Request validation is performed at the API boundary using Jakarta Bean Validation to ensure only valid requests enter the application. Domain invariants and business rules that cannot be expressed through declarative constraints are enforced within the domain layer.
+Request validation is performed at the API boundary using Jakarta Bean Validation. Domain invariants and business rules that cannot be expressed declaratively are enforced within the domain model.
 
 ### Exception Handling
 
-Expected failure scenarios are represented by explicit, domain-specific exceptions rather than generic runtime exceptions. A global `@ControllerAdvice` translates application exceptions into consistent REST error responses, while infrastructure-specific failures, such as SOAP faults and timeouts, are mapped to meaningful domain exceptions before reaching the API layer.
+Expected failures are represented by explicit, domain-specific exceptions. A global `@ControllerAdvice` translates application exceptions into consistent REST error responses, while SOAP faults and infrastructure failures are translated before reaching the API layer.
 
 ### Logging
 
-Structured logging is implemented using SLF4J with Logback to provide consistent, searchable log output. Incoming requests, outgoing platform calls, and unexpected failures are logged at appropriate levels while avoiding sensitive information such as WiFi passwords.
+Structured logging is implemented using SLF4J with Logback. Incoming requests, platform calls, and unexpected failures are logged while excluding sensitive information such as WiFi passwords.
 
 ### Correlation IDs
 
-A unique correlation ID is assigned to every incoming request and propagated throughout the application using the logging context (MDC). This enables end-to-end tracing across HTTP requests, platform communication, and scheduled synchronization jobs.
+A unique correlation ID is assigned to every request and propagated using MDC, enabling end-to-end tracing across HTTP requests, platform communication, and synchronization jobs.
 
 ### Observability
 
-Spring Boot Actuator provides health checks and operational endpoints for monitoring the application's runtime state. Micrometer is used to expose application metrics, including HTTP requests, platform calls, synchronization jobs, and database operations. Custom health indicators verify the availability of external dependencies, including the SOAP platform and PostgreSQL database.
+Spring Boot Actuator and Micrometer provide health checks, operational endpoints, and application metrics. Custom health indicators verify the availability of PostgreSQL and the external SOAP platform.
 
 ### Configuration
 
-Application configuration is externalized using Spring Boot's `@ConfigurationProperties`, providing type-safe access to configurable settings. Environment-specific values, such as platform endpoints, timeouts, scheduler settings, and logging levels, are supplied through configuration files or environment variables.
+Application configuration is externalized using `@ConfigurationProperties`. Environment-specific settings are supplied through configuration files or environment variables.
 
 ### Security
 
-The application is designed to support Spring Security for authentication and authorization. Sensitive configuration is externalized, request validation is enforced at the API boundary, and confidential information, such as WiFi passwords, is excluded from logs and error responses.
+Spring Security provides authentication and authorization capabilities. Sensitive information, such as WiFi passwords, is excluded from logs and error responses.
 
 ## Persistence Strategy
 
-WiFi configurations are persisted in a PostgreSQL database to reduce platform dependency and improve response times. Unlike in-memory storage, PostgreSQL provides durable persistence, allowing synchronized data to survive application restarts and better reflect a production deployment. The local database acts as the primary data source for read operations, while the external platform remains the authoritative source for synchronization.
+WiFi configurations are stored in PostgreSQL to reduce platform dependency, improve response times, and provide durable persistence across application restarts. The local database serves read requests, while the external platform remains the authoritative source during synchronization.
 
 The following persistence policies are applied:
 
-- WiFi configurations are read from the local database by default
-- If a configuration is not available locally, it is retrieved from the platform and stored in the database
-- Configuration changes are stored in the database only after they have been successfully applied on the platform
+- WiFi configurations are read from the local database by default    
+- Missing configurations are retrieved from the platform and stored locally
+- Configuration changes are persisted only after they have been successfully applied on the platform
 
 ## Synchronization Strategy
 
-A scheduled synchronization periodically refreshes the local database using data from the external platform, ensuring cached WiFi configurations remain accurate over time. During synchronization, the platform is treated as the authoritative source and local records are updated to match its current state.
+A scheduled synchronization keeps the local database aligned with the external WiFi platform. During synchronization, the platform is treated as the authoritative source and local records are updated accordingly.
 
 The following synchronization policies are applied:
 
