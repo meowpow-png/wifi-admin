@@ -1,5 +1,19 @@
-node_modules/
-package-lock.json
+## Java
+*.class
+
+# IntelliJ IDEA
+.idea/*
+*.iml
+!.idea/runConfigurations
+!.idea/codeStyles
+
+## Gradle
+.gradle/
+build/
+lib/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Other
+.obsidian/
 .env
 *.log
-scripts/
