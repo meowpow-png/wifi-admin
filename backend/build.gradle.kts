@@ -37,6 +37,7 @@ dependencies {
     cxfCodegen(libs.cxf.tools.wsdlto.core)
     cxfCodegen(libs.cxf.tools.wsdlto.frontend.jaxws)
     cxfCodegen(libs.cxf.tools.wsdlto.databinding.jaxb)
+    cxfCodegen(libs.slf4j.simple)
 
     testImplementation(libs.spring.boot.starter.test)
 }
