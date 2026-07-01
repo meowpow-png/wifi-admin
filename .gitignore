@@ -1,19 +1,10 @@
-## Java
-*.class
-
 # IntelliJ IDEA
-.idea/*
+.idea/
 *.iml
-!.idea/runConfigurations
-!.idea/codeStyles
+!.idea/runConfigurations/
+!.idea/codeStyles/
 
-## Gradle
-.gradle/
-build/
-lib/
-!gradle/wrapper/gradle-wrapper.jar
-
-# Other
+# Repository
 .obsidian/
 .env
 *.log
