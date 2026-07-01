@@ -53,7 +53,7 @@ tasks.register<JavaExec>("wsdl2java") {
         "-d",
         layout.buildDirectory.dir("generated/sources/wsdl").get().asFile.absolutePath,
         "-p",
-        "hr.ht.rnd.wifiadmin.wifi.platform",
+        "hr.ht.rnd.wifiadmin.infra.platform.wsdl",
         "-wsdlLocation",
         "classpath:wsdl/wifi-platform.wsdl",
         "${projectDir}/src/main/resources/wsdl/wifi-platform.wsdl"
