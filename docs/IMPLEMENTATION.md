@@ -43,9 +43,9 @@ src/main/java
 
 ## Platform Integration
 
-The application integrates with the external WiFi platform using Apache CXF. SOAP client classes are generated from the provided WSDL and confined to the integration layer.
+The application integrates with the external WiFi platform using Apache CXF. SOAP client classes are generated directly from the published WSDL and confined to the integration layer, where they are translated into the domain model through dedicated mappers.
 
-The SOAP client is configured with connection and read timeouts. Transient communication failures are handled using Resilience4j with a configurable retry policy and exponential backoff strategy.
+The SOAP client is configured with connection and read timeouts. Additional client configuration ensures compatibility with the target platform by preferring HTTP/1.1 transport and explicit namespace prefixes. Transient communication failures are handled using Resilience4j with a configurable retry policy and exponential backoff strategy.
 
 SOAP faults and transport exceptions are translated into domain-specific exceptions before leaving the integration layer.
 

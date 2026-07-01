@@ -166,10 +166,14 @@ The external WiFi platform is isolated behind an integration boundary, forming a
 The following integration principles are applied:
 
 - All platform communication is performed through the integration boundary
+- The published service contract defines the integration boundary
 - Platform-specific models are mapped to the domain model before crossing module boundaries
 - Platform-specific failures are translated into domain-specific exceptions
 
-For more information, see [ADR-003: Use Retries for Transient Failures](adr/003-adr-retries-for-transient-failures.md).
+Related architectural decisions:
+
+- [ADR-003: Use Retries for Transient Failures](adr/003-adr-retries-for-transient-failures.md)
+- [ADR-005: Adopt a Contract-First Integration Strategy](adr/005-adr-contract-first-integration-strategy.md)
 
 ## Cross-Cutting Concerns
 
@@ -201,7 +205,9 @@ Application configuration is externalized to support environment-specific deploy
 
 The application provides authentication and authorization capabilities. Sensitive information, such as WiFi passwords, is excluded from logs and error responses.
 
-For more information, see [ADR-004: Use Token-Based Authentication](adr/004-adr-token-based-authentication.md).
+Related architectural decisions:
+
+- [ADR-004: Use Token-Based Authentication](adr/004-adr-token-based-authentication.md).
 
 ## Persistence Strategy
 
@@ -213,7 +219,9 @@ The following persistence policies are applied:
 - Missing configurations are retrieved from the platform and stored in the database
 - Configuration changes are persisted only after they have been successfully applied on the platform
 
-For more information, see [ADR-001: Use a Local Database](adr/001-adr-local-database.md).
+Related architectural decisions:
+
+- [ADR-001: Use a Local Database](adr/001-adr-local-database.md).
 
 ## Synchronization Strategy
 
@@ -228,7 +236,9 @@ The following synchronization policies are applied:
 
 Note that synchronization strategy maintains only the current platform state. Historical configuration snapshots are outside the scope of this project.
 
-For more information, see [ADR-002: Synchronize Platform Data](adr/002-adr-synchronize-platform-data.md).
+Related architectural decisions:
+
+- [ADR-002: Synchronize Platform Data](adr/002-adr-synchronize-platform-data.md).
 
 ## Testing Strategy
 
