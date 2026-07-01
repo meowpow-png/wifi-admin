@@ -14,6 +14,14 @@ java {
     }
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir(layout.buildDirectory.dir("generated/sources/wsdl"))
+        }
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -31,4 +39,24 @@ dependencies {
     cxfCodegen(libs.cxf.tools.wsdlto.databinding.jaxb)
 
     testImplementation(libs.spring.boot.starter.test)
+}
+
+tasks.register<JavaExec>("wsdl2java") {
+    group = "soap"
+    description = "Generates SOAP client classes from the WSDL."
+
+    classpath = cxfCodegen
+    mainClass.set("org.apache.cxf.tools.wsdlto.WSDLToJava")
+
+    args(
+        "-d",
+        layout.buildDirectory.dir("generated/sources/wsdl").get().asFile.absolutePath,
+        "-p",
+        "hr.ht.rnd.wifi.platform",
+        "${projectDir}/wsdl/wifi-platform.wsdl"
+    )
+}
+
+tasks.compileJava {
+    dependsOn(tasks.named("wsdl2java"))
 }
