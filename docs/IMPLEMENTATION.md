@@ -55,6 +55,35 @@ WiFi configurations are persisted in PostgreSQL using Spring Data JPA. Database 
 
 The application maintains a local replica of the WiFi configurations stored in the external platform. Retrieved configurations are persisted locally, while configuration updates are written to the database only after they have been successfully applied on the platform.
 
+## Synchronization
+
+Synchronization is implemented using Spring Scheduling with a configurable execution schedule and set of synchronized devices. Retrieved platform configurations are published as application events, allowing persistence to execute asynchronously and independently of the synchronization workflow.
+
+This event-driven approach separates configuration retrieval from persistence while providing a natural extension point for additional synchronization processing, such as metrics collection, audit logging, or notifications.
+
+```mermaid
+sequenceDiagram
+    participant Scheduler
+    participant Platform
+    participant Publisher as ApplicationEventPublisher
+    participant Listener
+    participant Database
+
+    loop For each configured CPE
+        Scheduler->>Platform: Retrieve configuration
+        Platform-->>Scheduler: WiFi configuration
+
+        Scheduler-)Publisher: publish(ConfigurationSynchronizedEvent)
+
+        Publisher-)Listener: ConfigurationSynchronizedEvent
+        activate Listener
+        Listener->>Database: Persist configuration
+        deactivate Listener
+    end
+```
+
+Synchronization activity is instrumented through Micrometer metrics and structured logging, enabling synchronization duration, success and failure counts, and retry activity to be monitored in production.
+
 ## Configuration
 
 Application configuration is externalized to support environment-specific deployments. Common settings are defined in the default configuration, while environment-specific overrides are organized into separate configuration files:
