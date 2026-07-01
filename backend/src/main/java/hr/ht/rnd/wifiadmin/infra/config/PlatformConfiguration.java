@@ -1,6 +1,7 @@
 package hr.ht.rnd.wifiadmin.infra.config;
 
 import hr.ht.rnd.wifiadmin.infra.platform.PlatformProperties;
+import hr.ht.rnd.wifiadmin.infra.platform.XmlNormalizingInterceptor;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.WifiPlatformPortType;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.WifiPlatformService;
 
@@ -36,6 +37,8 @@ public class PlatformConfiguration {
         var service = new WifiPlatformService();
         var port = service.getWifiPlatformPort();
         var client = ClientProxy.getClient(port);
+
+        client.getInInterceptors().add(new XmlNormalizingInterceptor());
 
         var dataBinding = (JAXBDataBinding) client.getEndpoint().getService().getDataBinding();
         dataBinding.setNamespaceMap(Map.of(PLATFORM_NAMESPACE, "tns"));
