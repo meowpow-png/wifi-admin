@@ -151,6 +151,8 @@ The following integration principles are applied:
 - Platform-specific models are mapped to the domain model before crossing module boundaries
 - Platform-specific failures are translated into domain-specific exceptions
 
+For more information, see [ADR-003: Use Retries for Transient Failures](adr/003-adr-retries-for-transient-failures.md).
+
 ## Cross-Cutting Concerns
 
 ### Validation
@@ -181,6 +183,8 @@ Application configuration is externalized to support environment-specific deploy
 
 The application provides authentication and authorization capabilities. Sensitive information, such as WiFi passwords, is excluded from logs and error responses.
 
+For more information, see [ADR-004: Use Token-Based Authentication](adr/004-adr-token-based-authentication.md).
+
 ## Persistence Strategy
 
 WiFi configurations are stored in a database to reduce platform dependency, improve response times, and provide durable persistence across application restarts. The database serves read requests, while the external platform remains the authoritative source during synchronization.
@@ -190,6 +194,8 @@ The following persistence policies are applied:
 - WiFi configurations are read from the database by default
 - Missing configurations are retrieved from the platform and stored in the database
 - Configuration changes are persisted only after they have been successfully applied on the platform
+
+For more information, see [ADR-001: Use a Local Database](adr/001-adr-local-database.md).
 
 ## Synchronization Strategy
 
@@ -201,6 +207,8 @@ The following synchronization policies are applied:
 - The set of synchronized CPEs is configurable
 - Each CPE is synchronized independently
 - Synchronization failures are logged without interrupting the overall job
+
+For more information, see [ADR-002: Synchronize Platform Data](adr/002-adr-synchronize-platform-data.md).
 
 ## Testing Strategy
 
