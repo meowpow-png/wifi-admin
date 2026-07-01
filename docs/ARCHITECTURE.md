@@ -208,6 +208,8 @@ The following synchronization policies are applied:
 - Each CPE is synchronized independently
 - Synchronization failures are logged without interrupting the overall job
 
+Note that synchronization strategy maintains only the current platform state. Historical configuration snapshots are outside the scope of this project.
+
 For more information, see [ADR-002: Synchronize Platform Data](adr/002-adr-synchronize-platform-data.md).
 
 ## Testing Strategy
