@@ -20,26 +20,26 @@ This document describes how the architecture defined in [ARCHITECTURE.md](ARCHIT
 
 ## Project Structure
 
-The project is organized into separate top-level packages for the **WiFi Administration** bounded context, shared abstractions, and infrastructure. This structure reflects the architectural module boundaries while keeping implementation concerns isolated.
+The project is organized into top-level packages that reflect the logical architecture. Each package corresponds to a single architectural module and groups related implementation concerns.
 
 ```text
 src/main/java
-├── wifi
-│   ├── api
-│   ├── internal
-│   └── model
-├── common
-└── infra
+└── hr
+    └── ht
+        └── rnd
+            └── wifiadmin
+                ├── application
+                ├── common
+                ├── domain
+                └── infra
 ```
 
-| Package         | Responsibility                      |
-|-----------------|-------------------------------------|
-| `wifi`          | WiFi Administration bounded context |
-| `wifi.api`      | Public API and contracts            |
-| `wifi.internal` | Internal implementation             |
-| `wifi.model`    | Domain model                        |
-| `common`        | Shared abstractions and contracts   |
-| `infra`         | Infrastructure implementations      |
+| Package       | Responsibility                              |
+|---------------|---------------------------------------------|
+| `application` | Use cases, application services, and ports  |
+| `domain`      | Domain model and business rules             |
+| `infra`       | REST, SOAP, persistence, and configuration  |
+| `common`      | Shared utilities and cross-cutting concerns |
 
 ## Platform Integration
 

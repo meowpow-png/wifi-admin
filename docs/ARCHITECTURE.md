@@ -49,17 +49,35 @@ flowchart LR
 
 ## Logical Architecture
 
-The application follows a Domain-Driven Design approach centered around a single bounded context, **WiFi Administration**. Business functionality is encapsulated within the bounded context, while shared abstractions and infrastructure concerns are isolated into separate modules to maintain clear architectural boundaries.
+The application follows a Domain-Driven Design approach centered around a single bounded context, **WiFi Administration**. The architecture is divided into four logical modules, each with a clear responsibility.
+
+- **Domain** contains the business model and business rules.
+- **Application** contains use cases and application ports.
+- **Infrastructure** contains technical implementations such as REST, SOAP, persistence, and configuration.
+- **Common** contains shared utilities and cross-cutting abstractions.
 
 ## Dependency Rules
 
-- The bounded context may depend only on shared abstractions
-- Shared abstractions must not depend on any other module
-- The infrastructure module may depend only on shared abstractions
-- Infrastructure implementations remain isolated within the infrastructure module
-- Shared abstractions and contracts are defined within the shared module
-- Communication between the bounded context and infrastructure occurs exclusively through shared abstractions and contracts
-	
+- The domain module must not depend on any other application module
+- The application module may depend only on the domain and common modules
+- The infrastructure module may depend on the application, domain, and common modules
+- The common module must not depend on any other application module
+- Application ports are implemented by the infrastructure module
+
+```text
+Application ─────────► Domain
+      │
+      └──────────────► Common
+
+Infrastructure ──────► Application
+Infrastructure ──────► Domain
+Infrastructure ──────► Common
+
+Domain ──────────────► (nothing)
+
+Common ──────────────► (nothing)
+```
+
 ## Request Processing
 
 ### Read Flow
