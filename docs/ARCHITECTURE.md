@@ -1,5 +1,7 @@
 # Architecture
 
+This document describes the application's architecture and high-level design. Implementation details, technologies, and development conventions are documented in [IMPLEMENTATION.md](IMPLEMENTATION.md).
+
 ## Vision
 
 The goal of this architecture is to build a production-quality integration service rather than a minimal assignment solution. The design emphasizes clear module boundaries, maintainability, extensibility, and operational readiness while remaining simple and easy to understand.
@@ -16,7 +18,7 @@ The architecture is guided by the following principles:
 
 ## System Context
 
-The application acts as a bridge between REST clients and the external WiFi platform. It exposes a REST API, caches WiFi configurations in PostgreSQL, and synchronizes data with the external SOAP platform.
+The application acts as a bridge between REST clients and the external WiFi platform. It exposes a REST API, persists WiFi configurations locally, and synchronizes data with the external platform.
 
 ```mermaid
 flowchart LR
@@ -30,7 +32,7 @@ flowchart LR
         PERSISTENCE["Persistence"]
     end
 
-    DB[("PostgreSQL")]
+    DB[("Database")]
     SOAP["HT WiFi Platform"]
 
     Client -->|HTTP / JSON| API
@@ -47,184 +49,151 @@ flowchart LR
 
 ## Logical Architecture
 
-The application follows a Domain-Driven Design approach centered around a single bounded context, **WiFi Administration**. Business functionality is encapsulated within the bounded context, while shared abstractions and infrastructure concerns are isolated into dedicated top-level modules to maintain clear architectural boundaries.
-
-```text
-src/main/java
-├── wifi
-│   ├── api
-│   ├── internal
-│   └── model
-├── common
-└── infra
-```
-
-| Package         | Responsibility                      |
-|-----------------|-------------------------------------|
-| `wifi`          | WiFi Administration bounded context |
-| `wifi.api`      | Public API and contracts            |
-| `wifi.internal` | Internal implementation             |
-| `wifi.model`    | Domain model                        |
-| `common`        | Shared abstractions                 |
-| `infra`         | Application infrastructure          |
+The application follows a Domain-Driven Design approach centered around a single bounded context, **WiFi Administration**. Business functionality is encapsulated within the bounded context, while shared abstractions and infrastructure concerns are isolated into separate modules to maintain clear architectural boundaries.
 
 ## Dependency Rules
 
-- The `wifi` bounded context may depend only on `common`
-- The `common` module must not depend on any other module
-- The `infra` module may depend only on `common`
-- Infrastructure implementations remain isolated within `infra`
-- Shared abstractions and contracts are defined in `common`
-- Communication between the bounded context and infrastructure occurs exclusively through abstractions defined in `common`
-
+- The bounded context may depend only on shared abstractions
+- Shared abstractions must not depend on any other module
+- The infrastructure module may depend only on shared abstractions
+- Infrastructure implementations remain isolated within the infrastructure module
+- Shared abstractions and contracts are defined within the shared module
+- Communication between the bounded context and infrastructure occurs exclusively through shared abstractions and contracts
+	
 ## Request Processing
 
 ### Read Flow
 
-Retrieves the requested WiFi configuration from the local database, falling back to the external platform on a cache miss.
+Retrieves the requested WiFi configuration from the database. If the configuration is not available, it is retrieved from the external platform, stored in the database, and returned to the client.
 
 ```mermaid
 sequenceDiagram
     actor Client
     participant API
-    participant Service
-    participant Repository
-    participant SOAPClient
+    participant Application
+    participant Database
     participant Platform as HT WiFi Platform
 
     Client->>API: GET /wifi-parameter/{cpeId}
-    API->>Service: getConfiguration(cpeId)
+    API->>Application: Retrieve configuration
 
-    Service->>Repository: findByCpeId(cpeId)
+    Application->>Database: Query configuration
 
-    alt Cache hit
-        Repository-->>Service: WiFiConfiguration
-    else Cache miss
-        Repository-->>Service: Not found
+    alt Configuration found
+        Database-->>Application: WiFi configuration
+    else Configuration not found
+        Database-->>Application: Not found
 
-        Service->>SOAPClient: getConfiguration(cpeId)
-        SOAPClient->>Platform: Retrieve configuration
-        Platform-->>SOAPClient: SOAP response
-        SOAPClient-->>Service: WiFiConfiguration
+        Application->>Platform: Retrieve configuration
+        Platform-->>Application: WiFi configuration
 
-        Note over Service,Repository: Populate local cache
-
-        Service->>Repository: save(WiFiConfiguration)
+        Application->>Database: Store configuration
     end
 
-    Service-->>API: WiFiConfiguration
+    Application-->>API: WiFi configuration
     API-->>Client: 200 OK
 ```
 
 ### Update Flow
 
-Validates the request, propagates the change to the external platform, and persists the updated configuration locally upon successful completion.
+Validates the request, propagates the change to the external platform, and persists the updated configuration in the database upon successful completion.
 
 ```mermaid
 sequenceDiagram
     actor Client
     participant API
-    participant Service
-    participant SOAPClient
+    participant Application
     participant Platform as HT WiFi Platform
-    participant Repository
+    participant Database
 
     Client->>API: PUT /wifi-parameter
-    API->>Service: updateConfiguration(request)
+    API->>Application: Update configuration
 
-    Note over Service: Validate business rules
+    Note over Application: Validate request
 
-    Service->>SOAPClient: updateConfiguration(configuration)
-    SOAPClient->>Platform: Update configuration
-    Platform-->>SOAPClient: SOAP response
-    SOAPClient-->>Service: Success
+    Application->>Platform: Update configuration
+    Platform-->>Application: Success
 
-    Note over Service,Repository: Persist updated configuration
+    Application->>Database: Persist configuration
 
-    Service->>Repository: save(WiFiConfiguration)
-
-    Service-->>API: Success
+    Application-->>API: Success
     API-->>Client: 204 No Content
 ```
 
 ### Synchronization Flow
 
-Synchronizes WiFi configurations from the external platform into the local database on a scheduled interval.
+Synchronizes WiFi configurations from the external platform into the database at regular intervals.
 
 ```mermaid
 sequenceDiagram
     participant Scheduler
-    participant Service
-    participant SOAPClient
+    participant Application
     participant Platform as HT WiFi Platform
-    participant Repository
+    participant Database
 
-    Scheduler->>Service: synchronize()
+    Scheduler->>Application: Synchronize configurations
 
-    loop For each configured CPE
-        Service->>SOAPClient: getConfiguration(cpeId)
-        SOAPClient->>Platform: Retrieve configuration
-        Platform-->>SOAPClient: SOAP response
-        SOAPClient-->>Service: WiFiConfiguration
+    loop For each configured device
+        Application->>Platform: Retrieve configuration
+        Platform-->>Application: WiFi configuration
 
-        Service->>Repository: save(WiFiConfiguration)
+        Application->>Database: Persist configuration
     end
 ```
 
 ## Platform Integration
 
-The external WiFi platform is isolated behind a dedicated SOAP client, forming an anti-corruption layer that prevents SOAP-specific concerns from leaking into the business domain.
+The external WiFi platform is isolated behind an integration boundary, forming an anti-corruption layer that prevents platform-specific concerns from leaking into the business domain.
 
 The following integration principles are applied:
 
-- All platform communication is performed through the SOAP client
-- Generated SOAP classes remain confined to the integration layer
-- SOAP models are mapped to the domain model before crossing module boundaries
+- All platform communication is performed through the integration boundary
+- Platform-specific models are mapped to the domain model before crossing module boundaries
 - Platform-specific failures are translated into domain-specific exceptions
 
 ## Cross-Cutting Concerns
 
 ### Validation
 
-Request validation is performed at the API boundary using Jakarta Bean Validation. Domain invariants and business rules that cannot be expressed declaratively are enforced within the domain model.
+Request validation is performed at the API boundary. Domain invariants and business rules that cannot be validated at the API boundary are enforced within the domain.
 
 ### Exception Handling
 
-Expected failures are represented by explicit, domain-specific exceptions. A global `@ControllerAdvice` translates application exceptions into consistent REST error responses, while SOAP faults and infrastructure failures are translated before reaching the API layer.
+Expected failures are represented by explicit, domain-specific exceptions. Infrastructure failures are translated before reaching the API layer to ensure consistent REST error responses.
 
 ### Logging
 
-Structured logging is implemented using SLF4J with Logback. Incoming requests, platform calls, and unexpected failures are logged while excluding sensitive information such as WiFi passwords.
+Application requests, platform interactions, and unexpected failures are logged using structured logging while excluding sensitive information.
 
 ### Correlation IDs
 
-A unique correlation ID is assigned to every request and propagated using MDC, enabling end-to-end tracing across HTTP requests, platform communication, and synchronization jobs.
+A unique correlation ID is assigned to every request and propagated throughout request processing to enable end-to-end tracing.
 
 ### Observability
 
-Spring Boot Actuator and Micrometer provide health checks, operational endpoints, and application metrics. Custom health indicators verify the availability of PostgreSQL and the external SOAP platform.
+The application exposes health information and operational metrics. Health checks verify the availability of critical dependencies.
 
 ### Configuration
 
-Application configuration is externalized using `@ConfigurationProperties`. Environment-specific settings are supplied through configuration files or environment variables.
+Application configuration is externalized to support environment-specific deployments.
 
 ### Security
 
-Spring Security provides authentication and authorization capabilities. Sensitive information, such as WiFi passwords, is excluded from logs and error responses.
+The application provides authentication and authorization capabilities. Sensitive information, such as WiFi passwords, is excluded from logs and error responses.
 
 ## Persistence Strategy
 
-WiFi configurations are stored in PostgreSQL to reduce platform dependency, improve response times, and provide durable persistence across application restarts. The local database serves read requests, while the external platform remains the authoritative source during synchronization.
+WiFi configurations are stored in a database to reduce platform dependency, improve response times, and provide durable persistence across application restarts. The database serves read requests, while the external platform remains the authoritative source during synchronization.
 
 The following persistence policies are applied:
 
-- WiFi configurations are read from the local database by default    
-- Missing configurations are retrieved from the platform and stored locally
+- WiFi configurations are read from the database by default
+- Missing configurations are retrieved from the platform and stored in the database
 - Configuration changes are persisted only after they have been successfully applied on the platform
 
 ## Synchronization Strategy
 
-A scheduled synchronization keeps the local database aligned with the external WiFi platform. During synchronization, the platform is treated as the authoritative source and local records are updated accordingly.
+Periodic synchronization keeps the database aligned with the external WiFi platform. During synchronization, the platform is treated as the authoritative source and local records are updated accordingly.
 
 The following synchronization policies are applied:
 
@@ -237,12 +206,16 @@ The following synchronization policies are applied:
 
 ### Unit Tests
 
-Unit tests verify individual classes in isolation using mocked dependencies. They focus on business logic, validation, mapping, and error handling without requiring external infrastructure.
+Unit tests verify individual components in isolation. They focus on business logic, validation, mapping, and error handling without requiring external infrastructure.
 
 ### Integration Tests
 
-Integration tests verify interactions between application components and external infrastructure, including the database and SOAP platform mock. They ensure the application behaves correctly in a production-like environment.
+Integration tests verify interactions between application components and external dependencies. They ensure the application behaves correctly in a production-like environment.
 
 ### Architecture Tests
 
-Architecture tests enforce the project's structural rules using ArchUnit. They verify module boundaries, dependency rules, and package visibility to prevent architectural drift as the codebase evolves.
+Architecture tests enforce the project's structural rules. They verify module boundaries, dependency rules, and architectural constraints to prevent architectural drift as the codebase evolves.
+
+### Resilience Tests
+
+Resilience tests verify the application's behavior under transient infrastructure failures. They ensure retry policies, timeout handling, and error recovery mechanisms behave correctly when communicating with the external SOAP platform.
