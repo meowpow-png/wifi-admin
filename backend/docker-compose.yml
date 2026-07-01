@@ -13,3 +13,9 @@ services:
       - ./mockoon/platform-mock.json:/data/platform-mock.json:ro,Z
     ports:
       - "8080:3000"
+
+  http-echo:
+    image: mendhak/http-https-echo:latest
+    container_name: http-echo
+    ports:
+      - "8082:8080"
