@@ -1,7 +1,5 @@
 package hr.ht.rnd.wifiadmin.infra.platform;
 
-import hr.ht.rnd.wifiadmin.infra.platform.PlatformProperties;
-import hr.ht.rnd.wifiadmin.infra.platform.XmlNormalizingInterceptor;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.WifiPlatformPortType;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.WifiPlatformService;
 

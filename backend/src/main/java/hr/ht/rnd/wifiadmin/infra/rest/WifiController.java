@@ -2,11 +2,7 @@ package hr.ht.rnd.wifiadmin.infra.rest;
 
 import hr.ht.rnd.wifiadmin.application.inbound.WifiAdministration;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 

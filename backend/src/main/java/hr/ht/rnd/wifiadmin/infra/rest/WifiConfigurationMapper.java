@@ -14,8 +14,8 @@ final class WifiConfigurationMapper {
      * Maps a REST API model to the domain model.
      *
      * @param source the REST API model
-     * @return the mapped domain model
      *
+     * @return the mapped domain model
      * @throws NullPointerException if {@code source} is {@code null}
      */
     static WifiConfiguration toDomain(WifiConfigurationDto source) {
@@ -32,8 +32,8 @@ final class WifiConfigurationMapper {
      * Maps the domain model to a REST API model.
      *
      * @param source the domain model
-     * @return the mapped REST API model
      *
+     * @return the mapped REST API model
      * @throws NullPointerException if {@code source} is {@code null}
      */
     static WifiConfigurationDto toDto(WifiConfiguration source) {

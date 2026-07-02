@@ -19,8 +19,8 @@ final class PlatformMapper {
      * Maps a SOAP platform model to the domain model.
      *
      * @param source the SOAP platform model
-     * @return the mapped domain model
      *
+     * @return the mapped domain model
      * @throws NullPointerException if {@code source} is {@code null}
      * @throws IllegalArgumentException if SOAP model contains unsupported enum values
      */
@@ -38,8 +38,8 @@ final class PlatformMapper {
      * Maps the domain model to a SOAP platform model.
      *
      * @param source the domain model
-     * @return the mapped SOAP platform model
      *
+     * @return the mapped SOAP platform model
      * @throws NullPointerException if {@code source} is {@code null}
      * @throws IllegalArgumentException if the domain model contains unsupported enum values
      */

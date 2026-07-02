@@ -11,8 +11,8 @@ public interface WifiAdministration {
      * Retrieves the Wi-Fi configuration of a CPE device.
      *
      * @param cpeId the CPE device identifier
-     * @return the Wi-Fi configuration
      *
+     * @return the Wi-Fi configuration
      * @throws NullPointerException if {@code cpeId} is {@code null}
      */
     WifiConfiguration retrieveConfiguration(String cpeId);
@@ -21,8 +21,8 @@ public interface WifiAdministration {
      * Updates the Wi-Fi configuration of a CPE device.
      *
      * @param configuration the Wi-Fi configuration to update
-     * @return the updated Wi-Fi configuration
      *
+     * @return the updated Wi-Fi configuration
      * @throws NullPointerException if {@code configuration} is {@code null}
      */
     WifiConfiguration updateConfiguration(WifiConfiguration configuration);

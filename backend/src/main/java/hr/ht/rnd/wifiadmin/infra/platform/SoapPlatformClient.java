@@ -25,6 +25,7 @@ final class SoapPlatformClient implements PlatformClient {
 
     @Override
     public WifiConfiguration retrieveConfiguration(String cpeId) {
+        Objects.requireNonNull(cpeId, "cpeId must not be null");
         var request = new GetCpeIdRequest();
 
         request.setCpeId(cpeId);
