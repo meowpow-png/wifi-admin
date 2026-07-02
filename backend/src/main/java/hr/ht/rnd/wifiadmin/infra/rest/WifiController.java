@@ -1,6 +1,6 @@
 package hr.ht.rnd.wifiadmin.infra.rest;
 
-import hr.ht.rnd.wifiadmin.application.service.WifiService;
+import hr.ht.rnd.wifiadmin.application.inbound.WifiAdministration;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,16 +15,16 @@ import java.util.Objects;
 @RestController
 public final class WifiController {
 
-    private final WifiService wifiService;
+    private final WifiAdministration admin;
 
-    WifiController(WifiService wifiService) {
-        Objects.requireNonNull(wifiService, "wifiService must not be null");
-        this.wifiService = wifiService;
+    WifiController(WifiAdministration admin) {
+        Objects.requireNonNull(admin, "admin must not be null");
+        this.admin = admin;
     }
 
     @GetMapping("/wifi-parameter/{cpeId}")
     WifiConfigurationDto retrieveConfiguration(@PathVariable String cpeId) {
-        var configuration = wifiService.retrieveConfiguration(cpeId);
+        var configuration = admin.retrieveConfiguration(cpeId);
 
         return WifiConfigurationMapper.toDto(configuration);
     }
@@ -34,7 +34,7 @@ public final class WifiController {
         var configuration = WifiConfigurationMapper.toDomain(request);
 
         return WifiConfigurationMapper.toDto(
-                wifiService.updateConfiguration(configuration)
+                admin.updateConfiguration(configuration)
         );
     }
 }
