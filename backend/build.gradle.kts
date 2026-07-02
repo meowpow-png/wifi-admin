@@ -1,5 +1,8 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     java
+    id("jvm-test-suite")
     id("org.springframework.boot") version "4.0.6"
     id("io.spring.dependency-management") version "1.1.7"
 }
@@ -18,6 +21,24 @@ sourceSets {
     main {
         java {
             srcDir(layout.buildDirectory.dir("generated/sources/wsdl"))
+        }
+    }
+}
+
+testing {
+    suites {
+        withType<JvmTestSuite> {
+            useJUnitJupiter()
+        }
+        register<JvmTestSuite>("integrationTest") {
+            dependencies {
+                implementation(project())
+            }
+        }
+        register<JvmTestSuite>("architectureTest") {
+            dependencies {
+                implementation(project())
+            }
         }
     }
 }
