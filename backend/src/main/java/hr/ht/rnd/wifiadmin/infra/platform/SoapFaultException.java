@@ -18,7 +18,7 @@ final class SoapFaultException extends PlatformTransportException {
      * @throws NullPointerException if {@code code} or {@code message} is {@code null}
      */
     SoapFaultException(SoapFaultCode code, Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
         this.code = code;
     }
 

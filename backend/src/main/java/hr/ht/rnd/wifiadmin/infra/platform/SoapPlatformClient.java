@@ -1,8 +1,6 @@
 package hr.ht.rnd.wifiadmin.infra.platform;
 
-import hr.ht.rnd.wifiadmin.application.outbound.CpeNotFoundException;
-import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
-import hr.ht.rnd.wifiadmin.application.outbound.PlatformResponseException;
+import hr.ht.rnd.wifiadmin.application.outbound.*;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.GetCpeIdRequest;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.GetCpeIdResponse;
@@ -13,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import jakarta.xml.ws.WebServiceException;
 
+import java.net.ConnectException;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -74,7 +73,21 @@ final class SoapPlatformClient implements PlatformClient {
             return call.get();
         }
         catch (WebServiceException e) {
+            if (hasCause(e, ConnectException.class)) {
+                var message = "Platform could not be reached";
+                throw new PlatformConnectionException(message, e);
+            }
             throw SoapFaultDecoder.decode(e);
         }
+    }
+
+    private static boolean hasCause(Throwable throwable, Class<? extends Throwable> type) {
+        while (throwable != null) {
+            if (type.isInstance(throwable)) {
+                return true;
+            }
+            throwable = throwable.getCause();
+        }
+        return false;
     }
 }
