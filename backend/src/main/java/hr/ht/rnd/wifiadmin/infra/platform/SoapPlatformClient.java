@@ -1,6 +1,9 @@
 package hr.ht.rnd.wifiadmin.infra.platform;
 
-import hr.ht.rnd.wifiadmin.application.outbound.*;
+import hr.ht.rnd.wifiadmin.application.outbound.CpeNotFoundException;
+import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
+import hr.ht.rnd.wifiadmin.application.outbound.PlatformConnectionException;
+import hr.ht.rnd.wifiadmin.application.outbound.PlatformResponseException;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.GetCpeIdRequest;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.GetCpeIdResponse;
