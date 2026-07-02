@@ -1,5 +1,7 @@
 package hr.ht.rnd.wifiadmin.domain;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Objects;
 
 public record WifiConfiguration(
@@ -7,10 +9,16 @@ public record WifiConfiguration(
         WifiBand wifiBand,
         String ssid,
         WifiEncryptionType encryptionType,
-        String password
+        @Nullable String password
 ) {
 
-    public WifiConfiguration {
+    public WifiConfiguration(
+            String cpeId,
+            WifiBand wifiBand,
+            String ssid,
+            @Nullable WifiEncryptionType encryptionType,
+            @Nullable String password
+    ) {
         Objects.requireNonNull(cpeId, "cpeId must not be null");
         Objects.requireNonNull(wifiBand, "wifiBand must not be null");
         Objects.requireNonNull(ssid, "ssid must not be null");
@@ -21,16 +29,13 @@ public record WifiConfiguration(
         if (ssid.isBlank()) {
             throw new IllegalArgumentException("ssid must not be blank");
         }
-        if (encryptionType == WifiEncryptionType.OPEN) {
-            if (password != null) {
-                throw new IllegalArgumentException("password must be null for OPEN encryption");
-            }
-        }
-        else {
-            Objects.requireNonNull(password, "password must not be null");
-            if (password.isBlank()) {
-                throw new IllegalArgumentException("password must not be blank");
-            }
-        }
+        this.cpeId = cpeId;
+        this.wifiBand = wifiBand;
+        this.ssid = ssid;
+        this.encryptionType = Objects.requireNonNullElse(
+                encryptionType,
+                WifiEncryptionType.OPEN
+        );
+        this.password = password;
     }
 }
