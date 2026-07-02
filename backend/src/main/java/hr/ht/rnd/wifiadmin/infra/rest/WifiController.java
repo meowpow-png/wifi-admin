@@ -1,12 +1,15 @@
 package hr.ht.rnd.wifiadmin.infra.rest;
 
 import hr.ht.rnd.wifiadmin.application.inbound.WifiAdministration;
+import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.infra.rest.dto.WifiConfigurationRequest;
 import hr.ht.rnd.wifiadmin.infra.rest.dto.WifiConfigurationResponse;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.Objects;
 
@@ -31,8 +34,11 @@ public final class WifiController {
      * @return status {@code 200 (OK)}
      * @throws NullPointerException if {@code cpeId} is {@code null}
      */
+    @Validated
     @GetMapping("/wifi-parameter/{cpeId}")
-    WifiConfigurationResponse retrieveConfiguration(@PathVariable String cpeId) {
+    WifiConfigurationResponse retrieveConfiguration(
+            @NotBlank @PathVariable String cpeId
+    ) {
         var configuration = admin.retrieveConfiguration(cpeId);
 
         return WifiConfigurationMapper.toResponse(configuration);
@@ -50,8 +56,13 @@ public final class WifiController {
     WifiConfigurationResponse updateConfiguration(
             @Valid @RequestBody WifiConfigurationRequest request
     ) {
-        var configuration = WifiConfigurationMapper.toDomain(request);
-
+        WifiConfiguration configuration;
+        try {
+            configuration = WifiConfigurationMapper.toDomain(request);
+        }
+        catch (NullPointerException | IllegalArgumentException e) {
+            throw new InvalidRequestException(e.getMessage(), e);
+        }
         return WifiConfigurationMapper.toResponse(
                 admin.updateConfiguration(configuration)
         );

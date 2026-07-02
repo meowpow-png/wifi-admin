@@ -4,6 +4,8 @@ import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.infra.rest.dto.WifiConfigurationRequest;
 import hr.ht.rnd.wifiadmin.infra.rest.dto.WifiConfigurationResponse;
 
+import java.util.Objects;
+
 /**
  * Maps Wi-Fi configurations between
  * REST API and the domain model.
@@ -18,8 +20,10 @@ final class WifiConfigurationMapper {
      * @param source the REST API request
      *
      * @return the mapped domain model
+     * @throws NullPointerException if {@code source} is {@code null}
      */
     static WifiConfiguration toDomain(WifiConfigurationRequest source) {
+        Objects.requireNonNull(source, "source must not be null");
         return new WifiConfiguration(
                 source.cpeId(),
                 source.wifiBand(),
@@ -35,8 +39,10 @@ final class WifiConfigurationMapper {
      * @param source the domain model
      *
      * @return the mapped REST API response
+     * @throws NullPointerException if {@code source} is {@code null}
      */
     static WifiConfigurationResponse toResponse(WifiConfiguration source) {
+        Objects.requireNonNull(source, "source must not be null");
         return new WifiConfigurationResponse(
                 source.cpeId(),
                 source.wifiBand(),

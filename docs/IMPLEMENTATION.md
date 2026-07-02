@@ -128,9 +128,47 @@ Containerized deployments provide environment-specific configuration through Doc
 
 ## Exception Handling
 
-Application exceptions are translated into REST error responses by a global exception handler, ensuring consistent error handling across all API endpoints.
+Platform and application exceptions are translated into REST error responses by a global exception handler.
 
-The global exception handler is responsible for translating validation failures, platform integration failures, and unexpected exceptions into the application's standard error response model.
+### Validation Failures
+
+The following validation failures result in a `400 Bad Request` response:
+
+- **Request parsing:** malformed JSON, invalid enum values, type mismatches
+- **Bean validation:** missing required fields, blank values, constraint violations
+- **Business validation:** missing password for encrypted Wi-Fi, other invalid configuration combinations
+
+### Resource Not Found
+
+An unknown `cpeId` results in a `404 Not Found` response.
+  
+### Platform Integration Failures
+
+The following platform integration failures result in a `502 Bad Gateway` response:
+
+- **SOAP faults:** platform-reported errors
+- **Network timeouts:** request timeouts while communicating with the SOAP platform
+- **Other communication failures:** transport-level communication errors
+  
+### Unexpected Exceptions
+
+Any unhandled exception results in a `500 Internal Server Error` response.
+  
+### Error Response Model
+
+All error responses use the common `ErrorBody` model defined by the OpenAPI specification. This model is also used for `500` error responses.
+
+```json
+{
+  "message": "string",
+  "code": "string"
+}
+```
+
+| Field     | Description                              |
+|-----------|------------------------------------------|
+| `message` | Human-readable description of the error. |
+| `code`    | Application-specific error identifier.   |
 
 ## Security
 
