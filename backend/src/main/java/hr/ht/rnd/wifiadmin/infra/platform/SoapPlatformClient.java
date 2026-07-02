@@ -1,14 +1,20 @@
 package hr.ht.rnd.wifiadmin.infra.platform;
 
+import hr.ht.rnd.wifiadmin.application.outbound.CpeNotFoundException;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
+import hr.ht.rnd.wifiadmin.application.outbound.PlatformResponseException;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.GetCpeIdRequest;
+import hr.ht.rnd.wifiadmin.infra.platform.wsdl.GetCpeIdResponse;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.UpdateCpeIdRequest;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.WifiPlatformPortType;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.xml.ws.WebServiceException;
+
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * SOAP-based implementation of {@link PlatformClient}.
@@ -26,22 +32,49 @@ final class SoapPlatformClient implements PlatformClient {
     @Override
     public WifiConfiguration retrieveConfiguration(String cpeId) {
         Objects.requireNonNull(cpeId, "cpeId must not be null");
-        var request = new GetCpeIdRequest();
 
+        var request = new GetCpeIdRequest();
         request.setCpeId(cpeId);
 
-        var response = platformPort.getCpeID(request);
-        return PlatformMapper.toDomain(response.getConfiguration());
+        GetCpeIdResponse response;
+        try {
+            response = callSoapPlatform(() -> platformPort.getCpeID(request));
+        }
+        catch (SoapFaultException e) {
+            if (e.code() == SoapFaultCode.NOT_FOUND) {
+                throw new CpeNotFoundException(cpeId, e);
+            }
+            throw e;
+        }
+        try {
+            return PlatformMapper.toDomain(response.getConfiguration());
+        }
+        catch (NullPointerException | IllegalArgumentException e) {
+            throw new PlatformResponseException(e);
+        }
     }
 
     @Override
     public WifiConfiguration updateConfiguration(WifiConfiguration configuration) {
         var request = new UpdateCpeIdRequest();
+        var platformConfiguration = PlatformMapper.toPlatform(configuration);
 
-        var configType = PlatformMapper.toPlatform(configuration);
-        request.setConfiguration(configType);
+        request.setConfiguration(platformConfiguration);
+        try {
+            var response = callSoapPlatform(() -> platformPort.updateCpeId(request));
+            return PlatformMapper.toDomain(response.getConfiguration());
+        }
+        catch (NullPointerException | IllegalArgumentException e) {
+            throw new PlatformResponseException(e);
+        }
+    }
 
-        var response = platformPort.updateCpeId(request);
-        return PlatformMapper.toDomain(response.getConfiguration());
+    private static <T> T callSoapPlatform(Supplier<T> call) {
+        try {
+            return call.get();
+        }
+        catch (WebServiceException e) {
+            throw SoapFaultDecoder.decode(e);
+        }
     }
 }

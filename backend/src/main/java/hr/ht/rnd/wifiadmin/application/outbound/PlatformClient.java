@@ -15,6 +15,9 @@ public interface PlatformClient {
      *
      * @return the Wi-Fi configuration
      * @throws NullPointerException if {@code cpeId} is {@code null}
+     * @throws CpeNotFoundException if the CPE device does not exist
+     * @throws PlatformTransportException if communication with the platform fails
+     * @throws PlatformResponseException if the platform returns an invalid response
      */
     WifiConfiguration retrieveConfiguration(String cpeId);
 
@@ -25,6 +28,8 @@ public interface PlatformClient {
      *
      * @return the updated Wi-Fi configuration
      * @throws NullPointerException if {@code configuration} is {@code null}
+     * @throws PlatformTransportException if communication with the platform fails
+     * @throws PlatformResponseException if the platform returns an invalid response
      */
     WifiConfiguration updateConfiguration(WifiConfiguration configuration);
 }

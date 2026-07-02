@@ -21,7 +21,8 @@ final class PlatformMapper {
      * @param source the SOAP platform model
      *
      * @return the mapped domain model
-     * @throws NullPointerException if {@code source} is {@code null}
+     * @throws NullPointerException if {@code source} is {@code null},
+     * or the SOAP model is missing required properties
      * @throws IllegalArgumentException if SOAP model contains unsupported enum values
      */
     static WifiConfiguration toDomain(WifiConfigurationType source) {
