@@ -38,6 +38,10 @@ testing {
         register<JvmTestSuite>("architectureTest") {
             dependencies {
                 implementation(project())
+                implementation(libs.tngtech.archunit)
+                implementation(libs.tngtech.archunit.junit5)
+
+                implementation(libs.spring.boot.starter.web)
             }
         }
     }
@@ -65,7 +69,7 @@ dependencies {
 
 tasks.register<JavaExec>("wsdl2java") {
     group = "soap"
-    description = "Generates SOAP client classes from the WSDL."
+    description = "Generates SOAP client classes from WSDL."
 
     classpath = cxfCodegen
     mainClass.set("org.apache.cxf.tools.wsdlto.WSDLToJava")
