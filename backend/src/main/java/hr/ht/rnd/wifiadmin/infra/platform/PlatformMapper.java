@@ -7,10 +7,23 @@ import hr.ht.rnd.wifiadmin.infra.platform.wsdl.EncryptionType;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.WifiBandType;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.WifiConfigurationType;
 
+/**
+ * Maps Wi-Fi configurations between
+ * the domain model and SOAP platform model.
+ */
 final class PlatformMapper {
 
     private PlatformMapper() {}
 
+    /**
+     * Maps a SOAP platform model to the domain model.
+     *
+     * @param source the SOAP platform model
+     * @return the mapped domain model
+     *
+     * @throws NullPointerException if {@code source} is {@code null}
+     * @throws IllegalArgumentException if SOAP model contains unsupported enum values
+     */
     static WifiConfiguration toDomain(WifiConfigurationType source) {
         return new WifiConfiguration(
                 source.getCpeId(),
@@ -21,6 +34,15 @@ final class PlatformMapper {
         );
     }
 
+    /**
+     * Maps the domain model to a SOAP platform model.
+     *
+     * @param source the domain model
+     * @return the mapped SOAP platform model
+     *
+     * @throws NullPointerException if {@code source} is {@code null}
+     * @throws IllegalArgumentException if the domain model contains unsupported enum values
+     */
     static WifiConfigurationType toPlatform(WifiConfiguration source) {
         var target = new WifiConfigurationType();
 

@@ -24,7 +24,7 @@ public class PlatformConfiguration {
     private static final String HTTP_VERSION_PROPERTY = "org.apache.cxf.transport.http.forceVersion";
 
     /**
-     * Creates and configures the SOAP platform client.
+     * Creates and configures SOAP platform client.
      * <p>
      * <strong>Implementation Note:</strong>
      * The client is configured to use HTTP/1.1 for compatibility

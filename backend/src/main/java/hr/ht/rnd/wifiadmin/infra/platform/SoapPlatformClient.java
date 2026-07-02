@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+/**
+ * SOAP-based implementation of {@link PlatformClient}.
+ */
 @Component
 final class SoapPlatformClient implements PlatformClient {
 

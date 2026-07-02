@@ -30,6 +30,12 @@ public final class XmlNormalizingInterceptor extends AbstractPhaseInterceptor<Me
         super(Phase.RECEIVE);
     }
 
+    /**
+     * <strong>Implementation Note:</strong>
+     * The inbound stream is owned by Apache
+     * CXF and is intentionally not closed here,
+     * as its lifecycle is managed by the framework.
+     */
     @Override
     public void handleMessage(Message message) throws Fault {
         InputStream in = message.getContent(InputStream.class);

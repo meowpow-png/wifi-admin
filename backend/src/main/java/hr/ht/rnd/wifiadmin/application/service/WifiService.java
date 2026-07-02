@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+/**
+ * Application service coordinating
+ * Wi-Fi management use cases.
+ */
 @Service
 public class WifiService implements WifiAdministration {
 
