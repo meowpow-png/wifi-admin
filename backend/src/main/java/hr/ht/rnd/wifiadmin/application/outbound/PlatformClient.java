@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.application;
+package hr.ht.rnd.wifiadmin.application.outbound;
 
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 

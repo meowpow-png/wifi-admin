@@ -1,5 +1,7 @@
 package hr.ht.rnd.wifiadmin.application;
 
+import hr.ht.rnd.wifiadmin.application.inbound.WifiAdministration;
+import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 
 import org.springframework.stereotype.Service;
@@ -7,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 @Service
-public final class WifiService {
+public class WifiService implements WifiAdministration {
 
     private final PlatformClient platformClient;
 
@@ -16,10 +18,12 @@ public final class WifiService {
         this.platformClient = platformClient;
     }
 
+    @Override
     public WifiConfiguration retrieveConfiguration(String cpeId) {
         return platformClient.retrieveConfiguration(cpeId);
     }
 
+    @Override
     public WifiConfiguration updateConfiguration(WifiConfiguration configuration) {
         return platformClient.updateConfiguration(configuration);
     }

@@ -1,6 +1,6 @@
 package hr.ht.rnd.wifiadmin.infra.platform;
 
-import hr.ht.rnd.wifiadmin.application.PlatformClient;
+import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.GetCpeIdRequest;
 import hr.ht.rnd.wifiadmin.infra.platform.wsdl.UpdateCpeIdRequest;
