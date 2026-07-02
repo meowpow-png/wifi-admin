@@ -1,6 +1,6 @@
 package hr.ht.rnd.wifiadmin.infra.rest;
 
-import hr.ht.rnd.wifiadmin.application.WifiService;
+import hr.ht.rnd.wifiadmin.application.service.WifiService;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;

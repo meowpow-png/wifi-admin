@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.application;
+package hr.ht.rnd.wifiadmin.application.service;
 
 import hr.ht.rnd.wifiadmin.application.inbound.WifiAdministration;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
