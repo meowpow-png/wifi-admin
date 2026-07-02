@@ -2,7 +2,7 @@
 
 ## Context
 
-While implementing request validation, I needed to determine whether a password should be mandatory for encrypted Wi-Fi configurations.
+While implementing request validation, I needed to determine whether a password should be mandatory for different Wi-Fi configuration types.
 
 ## Observations
 
@@ -35,27 +35,29 @@ These two parts of the specification can be interpreted differently:
 
 ## Analysis
 
-I researched the supported Wi-Fi authentication modes and found that WPA-Personal (PSK), WPA2-Personal (PSK), and WPA3-Personal (SAE) are password-based authentication mechanisms. Therefore, these authentication modes require a password for clients to authenticate to the wireless network.
+I researched the supported Wi-Fi authentication modes and found that `WEP`, `WPA_PSK`, `WPA2_PSK`, and `WPA3_SAE` all rely on a shared secret for client authentication and therefore require a password. By contrast, `OPEN` does not require authentication, while `WPA2_ENTERPRISE` uses 802.1X/RADIUS credentials rather than a shared network password.
 
-It is important to distinguish this from a broader statement that Wi-Fi encryption always requires a password. Modern Wi-Fi standards also support passwordless encrypted networks (for example, Enhanced Open / OWE), although those authentication modes are not represented by this API.
+Although the OpenAPI specification does not explicitly define this as a request validation rule, the documented `400 Bad Request` response explicitly identifies a missing password for `WPA2_PSK` as an example of invalid input. I interpreted this as expressing the intended API behavior and implemented the corresponding validation.
 
-Because the OpenAPI specification does not explicitly define the password requirement as a request validation rule, nor specify the expected API behavior when the password is omitted, I chose not to introduce additional business rules beyond those defined by the API contract.
+It is worth noting that Wi-Fi encryption does not universally imply password-based authentication. Modern standards also support passwordless encrypted networks (for example, Enhanced Open / OWE), although those authentication modes are not represented by this API.
 
 ## Conclusions
 
-I implemented the API according to the specification as written.
+I implemented request validation requiring a password for all password-protected authentication modes supported by the API (`WEP`, `WPA_PSK`, `WPA2_PSK`, and `WPA3_SAE`).
 
-Although the documented authentication modes indicate that a password should be required for `WPA_PSK`, `WPA2_PSK`, and `WPA3_SAE`, the API contract itself does not express this as a validation constraint. Given the ambiguity between the schema and the example error response, I avoided introducing additional business rules that are not explicitly defined by the specification.
+The OpenAPI specification remains somewhat ambiguous because this requirement is documented through an example error response rather than expressed as a formal schema constraint.
 
-In a real project, I would clarify the expected behavior with the API owner or domain experts before implementing such validation.
+In a real project, I would still clarify the expected behavior with the API owner or domain experts to ensure the documented behavior reflects the intended contract.
 
 ## Next Steps
 
-- Add explicit validation if the password requirement is confirmed
-- Document the corresponding validation behavior and error responses
+- Confirm that the implemented validation matches the intended API behavior
+- Express the password requirement as an explicit validation constraint in the API specification where possible
 
 ## References
 
-- [IEEE Spectrum: Everything You Need to Know About WPA3](https://spectrum.ieee.org/everything-you-need-to-know-about-wpa3)
-- [HPE Aruba Networking: WPA3-Personal (SAE)](https://arubanetworking.hpe.com/techdocs/aos/wifi-design-deploy/security/modes/wpa3-personal/)
-- [Huawei Enterprise Documentation: Security – WPA2/WPA3-PSK-SAE](https://support.huawei.com/enterprise/en/doc/EDOC1100279155/54c5c238/security-wpa2-wpa3-psk-sae)
+- [Android Open Source Project – Enhanced Open (OWE)](https://source.android.com/docs/core/connect/wifi-wpa3-owe)
+- [Smallstep – Everything You Need to Know About Wi-Fi Security](https://smallstep.com/blog/everything-wifi-security/)
+- [HPE Aruba Networking – WPA3-Personal (SAE)](https://arubanetworking.hpe.com/techdocs/aos/wifi-design-deploy/security/modes/wpa3-personal/)
+- [Huawei Enterprise Documentation – Security – WPA2/WPA3-PSK-SAE](https://support.huawei.com/enterprise/en/doc/EDOC1100279155/54c5c238/security-wpa2-wpa3-psk-sae)
+- [Arista Networks – WPA3-Personal: Simultaneous Authentication of Equals (SAE)](https://arista.my.site.com/AristaCommunity/s/article/WPA3-Personal-Simultaneous-Authentication-of-Equals-SAE)

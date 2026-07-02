@@ -18,13 +18,13 @@ import org.jspecify.annotations.Nullable;
  * @param password the Wi-Fi password
  */
 public record WifiConfigurationRequest(
-        @NotBlank(message = "cpeId must not be blank")
+        @NotBlank(message = "CPE ID must not be blank")
         String cpeId,
 
-        @NotNull(message = "wifiBand must not be null")
+        @NotNull(message = "wifi band must not be null")
         WifiBand wifiBand,
 
-        @NotBlank(message = "ssid must not be blank")
+        @NotBlank(message = "SSID must not be blank")
         String ssid,
 
         @Nullable

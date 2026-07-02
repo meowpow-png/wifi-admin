@@ -51,6 +51,7 @@ public final class WifiController {
      *
      * @return status {@code 200 (OK)}
      * @throws NullPointerException if {@code request} is {@code null}
+     * @throws InvalidRequestException if the request contains invalid data
      */
     @PutMapping("/wifi-parameter")
     WifiConfigurationResponse updateConfiguration(
@@ -61,7 +62,7 @@ public final class WifiController {
             configuration = WifiConfigurationMapper.toDomain(request);
         }
         catch (NullPointerException | IllegalArgumentException e) {
-            throw new InvalidRequestException(e.getMessage(), e);
+            throw new InvalidRequestException(e);
         }
         return WifiConfigurationMapper.toResponse(
                 admin.updateConfiguration(configuration)

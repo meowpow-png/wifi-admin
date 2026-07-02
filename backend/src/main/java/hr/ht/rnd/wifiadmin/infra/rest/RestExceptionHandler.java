@@ -29,6 +29,15 @@ class RestExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidRequestException.class)
+    ErrorBodyDto handleInvalidRequest(InvalidRequestException exception) {
+        return new ErrorBodyDto(
+                exception.getMessage(),
+                ErrorCode.VALIDATION_FAILED
+        );
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     ErrorBodyDto handleRequestParsingFailure(HttpMessageNotReadableException ignored) {
         return new ErrorBodyDto(

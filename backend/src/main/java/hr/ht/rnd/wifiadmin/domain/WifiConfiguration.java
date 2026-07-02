@@ -39,18 +39,26 @@ public record WifiConfiguration(
         Objects.requireNonNull(ssid, "ssid must not be null");
 
         if (cpeId.isBlank()) {
-            throw new IllegalArgumentException("cpeId must not be blank");
+            throw new IllegalArgumentException("CPE ID must not be blank");
         }
         if (ssid.isBlank()) {
-            throw new IllegalArgumentException("ssid must not be blank");
+            throw new IllegalArgumentException("SSID must not be blank");
+        }
+        encryptionType = Objects.requireNonNullElse(
+                encryptionType,
+                WifiEncryptionType.OPEN
+        );
+        if (encryptionType.requiresPassword()) {
+            Objects.requireNonNull(password, "password must not be null for " + encryptionType);
+            if (password.isBlank()) {
+                var message = "password must not be blank for " + encryptionType;
+                throw new IllegalArgumentException(message);
+            }
         }
         this.cpeId = cpeId;
         this.wifiBand = wifiBand;
         this.ssid = ssid;
-        this.encryptionType = Objects.requireNonNullElse(
-                encryptionType,
-                WifiEncryptionType.OPEN
-        );
+        this.encryptionType = encryptionType;
         this.password = password;
     }
 }
