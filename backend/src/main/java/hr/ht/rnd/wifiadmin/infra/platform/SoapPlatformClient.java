@@ -5,10 +5,7 @@ import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformConnectionException;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformResponseException;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
-import hr.ht.rnd.wifiadmin.infra.platform.wsdl.GetCpeIdRequest;
-import hr.ht.rnd.wifiadmin.infra.platform.wsdl.GetCpeIdResponse;
-import hr.ht.rnd.wifiadmin.infra.platform.wsdl.UpdateCpeIdRequest;
-import hr.ht.rnd.wifiadmin.infra.platform.wsdl.WifiPlatformPortType;
+import hr.ht.rnd.wifiadmin.infra.platform.wsdl.*;
 
 import org.springframework.stereotype.Component;
 
@@ -58,12 +55,22 @@ final class SoapPlatformClient implements PlatformClient {
 
     @Override
     public WifiConfiguration updateConfiguration(WifiConfiguration configuration) {
-        var request = new UpdateCpeIdRequest();
         var platformConfiguration = PlatformMapper.toPlatform(configuration);
 
+        var request = new UpdateCpeIdRequest();
         request.setConfiguration(platformConfiguration);
+
+        UpdateCpeIdResponse response;
         try {
-            var response = callSoapPlatform(() -> platformPort.updateCpeId(request));
+            response = callSoapPlatform(() -> platformPort.updateCpeId(request));
+        }
+        catch (SoapFaultException e) {
+            if (e.code() == SoapFaultCode.NOT_FOUND) {
+                throw new CpeNotFoundException(configuration.cpeId(), e);
+            }
+            throw e;
+        }
+        try {
             return PlatformMapper.toDomain(response.getConfiguration());
         }
         catch (NullPointerException | IllegalArgumentException e) {
