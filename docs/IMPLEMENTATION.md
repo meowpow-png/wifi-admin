@@ -22,6 +22,8 @@ This document describes how the architecture defined in [ARCHITECTURE.md](ARCHIT
 
 The project is organized into top-level packages that reflect the logical architecture. Each package corresponds to a single architectural module and groups related implementation concerns.
 
+### Modules
+
 ```text
 src/main/java
 └── hr
@@ -40,6 +42,23 @@ src/main/java
 | `domain`      | Domain model and business rules             |
 | `infra`       | REST, SOAP, persistence, and configuration  |
 | `common`      | Shared utilities and cross-cutting concerns |
+
+### Application Structure
+
+The application module follows the **Ports and Adapters** architecture.
+
+```text
+application
+├── inbound
+├── outbound
+└── service
+```
+
+| Package    | Responsibility                                                  |
+|------------|-----------------------------------------------------------------|
+| `inbound`  | Defines the application's public capabilities                   |
+| `outbound` | Defines the application's required external capabilities        |
+| `service`  | Implements capabilities and orchestrates business operations    |
 
 ## Platform Integration
 

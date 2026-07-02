@@ -11,7 +11,7 @@ The goal of this architecture is to build a production-quality integration servi
 The architecture is guided by the following principles:
 
 - **Separation of Concerns** – Each module has a single, well-defined responsibility
-- **Business-Centric Design** – Business logic remains independent of REST, SOAP, and persistence
+- **Business-Centric Design** – Business logic remains independent of REST, SOAP, persistence, and framework-specific concerns
 - **Encapsulated Integrations** – External systems are isolated behind dedicated integration boundaries
 - **Observability by Default** – Logging, metrics, and tracing are built into every operation
 - **Production Readiness** – Validation, configuration, testing, and error handling are first-class concerns
@@ -49,20 +49,21 @@ flowchart LR
 
 ## Logical Architecture
 
-The application follows a Domain-Driven Design approach centered around a single bounded context, **WiFi Administration**. The architecture is divided into four logical modules, each with a clear responsibility.
+The application follows **Domain-Driven Design** within a **Ports and Adapters Hexagonal Architecture**. The domain is centered around a single bounded context, **WiFi Administration**, and the application is organized into four logical modules, each with a clear responsibility.
 
-- **Domain** contains the business model and business rules.
-- **Application** contains use cases and application ports.
-- **Infrastructure** contains technical implementations such as REST, SOAP, persistence, and configuration.
-- **Common** contains shared utilities and cross-cutting abstractions.
+### Modules
 
-## Dependency Rules
+- **Domain** contains the business model and business rules. It is independent of frameworks and infrastructure technologies
+- **Application** contains use cases and application ports. It orchestrates business operations without exposing transport-specific concerns
+- **Infrastructure** contains technical implementations such as REST, SOAP, persistence, and configuration
+- **Common** contains shared utilities and cross-cutting abstractions
 
-- The domain module must not depend on any other application module
-- The application module may depend only on the domain and common modules
-- The infrastructure module may depend on the application, domain, and common modules
-- The common module must not depend on any other application module
-- Application ports are implemented by the infrastructure module
+### Dependency Rules
+
+- Domain module must not depend on any other application module
+- Application module may depend only on the domain and common modules
+- Infrastructure module may depend on the application, domain, and common modules
+- Common module must not depend on any other application module
 
 ```text
 Application ─────────► Domain
@@ -76,6 +77,40 @@ Infrastructure ──────► Common
 Domain ──────────────► (nothing)
 
 Common ──────────────► (nothing)
+```
+
+- Inbound ports define application capabilities and are implemented by services.
+- Outbound ports define external capabilities and are implemented by infrastructure.
+  
+```text
+┌──────────────────────────────┐
+│       Infrastructure         │
+│                              │
+│      Inbound Adapters        │
+└──────────────┬───────────────┘
+               │
+               ▼
+┌──────────────────────────────┐
+│        Application           │
+│                              │
+│       Inbound Ports          │
+│              │               │
+│              ▼               │
+│    Application Services      │
+│         ┌────┴────┐          │
+│         │         │          │
+│         ▼         ▼          │
+│   Domain Model  Outbound     │
+│                  Ports       │
+└────────────────────┼─────────┘
+                     │
+                 implements
+                     ▲
+┌────────────────────┴─────────┐
+│        Infrastructure        │
+│                              │
+│      Outbound Adapters       │
+└──────────────────────────────┘
 ```
 
 ## Request Processing
