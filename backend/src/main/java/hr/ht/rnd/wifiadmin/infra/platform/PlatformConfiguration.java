@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.infra.config;
+package hr.ht.rnd.wifiadmin.infra.platform;
 
 import hr.ht.rnd.wifiadmin.infra.platform.PlatformProperties;
 import hr.ht.rnd.wifiadmin.infra.platform.XmlNormalizingInterceptor;
