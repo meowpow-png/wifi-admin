@@ -1,6 +1,8 @@
 package hr.ht.rnd.wifiadmin.infra.rest;
 
 import hr.ht.rnd.wifiadmin.application.inbound.WifiAdministration;
+import hr.ht.rnd.wifiadmin.infra.rest.dto.WifiConfigurationRequest;
+import hr.ht.rnd.wifiadmin.infra.rest.dto.WifiConfigurationResponse;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -30,10 +32,10 @@ public final class WifiController {
      * @throws NullPointerException if {@code cpeId} is {@code null}
      */
     @GetMapping("/wifi-parameter/{cpeId}")
-    WifiConfigurationDto retrieveConfiguration(@PathVariable String cpeId) {
+    WifiConfigurationResponse retrieveConfiguration(@PathVariable String cpeId) {
         var configuration = admin.retrieveConfiguration(cpeId);
 
-        return WifiConfigurationMapper.toDto(configuration);
+        return WifiConfigurationMapper.toResponse(configuration);
     }
 
     /**
@@ -45,10 +47,12 @@ public final class WifiController {
      * @throws NullPointerException if {@code request} is {@code null}
      */
     @PutMapping("/wifi-parameter")
-    WifiConfigurationDto updateConfiguration(@Valid @RequestBody WifiConfigurationDto request) {
+    WifiConfigurationResponse updateConfiguration(
+            @Valid @RequestBody WifiConfigurationRequest request
+    ) {
         var configuration = WifiConfigurationMapper.toDomain(request);
 
-        return WifiConfigurationMapper.toDto(
+        return WifiConfigurationMapper.toResponse(
                 admin.updateConfiguration(configuration)
         );
     }
