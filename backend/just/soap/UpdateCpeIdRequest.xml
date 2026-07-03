@@ -1,0 +1,15 @@
+<soapenv:Envelope
+        xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:v1="http://wifi-admin.local/platform/v1">
+    <soapenv:Body>
+        <v1:UpdateCpeIdRequest>
+            <v1:configuration>
+                <v1:cpeId>${CPE_ID}</v1:cpeId>
+                <v1:wifiBand>${WIFI_BAND}</v1:wifiBand>
+                <v1:ssid>${SSID}</v1:ssid>
+                <v1:encryptionType>${ENCRYPTION_TYPE}</v1:encryptionType>
+                <v1:password>${PASSWORD}</v1:password>
+            </v1:configuration>
+        </v1:UpdateCpeIdRequest>
+    </soapenv:Body>
+</soapenv:Envelope>
