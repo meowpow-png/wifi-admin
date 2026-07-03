@@ -72,7 +72,9 @@ SOAP faults and transport exceptions are translated into domain-specific excepti
 
 WiFi configurations are persisted in PostgreSQL using Spring Data JPA. Database schema changes are managed through Flyway versioned migrations.
 
-The application maintains a local replica of the WiFi configurations stored in the external platform. Retrieved configurations are persisted locally, while configuration updates are written to the database only after they have been successfully applied on the platform.
+The application maintains a local replica of the WiFi configurations stored in the external platform. Repository operations are encapsulated behind application ports, allowing the persistence implementation to remain isolated from the application layer.
+
+Retrieved configurations are served from the local database when available and fall back to the external platform on cache misses or repository failures. Configuration updates are persisted **asynchronously** after successful platform updates, ensuring the external platform remains the authoritative source of truth while preventing local persistence from delaying client responses.
 
 ## Synchronization
 

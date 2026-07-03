@@ -52,3 +52,4 @@ Unlike an in-memory cache, a database provides durable storage and creates a sol
 
 - The database must be synchronized with the external platform
 - Updates must be applied to the platform before being persisted locally
+- Repository failures during reads should not prevent retrieval from the platform
