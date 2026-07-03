@@ -25,6 +25,22 @@ sourceSets {
     }
 }
 
+fun loadEnv(file: File): Map<String, String> {
+    if (!file.exists()) {
+        return emptyMap()
+    }
+    return file.readLines()
+        .filter { it.isNotBlank() && !it.startsWith("#") }
+        .associate {
+            val (key, value) = it.split("=", limit = 2)
+            key to value
+        }
+}
+val env = loadEnv(file(".env")) + System.getenv()
+
+tasks.bootRun {
+    environment(env)
+}
 testing {
     suites {
         withType<JvmTestSuite> {
