@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.infra.async;
+package hr.ht.rnd.wifiadmin.infra.app.async;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

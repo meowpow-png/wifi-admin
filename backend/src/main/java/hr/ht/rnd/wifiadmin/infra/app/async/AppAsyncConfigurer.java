@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.infra.async;
+package hr.ht.rnd.wifiadmin.infra.app.async;
 
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Qualifier;
