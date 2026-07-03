@@ -43,11 +43,12 @@ final class SoapPayloadLogger {
         );
     }
 
+    @SuppressWarnings("HttpUrlsUsage")
     private static final class XmlFormatter {
 
-        private static final TransformerFactory FACTORY = TransformerFactory.newInstance();
+        private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
 
-        @SuppressWarnings("HttpUrlsUsage")
+        private static final String FEATURE_DISALLOW_DOCTYPE = "http://apache.org/xml/features/disallow-doctype-decl";
         private static final String PROPERTY_INDENT_AMOUNT = "{http://xml.apache.org/xslt}indent-amount";
         private static final String INDENT_AMOUNT = "4";
 
@@ -66,13 +67,16 @@ final class SoapPayloadLogger {
         static String format(String xml) {
             Objects.requireNonNull(xml, "xml must not be null");
             try {
-                var builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                var documentFactory = DocumentBuilderFactory.newInstance();
+                documentFactory.setFeature(FEATURE_DISALLOW_DOCTYPE, true);
+
+                var builder = documentFactory.newDocumentBuilder();
                 var document = builder.parse(
                         new InputSource(new StringReader(xml))
                 );
                 obfuscateSecrets(document);
 
-                var transformer = FACTORY.newTransformer();
+                var transformer = TRANSFORMER_FACTORY.newTransformer();
 
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 transformer.setOutputProperty(PROPERTY_INDENT_AMOUNT, INDENT_AMOUNT);
