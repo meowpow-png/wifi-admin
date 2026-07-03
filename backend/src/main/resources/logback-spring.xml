@@ -6,6 +6,7 @@
         </encoder>
     </appender>
     <logger name="hr.ht.rnd.wifiadmin" level="INFO" />
+    <logger name="hr.ht.rnd.wifiadmin.infra.transport.soap.payload" level="OFF"/>
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>

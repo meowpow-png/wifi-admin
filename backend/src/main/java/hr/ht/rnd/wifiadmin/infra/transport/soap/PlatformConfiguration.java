@@ -2,6 +2,8 @@ package hr.ht.rnd.wifiadmin.infra.transport.soap;
 
 import hr.ht.rnd.wifiadmin.infra.soap.wsdl.WifiPlatformPortType;
 import hr.ht.rnd.wifiadmin.infra.soap.wsdl.WifiPlatformService;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.logging.SoapRequestLoggingInterceptor;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.logging.SoapResponseLoggingInterceptor;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +38,12 @@ public class PlatformConfiguration {
         var port = service.getWifiPlatformPort();
         var client = ClientProxy.getClient(port);
 
-        client.getInInterceptors().add(new XmlNormalizingInterceptor());
+        var inInterceptors = client.getInInterceptors();
+        var outInterceptors = client.getOutInterceptors();
+
+        inInterceptors.add(new XmlNormalizingInterceptor());
+        inInterceptors.add(new SoapResponseLoggingInterceptor());
+        outInterceptors.add(new SoapRequestLoggingInterceptor());
 
         var dataBinding = (JAXBDataBinding) client.getEndpoint().getService().getDataBinding();
         dataBinding.setNamespaceMap(Map.of(PLATFORM_NAMESPACE, "tns"));
