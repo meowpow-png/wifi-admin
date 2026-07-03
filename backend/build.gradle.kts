@@ -49,6 +49,14 @@ val env = loadEnv(file(".env")) + System.getenv()
 tasks.bootRun {
     environment(env)
 }
+
+flyway {
+    url = "jdbc:postgresql://localhost:${env["DB_PORT"]}/${env["DB_NAME"]}"
+    user = env["DB_USER"]
+    password = env["DB_PASSWORD"]
+    cleanDisabled = false
+}
+
 testing {
     suites {
         withType<JvmTestSuite> {
