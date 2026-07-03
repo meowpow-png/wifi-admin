@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.infra.rest;
+package hr.ht.rnd.wifiadmin.infra.transport.rest;
 
 import java.util.Objects;
 

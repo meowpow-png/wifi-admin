@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.infra.platform;
+package hr.ht.rnd.wifiadmin.infra.transport.soap;
 
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.interceptor.Fault;
@@ -25,11 +25,11 @@ import java.util.Arrays;
  * leading whitespace before XML parsing while leaving
  * the SOAP document itself unchanged.
  */
-public final class XmlNormalizingInterceptor extends AbstractPhaseInterceptor<Message> {
+final class XmlNormalizingInterceptor extends AbstractPhaseInterceptor<Message> {
 
     private static final byte[] XML_PREFIX = "<?xml".getBytes(StandardCharsets.US_ASCII);
 
-    public XmlNormalizingInterceptor() {
+    XmlNormalizingInterceptor() {
         super(Phase.RECEIVE);
     }
 

@@ -1,19 +1,19 @@
-package hr.ht.rnd.wifiadmin.infra.platform;
+package hr.ht.rnd.wifiadmin.infra.transport.soap;
 
 import hr.ht.rnd.wifiadmin.domain.WifiBand;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.domain.WifiEncryptionType;
-import hr.ht.rnd.wifiadmin.infra.platform.wsdl.EncryptionType;
-import hr.ht.rnd.wifiadmin.infra.platform.wsdl.WifiBandType;
-import hr.ht.rnd.wifiadmin.infra.platform.wsdl.WifiConfigurationType;
+import hr.ht.rnd.wifiadmin.infra.soap.wsdl.EncryptionType;
+import hr.ht.rnd.wifiadmin.infra.soap.wsdl.WifiBandType;
+import hr.ht.rnd.wifiadmin.infra.soap.wsdl.WifiConfigurationType;
 
 /**
  * Maps Wi-Fi configurations between
  * the domain model and SOAP platform model.
  */
-final class PlatformMapper {
+final class SoapPlatformMapper {
 
-    private PlatformMapper() {}
+    private SoapPlatformMapper() {}
 
     /**
      * Maps a SOAP platform model to the domain model.

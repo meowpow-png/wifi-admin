@@ -1,7 +1,7 @@
-package hr.ht.rnd.wifiadmin.infra.platform;
+package hr.ht.rnd.wifiadmin.infra.transport.soap;
 
-import hr.ht.rnd.wifiadmin.infra.platform.wsdl.WifiPlatformPortType;
-import hr.ht.rnd.wifiadmin.infra.platform.wsdl.WifiPlatformService;
+import hr.ht.rnd.wifiadmin.infra.soap.wsdl.WifiPlatformPortType;
+import hr.ht.rnd.wifiadmin.infra.soap.wsdl.WifiPlatformService;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

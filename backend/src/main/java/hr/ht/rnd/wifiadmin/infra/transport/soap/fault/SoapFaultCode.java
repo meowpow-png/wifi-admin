@@ -1,9 +1,9 @@
-package hr.ht.rnd.wifiadmin.infra.platform;
+package hr.ht.rnd.wifiadmin.infra.transport.soap.fault;
 
 /**
  * SOAP fault codes returned by the platform.
  */
-enum SoapFaultCode {
+public enum SoapFaultCode {
 
     NOT_FOUND("tns:NotFound"),
     CLIENT("soap:Client");

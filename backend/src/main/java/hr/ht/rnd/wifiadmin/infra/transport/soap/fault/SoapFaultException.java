@@ -1,11 +1,11 @@
-package hr.ht.rnd.wifiadmin.infra.platform;
+package hr.ht.rnd.wifiadmin.infra.transport.soap.fault;
 
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformTransportException;
 
 /**
  * SOAP fault returned by the platform.
  */
-final class SoapFaultException extends PlatformTransportException {
+public final class SoapFaultException extends PlatformTransportException {
 
     private final SoapFaultCode code;
 
@@ -22,7 +22,7 @@ final class SoapFaultException extends PlatformTransportException {
         this.code = code;
     }
 
-    SoapFaultCode code() {
+    public SoapFaultCode code() {
         return code;
     }
 }

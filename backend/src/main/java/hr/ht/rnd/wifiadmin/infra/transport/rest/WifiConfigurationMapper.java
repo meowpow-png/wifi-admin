@@ -1,8 +1,8 @@
-package hr.ht.rnd.wifiadmin.infra.rest;
+package hr.ht.rnd.wifiadmin.infra.transport.rest;
 
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
-import hr.ht.rnd.wifiadmin.infra.rest.dto.WifiConfigurationRequest;
-import hr.ht.rnd.wifiadmin.infra.rest.dto.WifiConfigurationResponse;
+import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationRequest;
+import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationResponse;
 
 import java.util.Objects;
 

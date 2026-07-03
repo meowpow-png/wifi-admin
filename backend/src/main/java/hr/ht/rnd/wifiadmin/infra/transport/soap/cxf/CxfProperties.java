@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.infra.platform;
+package hr.ht.rnd.wifiadmin.infra.transport.soap.cxf;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

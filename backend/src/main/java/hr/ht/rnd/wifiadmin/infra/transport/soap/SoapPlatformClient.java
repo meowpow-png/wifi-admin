@@ -1,11 +1,14 @@
-package hr.ht.rnd.wifiadmin.infra.platform;
+package hr.ht.rnd.wifiadmin.infra.transport.soap;
 
 import hr.ht.rnd.wifiadmin.application.outbound.CpeNotFoundException;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformConnectionException;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformResponseException;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
-import hr.ht.rnd.wifiadmin.infra.platform.wsdl.*;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapFaultCode;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapFaultDecoder;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapFaultException;
+import hr.ht.rnd.wifiadmin.infra.soap.wsdl.*;
 
 import org.springframework.stereotype.Component;
 
@@ -46,7 +49,7 @@ final class SoapPlatformClient implements PlatformClient {
             throw e;
         }
         try {
-            return PlatformMapper.toDomain(response.getConfiguration());
+            return SoapPlatformMapper.toDomain(response.getConfiguration());
         }
         catch (NullPointerException | IllegalArgumentException e) {
             throw new PlatformResponseException(e);
@@ -55,7 +58,7 @@ final class SoapPlatformClient implements PlatformClient {
 
     @Override
     public WifiConfiguration updateConfiguration(WifiConfiguration configuration) {
-        var platformConfiguration = PlatformMapper.toPlatform(configuration);
+        var platformConfiguration = SoapPlatformMapper.toPlatform(configuration);
 
         var request = new UpdateCpeIdRequest();
         request.setConfiguration(platformConfiguration);
@@ -71,7 +74,7 @@ final class SoapPlatformClient implements PlatformClient {
             throw e;
         }
         try {
-            return PlatformMapper.toDomain(response.getConfiguration());
+            return SoapPlatformMapper.toDomain(response.getConfiguration());
         }
         catch (NullPointerException | IllegalArgumentException e) {
             throw new PlatformResponseException(e);

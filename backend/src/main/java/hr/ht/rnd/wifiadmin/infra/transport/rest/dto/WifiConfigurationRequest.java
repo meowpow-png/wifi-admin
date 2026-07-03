@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.infra.rest.dto;
+package hr.ht.rnd.wifiadmin.infra.transport.rest.dto;
 
 import hr.ht.rnd.wifiadmin.domain.WifiBand;
 import hr.ht.rnd.wifiadmin.domain.WifiEncryptionType;

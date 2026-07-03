@@ -1,11 +1,11 @@
-package hr.ht.rnd.wifiadmin.infra.platform;
+package hr.ht.rnd.wifiadmin.infra.transport.soap.fault;
 
 import jakarta.xml.ws.WebServiceException;
 
 /**
  * Decodes SOAP faults from web service exceptions.
  */
-final class SoapFaultDecoder {
+public final class SoapFaultDecoder {
 
     private SoapFaultDecoder() {}
 
@@ -17,7 +17,7 @@ final class SoapFaultDecoder {
      * @return the decoded SOAP fault
      * @throws IllegalArgumentException if the exception does not contain a SOAP fault
      */
-    static SoapFaultException decode(WebServiceException ex) {
+    public static SoapFaultException decode(WebServiceException ex) {
         var message = ex.getMessage();
 
         for (var faultCode : SoapFaultCode.values()) {

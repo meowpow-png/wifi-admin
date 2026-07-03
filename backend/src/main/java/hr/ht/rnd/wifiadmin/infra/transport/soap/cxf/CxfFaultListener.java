@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.infra.platform;
+package hr.ht.rnd.wifiadmin.infra.transport.soap.cxf;
 
 import org.apache.cxf.logging.FaultListener;
 import org.apache.cxf.message.Message;
@@ -8,11 +8,11 @@ import java.util.function.BooleanSupplier;
 /**
  * Controls logging of SOAP faults reported by Apache CXF.
  */
-final class PlatformFaultListener implements FaultListener {
+final class CxfFaultListener implements FaultListener {
 
     private final BooleanSupplier logSoapFaults;
 
-    PlatformFaultListener(BooleanSupplier logSoapFaults) {
+    CxfFaultListener(BooleanSupplier logSoapFaults) {
         this.logSoapFaults = logSoapFaults;
     }
 

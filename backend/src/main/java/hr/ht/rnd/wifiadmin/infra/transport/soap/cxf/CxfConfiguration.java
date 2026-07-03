@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.infra.platform;
+package hr.ht.rnd.wifiadmin.infra.transport.soap.cxf;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +18,7 @@ public class CxfConfiguration {
 
         bus.setProperty(
                 FaultListener.class.getName(),
-                new PlatformFaultListener(properties::logFaults)
+                new CxfFaultListener(properties::logFaults)
         );
         return bus;
     }
