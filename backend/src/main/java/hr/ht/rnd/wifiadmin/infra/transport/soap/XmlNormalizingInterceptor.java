@@ -41,15 +41,12 @@ final class XmlNormalizingInterceptor extends AbstractPhaseInterceptor<Message> 
      */
     @Override
     public void handleMessage(Message message) throws Fault {
-        InputStream in = message.getContent(InputStream.class);
-        if (in == null) {
-            return;
-        }
+        var in = message.getContent(InputStream.class);
         try {
             byte[] bytes = IOUtils.readBytesFromStream(in);
-            int offset = skipLeadingWhitespace(bytes);
+            int offset = findXmlDeclaration(bytes);
 
-            if (startsWithXmlDeclaration(bytes, offset)) {
+            if (offset > 0) {
                 bytes = Arrays.copyOfRange(bytes, offset, bytes.length);
             }
             message.setContent(InputStream.class, new ByteArrayInputStream(bytes));
@@ -59,7 +56,7 @@ final class XmlNormalizingInterceptor extends AbstractPhaseInterceptor<Message> 
         }
     }
 
-    private static int skipLeadingWhitespace(byte[] bytes) {
+    private static int findXmlDeclaration(byte[] bytes) {
         int offset = 0;
 
         while (offset < bytes.length) {
@@ -71,18 +68,17 @@ final class XmlNormalizingInterceptor extends AbstractPhaseInterceptor<Message> 
                 break;
             }
         }
-        return offset;
-    }
-
-    private static boolean startsWithXmlDeclaration(byte[] bytes, int offset) {
-        if (offset == 0 || offset + XML_PREFIX.length > bytes.length) {
-            return false;
+        if (offset == 0) {
+            return 0;
+        }
+        if (offset + XML_PREFIX.length > bytes.length) {
+            return -1;
         }
         for (int i = 0; i < XML_PREFIX.length; i++) {
             if (bytes[offset + i] != XML_PREFIX[i]) {
-                return false;
+                return -1;
             }
         }
-        return true;
+        return offset;
     }
 }
