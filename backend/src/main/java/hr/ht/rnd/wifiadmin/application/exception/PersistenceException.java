@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.application.outbound;
+package hr.ht.rnd.wifiadmin.application.exception;
 
 /**
  * Thrown when a persistence operation fails.

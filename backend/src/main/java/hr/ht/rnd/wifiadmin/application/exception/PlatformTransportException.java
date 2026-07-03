@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.application.outbound;
+package hr.ht.rnd.wifiadmin.application.exception;
 
 /**
  * Indicates that communication with the platform

@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.application.outbound;
+package hr.ht.rnd.wifiadmin.application.exception;
 
 /**
  * Indicates that a CPE device does not exist on the platform.

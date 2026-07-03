@@ -1,6 +1,6 @@
 package hr.ht.rnd.wifiadmin.application.service;
 
-import hr.ht.rnd.wifiadmin.application.inbound.WifiPersistence;
+import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationPersistence;
 import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationRepository;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 @Service
-class WifiPersistenceService implements WifiPersistence {
+class WifiConfigurationPersistenceService implements WifiConfigurationPersistence {
 
     private final WifiConfigurationRepository repository;
 
-    WifiPersistenceService(WifiConfigurationRepository repository) {
+    WifiConfigurationPersistenceService(WifiConfigurationRepository repository) {
         Objects.requireNonNull(repository, "repository must not be null");
         this.repository = repository;
     }

@@ -3,9 +3,9 @@ package hr.ht.rnd.wifiadmin.application.inbound;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 
 /**
- * Exposes Wi-Fi administration operations.
+ * Exposes platform administration operations.
  */
-public interface WifiAdministration {
+public interface PlatformAdministration {
 
     /**
      * Retrieves the Wi-Fi configuration of a CPE device.

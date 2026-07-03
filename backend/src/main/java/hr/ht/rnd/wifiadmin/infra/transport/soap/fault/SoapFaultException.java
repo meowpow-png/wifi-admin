@@ -1,6 +1,6 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap.fault;
 
-import hr.ht.rnd.wifiadmin.application.outbound.PlatformTransportException;
+import hr.ht.rnd.wifiadmin.application.exception.PlatformTransportException;
 
 /**
  * SOAP fault returned by the platform.

@@ -1,9 +1,9 @@
-package hr.ht.rnd.wifiadmin.application.outbound;
+package hr.ht.rnd.wifiadmin.application.exception;
 
 /**
  * Base exception for platform failures.
  */
-abstract class PlatformException extends RuntimeException {
+public abstract class PlatformException extends RuntimeException {
 
     /**
      * Creates a platform exception.
@@ -11,7 +11,7 @@ abstract class PlatformException extends RuntimeException {
      * @param message the exception message
      * @param cause the underlying cause
      */
-    PlatformException(String message, Throwable cause) {
+    protected PlatformException(String message, Throwable cause) {
         super(message, cause);
     }
 }

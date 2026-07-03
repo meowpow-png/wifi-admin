@@ -1,8 +1,8 @@
 package hr.ht.rnd.wifiadmin.infra.transport.rest;
 
-import hr.ht.rnd.wifiadmin.application.outbound.CpeNotFoundException;
-import hr.ht.rnd.wifiadmin.application.outbound.PlatformResponseException;
-import hr.ht.rnd.wifiadmin.application.outbound.PlatformTransportException;
+import hr.ht.rnd.wifiadmin.application.exception.CpeNotFoundException;
+import hr.ht.rnd.wifiadmin.application.exception.PlatformResponseException;
+import hr.ht.rnd.wifiadmin.application.exception.PlatformTransportException;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;

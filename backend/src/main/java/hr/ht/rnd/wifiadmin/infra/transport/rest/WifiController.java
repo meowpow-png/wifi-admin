@@ -1,6 +1,6 @@
 package hr.ht.rnd.wifiadmin.infra.transport.rest;
 
-import hr.ht.rnd.wifiadmin.application.inbound.WifiAdministration;
+import hr.ht.rnd.wifiadmin.application.inbound.PlatformAdministration;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationRequest;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationResponse;
@@ -19,9 +19,9 @@ import java.util.Objects;
 @RestController
 public final class WifiController {
 
-    private final WifiAdministration admin;
+    private final PlatformAdministration admin;
 
-    WifiController(WifiAdministration admin) {
+    WifiController(PlatformAdministration admin) {
         Objects.requireNonNull(admin, "admin must not be null");
         this.admin = admin;
     }

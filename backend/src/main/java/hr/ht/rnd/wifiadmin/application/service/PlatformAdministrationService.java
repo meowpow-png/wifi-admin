@@ -1,9 +1,9 @@
 package hr.ht.rnd.wifiadmin.application.service;
 
-import hr.ht.rnd.wifiadmin.application.inbound.WifiAdministration;
-import hr.ht.rnd.wifiadmin.application.outbound.PersistenceException;
+import hr.ht.rnd.wifiadmin.application.exception.PersistenceException;
+import hr.ht.rnd.wifiadmin.application.inbound.PlatformAdministration;
+import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationPersistence;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
-import hr.ht.rnd.wifiadmin.application.inbound.WifiPersistence;
 import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationRepository;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 
@@ -16,18 +16,18 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class WifiAdministrationService implements WifiAdministration {
+public class PlatformAdministrationService implements PlatformAdministration {
 
-    private static final Logger log = LoggerFactory.getLogger(WifiAdministrationService.class);
+    private static final Logger log = LoggerFactory.getLogger(PlatformAdministrationService.class);
 
     private final PlatformClient client;
     private final WifiConfigurationRepository repository;
-    private final WifiPersistence persistence;
+    private final WifiConfigurationPersistence persistence;
 
-    WifiAdministrationService(
+    PlatformAdministrationService(
             PlatformClient client,
             WifiConfigurationRepository repository,
-            WifiPersistence persistence
+            WifiConfigurationPersistence persistence
     ) {
         Objects.requireNonNull(client, "client must not be null");
         Objects.requireNonNull(repository, "repository must not be null");
