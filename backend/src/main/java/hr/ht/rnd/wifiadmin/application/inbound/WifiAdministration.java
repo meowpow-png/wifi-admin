@@ -3,7 +3,7 @@ package hr.ht.rnd.wifiadmin.application.inbound;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 
 /**
- * Inbound port exposing Wi-Fi administration operations.
+ * Exposes Wi-Fi administration operations.
  */
 public interface WifiAdministration {
 

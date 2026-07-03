@@ -1,6 +1,6 @@
 package hr.ht.rnd.wifiadmin.application.service;
 
-import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationPersistence;
+import hr.ht.rnd.wifiadmin.application.inbound.WifiPersistence;
 import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationRepository;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 
@@ -9,12 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
-/**
- * Application service coordinating
- * Wi-Fi configuration persistence.
- */
 @Service
-class WifiPersistenceService implements WifiConfigurationPersistence {
+class WifiPersistenceService implements WifiPersistence {
 
     private final WifiConfigurationRepository repository;
 

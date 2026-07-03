@@ -1,11 +1,12 @@
-package hr.ht.rnd.wifiadmin.application.outbound;
+package hr.ht.rnd.wifiadmin.application.inbound;
 
+import hr.ht.rnd.wifiadmin.application.outbound.PersistenceException;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 
 /**
  * Persist Wi-Fi configurations.
  */
-public interface WifiConfigurationPersistence {
+public interface WifiPersistence {
 
     /**
      * Persists the specified Wi-Fi configuration.

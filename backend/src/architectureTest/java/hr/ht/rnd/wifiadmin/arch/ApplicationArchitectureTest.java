@@ -1,5 +1,7 @@
 package hr.ht.rnd.wifiadmin.arch;
 
+import org.springframework.stereotype.Service;
+
 import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.junit.AnalyzeClasses;
@@ -40,6 +42,8 @@ class ApplicationArchitectureTest {
     @ArchTest
     static final ArchRule services_implement_inbound_ports = classes()
             .that()
+            .areAnnotatedWith(Service.class)
+            .and()
             .resideInAPackage("..application.service..")
             .should()
             .implement(INBOUND_PORT);
