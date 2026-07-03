@@ -25,8 +25,9 @@ public final class AsyncExceptionHandler implements AsyncUncaughtExceptionHandle
             Method method,
             @Nullable Object... parameters
     ) {
-        log.error("Unhandled exception in async method {}",
-                method,
+        log.error("Unhandled exception in async method '{}.{}'",
+                method.getDeclaringClass().getSimpleName(),
+                method.getName(),
                 exception
         );
     }

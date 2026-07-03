@@ -193,19 +193,27 @@ sequenceDiagram
 
 Authentication and authorization are performed within the application. Access to protected endpoints is restricted to authenticated users with the `ADMIN` role.
 
-## Logging
-
-The application uses SLF4J with Logback to produce structured JSON logs suitable for centralized log aggregation and analysis.
-
-Incoming HTTP requests, outgoing SOAP requests, retry attempts, unexpected exceptions, and synchronization summaries are logged to provide operational visibility. Every request is assigned a unique correlation ID that is propagated throughout the application and included in all related log entries.
-
-Sensitive information, including WiFi passwords, user passwords, JWTs, and authorization headers, is partially obfuscated before being written to the logs to support troubleshooting while preventing disclosure of sensitive data.
-
 ## Observability
 
-The application uses Spring Boot Actuator and Micrometer to expose operational health information and application metrics.
+### Logging
 
-Custom health indicators verify the availability of PostgreSQL and the external SOAP platform. In addition to the standard Spring Boot metrics, the application exposes the following application-specific metrics:
+The application uses SLF4J with Logback to produce **structured application logs** suitable for centralized log aggregation and analysis.
+
+Operational events are logged at the following severity levels:
+
+- **TRACE** – Low-level protocol details, such as SOAP request and response payloads
+- **DEBUG** – Diagnostic information, such as outbound SOAP interactions
+- **INFO** – Successful operations, such as retrieving or updating Wi-Fi configurations
+- **WARN** – Recoverable issues, such as missing resources
+- **ERROR** – Unexpected failures, such as network or platform errors
+
+Log entries include contextual information, such as the operation, CPE identifier, and correlation ID, to support request tracing.
+
+Sensitive information, including Wi-Fi passwords, user passwords, JWTs, and authorization headers, is never written to the logs. Where appropriate, sensitive values are partially obfuscated for troubleshooting.
+
+### Health & Metrics
+
+The application uses custom health indicators to verify the availability of PostgreSQL and the external SOAP platform. Micrometer is used to expose standard Spring Boot metrics together with the following application-specific metrics:
 
 - SOAP request latency
 - Retry count

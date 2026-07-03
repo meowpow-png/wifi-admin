@@ -6,6 +6,9 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +30,7 @@ import java.util.Arrays;
  */
 final class XmlNormalizingInterceptor extends AbstractPhaseInterceptor<Message> {
 
+    private static final Logger log = LoggerFactory.getLogger(XmlNormalizingInterceptor.class);
     private static final byte[] XML_PREFIX = "<?xml".getBytes(StandardCharsets.US_ASCII);
 
     XmlNormalizingInterceptor() {
@@ -47,6 +51,7 @@ final class XmlNormalizingInterceptor extends AbstractPhaseInterceptor<Message> 
             int offset = findXmlDeclaration(bytes);
 
             if (offset > 0) {
+                log.debug("Normalized inbound SOAP response");
                 bytes = Arrays.copyOfRange(bytes, offset, bytes.length);
             }
             message.setContent(InputStream.class, new ByteArrayInputStream(bytes));

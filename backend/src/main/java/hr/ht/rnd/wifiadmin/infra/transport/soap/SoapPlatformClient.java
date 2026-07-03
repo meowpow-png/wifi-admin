@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 
 import jakarta.xml.ws.WebServiceException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.ConnectException;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -23,6 +26,8 @@ import java.util.function.Supplier;
  */
 @Component
 final class SoapPlatformClient implements PlatformClient {
+
+    private static final Logger log = LoggerFactory.getLogger(SoapPlatformClient.class);
 
     private final WifiPlatformPortType platformPort;
 
@@ -44,6 +49,9 @@ final class SoapPlatformClient implements PlatformClient {
         }
         catch (SoapFaultException e) {
             if (e.code() == SoapFaultCode.NOT_FOUND) {
+                log.debug("SOAP platform reported CPE '{}' was not found",
+                        cpeId
+                );
                 throw new CpeNotFoundException(cpeId, e);
             }
             throw e;
