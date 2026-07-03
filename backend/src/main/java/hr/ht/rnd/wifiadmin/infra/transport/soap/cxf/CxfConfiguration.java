@@ -13,12 +13,12 @@ import org.apache.cxf.logging.FaultListener;
 public class CxfConfiguration {
 
     @Bean
-    Bus cxfBus(CxfProperties properties) {
+    Bus cxfBus(CxfProperties properties, CxfFaultLoggingPolicy policy) {
         var bus = BusFactory.getDefaultBus();
 
         bus.setProperty(
                 FaultListener.class.getName(),
-                new CxfFaultListener(properties::logFaults)
+                new CxfFaultListener(properties.logFaults(), policy)
         );
         return bus;
     }

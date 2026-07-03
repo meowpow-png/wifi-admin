@@ -1,5 +1,7 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap;
 
+import hr.ht.rnd.wifiadmin.infra.transport.soap.cxf.CxfFaultLoggingPolicy;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapCxfFaultLoggingPolicy;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.logging.SoapRequestLoggingInterceptor;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.logging.SoapResponseLoggingInterceptor;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiPlatformPortType;
@@ -56,5 +58,10 @@ public class PlatformConfiguration {
                 properties.soapEndpoint()
         );
         return port;
+    }
+
+    @Bean
+    CxfFaultLoggingPolicy soapCxfFaultLoggingPolicy() {
+        return new SoapCxfFaultLoggingPolicy();
     }
 }
