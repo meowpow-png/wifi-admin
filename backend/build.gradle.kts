@@ -1,10 +1,18 @@
 @file:Suppress("UnstableApiUsage")
 
+buildscript {
+    dependencies {
+        classpath(libs.postgresql)
+        classpath(libs.flyway.database.postgresql)
+    }
+}
+
 plugins {
     java
     id("jvm-test-suite")
     id("org.springframework.boot") version "4.0.6"
     id("io.spring.dependency-management") version "1.1.7"
+    id("org.flywaydb.flyway") version "12.8.1"
 }
 
 group = "hr.ht.rnd"
@@ -72,8 +80,13 @@ val cxfCodegen = configurations.create("cxfCodegen")
 dependencies {
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.validation)
+    implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.cxf.spring.boot.starter.jaxws)
     implementation(libs.springdoc.openapi.starter.webmvc.ui)
+    implementation(libs.spring.boot.starter.flyway)
+
+    runtimeOnly(libs.flyway.postgresql)
+    runtimeOnly(libs.postgresql)
 
     cxfCodegen(libs.cxf.tools.wsdlto.core)
     cxfCodegen(libs.cxf.tools.wsdlto.frontend.jaxws)
