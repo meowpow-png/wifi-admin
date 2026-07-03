@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="WifiAdminApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+  <configuration default="false" name="wifi-admin-dev" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="wifi-admin-backend.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="hr.ht.rnd.wifiadmin.WifiAdminApplication" />
     <extension name="net.ashald.envfile">
