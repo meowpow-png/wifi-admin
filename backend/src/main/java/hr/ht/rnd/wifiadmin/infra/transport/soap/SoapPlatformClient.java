@@ -8,7 +8,7 @@ import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapFaultCode;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapFaultDecoder;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapFaultException;
-import hr.ht.rnd.wifiadmin.infra.soap.wsdl.*;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.*;
 
 import org.springframework.stereotype.Component;
 

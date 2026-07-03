@@ -3,9 +3,9 @@ package hr.ht.rnd.wifiadmin.infra.transport.soap;
 import hr.ht.rnd.wifiadmin.domain.WifiBand;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.domain.WifiEncryptionType;
-import hr.ht.rnd.wifiadmin.infra.soap.wsdl.EncryptionType;
-import hr.ht.rnd.wifiadmin.infra.soap.wsdl.WifiBandType;
-import hr.ht.rnd.wifiadmin.infra.soap.wsdl.WifiConfigurationType;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.EncryptionType;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiBandType;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiConfigurationType;
 
 /**
  * Maps Wi-Fi configurations between
