@@ -272,6 +272,7 @@ The following synchronization policies are applied:
 - The set of synchronized CPEs is configurable
 - Each CPE is synchronized independently
 - Synchronization failures are logged without interrupting the overall job
+- Local data is removed only after a successful synchronization
 
 Note that synchronization strategy maintains only the current platform state. Historical configuration snapshots are outside the scope of this project.
 

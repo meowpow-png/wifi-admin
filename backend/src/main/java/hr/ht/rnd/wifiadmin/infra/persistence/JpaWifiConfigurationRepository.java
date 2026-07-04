@@ -5,7 +5,11 @@ import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationRepository;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import org.jspecify.annotations.Nullable;
+
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -26,9 +30,24 @@ class JpaWifiConfigurationRepository implements WifiConfigurationRepository {
     }
 
     @Override
-    public void save(WifiConfiguration configuration) {
+    public void save(WifiConfiguration configuration, @Nullable LocalDate lastSynchronized) {
         Objects.requireNonNull(configuration, "configuration must not be null");
-        saveEntity(WifiConfigurationEntityMapper.toEntity(configuration));
+        saveEntity(WifiConfigurationEntityMapper.toEntity(
+                configuration,
+                lastSynchronized
+        ));
+    }
+
+    @Override
+    @Transactional
+    public void deleteOlderThan(LocalDate lastSynchronized) {
+        Objects.requireNonNull(lastSynchronized, "lastSynchronized must not be null");
+        try {
+            repository.deleteOlderThan(lastSynchronized);
+        }
+        catch (RuntimeException e) {
+            throw new PersistenceException(e);
+        }
     }
 
     private Optional<WifiConfigurationEntity> findEntityById(String cpeId) {

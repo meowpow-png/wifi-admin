@@ -78,6 +78,8 @@ Retrieved configurations are served from the local database when available and f
 
 ## Synchronization
 
+### Execution
+
 Synchronization is implemented using Spring Scheduling with a configurable execution schedule and set of synchronized devices. Platform configurations are retrieved sequentially and published as application events. Persistence and other follow-up processing execute asynchronously, allowing the scheduler to continue retrieving the next configuration without waiting for local processing to complete.
 
 This event-driven approach provides a natural extension point for additional processing, such as metrics collection, audit logging, or notifications.
@@ -108,8 +110,29 @@ sequenceDiagram
     end
 ```
 
-Platform requests are intentionally performed one at a time to keep synchronization predictable and avoid making assumptions about the external platform's ability to handle concurrent requests. If higher synchronization throughput is ever required, concurrent retrieval can be introduced later without changing the overall workflow.  
-  
+Platform requests are intentionally performed one at a time to keep synchronization predictable and avoid making assumptions about the external platform's ability to handle concurrent requests. If higher synchronization throughput is ever required, concurrent retrieval can be introduced later without changing the overall workflow.
+
+### Consistency
+
+To prevent stale configurations from being removed after a partially completed synchronization, synchronized configurations are tracked until all persistence operations complete successfully. Only then are configurations missing from the current synchronization removed from the local database.
+
+```mermaid
+flowchart TD
+    A[Start synchronization] --> B[Track synchronization progress]
+
+    B --> C[Retrieve next configuration]
+    C --> D[Persist configuration]
+    D --> E[Mark configuration as completed]
+
+    E --> F{All configurations persisted?}
+
+    F -- No --> C
+    F -- Yes --> G[Remove stale configurations]
+    G --> H[Synchronization completed]
+```
+
+### Observability
+
 Synchronization activity is instrumented through Micrometer metrics and structured logging, enabling synchronization duration, success and failure counts, persistence latency, and retry activity to be monitored in production.
 
 ## Configuration

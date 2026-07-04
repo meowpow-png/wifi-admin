@@ -6,6 +6,9 @@ import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 
 import org.springframework.stereotype.Service;
 
+import org.jspecify.annotations.Nullable;
+
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Service
@@ -19,8 +22,9 @@ class ConfigurationPersistenceService implements WifiConfigurationPersistence {
     }
 
     @Override
-    public void persist(WifiConfiguration configuration) {
+    public void persist(WifiConfiguration configuration, @Nullable LocalDate lastSynchronized) {
         Objects.requireNonNull(configuration, "configuration must not be null");
-        repository.save(configuration);
+
+        repository.save(configuration, lastSynchronized);
     }
 }

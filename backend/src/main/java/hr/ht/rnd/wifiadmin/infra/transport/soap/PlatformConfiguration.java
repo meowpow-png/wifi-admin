@@ -10,6 +10,7 @@ import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiPlatformService;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxb.JAXBDataBinding;
@@ -19,6 +20,7 @@ import jakarta.xml.ws.BindingProvider;
 import java.util.Map;
 
 @Configuration
+@EnableScheduling
 @EnableConfigurationProperties(PlatformProperties.class)
 public class PlatformConfiguration {
 
@@ -63,5 +65,15 @@ public class PlatformConfiguration {
     @Bean
     CxfFaultLoggingPolicy soapCxfFaultLoggingPolicy() {
         return new SoapCxfFaultLoggingPolicy();
+    }
+
+    @Bean
+    String platformSyncCronExpression(PlatformProperties properties) {
+        var schedule = properties.syncSchedule();
+
+        return "0 %d %d * * *".formatted(
+                schedule.getMinute(),
+                schedule.getHour()
+        );
     }
 }

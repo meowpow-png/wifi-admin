@@ -50,8 +50,10 @@ public class PlatformAdministrationService implements PlatformAdministration {
             log.debug("Wi-Fi configuration for '{}' not found", cpeId);
 
             var configuration = client.retrieveConfiguration(cpeId);
-            events.publish(new PlatformConfigurationRetrievedEvent(configuration));
-
+            events.publish(new PlatformConfigurationRetrievedEvent(
+                    configuration,
+                    null
+            ));
             return configuration;
         });
     }
