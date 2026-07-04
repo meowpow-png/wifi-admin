@@ -6,6 +6,7 @@
       <option name="environmentVariables" />
     </selectedOptions>
     <option name="SPRING_BOOT_MAIN_CLASS" value="hr.ht.rnd.wifiadmin.WifiAdminApplication" />
+    <option name="VM_PARAMETERS" value="-Duser.timezone=Europe/Zagreb" />
     <extension name="net.ashald.envfile">
       <option name="IS_ENABLED" value="true" />
       <option name="IS_SUBST" value="false" />
