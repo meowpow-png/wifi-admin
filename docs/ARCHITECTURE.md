@@ -246,18 +246,21 @@ Related architectural decisions:
 
 ## Persistence Strategy
 
-WiFi configurations are stored in a database to reduce platform dependency, improve response times, and provide durable persistence across application restarts. The database serves read requests, while the external platform remains the authoritative source during synchronization.
+WiFi configurations are stored in a database to reduce platform dependency, improve response times, and provide durable persistence across application restarts. The database serves read requests, while the external platform remains the authoritative source of truth.
 
 The following persistence policies are applied:
 
 - WiFi configurations are read from the database by default
 - Missing configurations are retrieved from the platform and stored in the database
 - Configuration changes are persisted after successful platform updates
+- Successful platform interactions publish events that drive persistence and other follow-up processing
 - Database failures during retrieval fall back to the external platform when possible
 
 Related architectural decisions:
 
 - [ADR-001: Use a Local Database](adr/001-adr-local-database.md)
+- [ADR-002: Synchronize Platform Data](adr/002-adr-synchronize-platform-data.md)
+- [ADR-006: Model Platform Interactions as Application Events](adr/006-platform-interactions-as-application-events.md)
 
 ## Synchronization Strategy
 

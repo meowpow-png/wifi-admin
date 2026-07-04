@@ -74,19 +74,19 @@ WiFi configurations are persisted in PostgreSQL using Spring Data JPA. Database 
 
 The application maintains a local replica of the WiFi configurations stored in the external platform. Repository operations are encapsulated behind application ports, allowing the persistence implementation to remain isolated from the application layer.
 
-Retrieved configurations are served from the local database when available and fall back to the external platform on cache misses or repository failures. Configuration updates are persisted **asynchronously** after successful platform updates, ensuring the external platform remains the authoritative source of truth while preventing local persistence from delaying client responses.
+Retrieved configurations are served from the local database when available and fall back to the external platform on cache misses or repository failures. Successful platform interactions publish application events that are handled asynchronously to persist retrieved or updated configurations to the local database. This keeps orchestration services focused on communicating with the external platform while allowing persistence and other follow-up processing to execute independently without delaying client responses.
 
 ## Synchronization
 
-Synchronization is implemented using Spring Scheduling with a configurable execution schedule and set of synchronized devices. Retrieved platform configurations are published as application events, allowing persistence to execute asynchronously and independently of the synchronization workflow.
+Synchronization is implemented using Spring Scheduling with a configurable execution schedule and set of synchronized devices. Platform configurations are retrieved sequentially and published as application events. Persistence and other follow-up processing execute asynchronously, allowing the scheduler to continue retrieving the next configuration without waiting for local processing to complete.
 
-This event-driven approach separates configuration retrieval from persistence while providing a natural extension point for additional synchronization processing, such as metrics collection, audit logging, or notifications.
+This event-driven approach provides a natural extension point for additional processing, such as metrics collection, audit logging, or notifications.
 
 ```mermaid
 sequenceDiagram
     participant Scheduler
     participant Platform
-    participant Publisher as ApplicationEventPublisher
+    participant Publisher as EventPublisher
     participant Listener
     participant Database
 
@@ -94,16 +94,23 @@ sequenceDiagram
         Scheduler->>Platform: Retrieve configuration
         Platform-->>Scheduler: WiFi configuration
 
-        Scheduler-)Publisher: publish(ConfigurationSynchronizedEvent)
+        Scheduler-)Publisher: publish(Event)
+        Scheduler->>Platform: Retrieve next configuration
 
-        Publisher-)Listener: ConfigurationSynchronizedEvent
-        activate Listener
-        Listener->>Database: Persist configuration
-        deactivate Listener
+        par Async persistence
+            Publisher-)Listener: Event
+            activate Listener
+            Listener->>Database: Persist configuration
+            deactivate Listener
+        and Next platform request
+            Platform-->>Scheduler: Next WiFi configuration
+        end
     end
 ```
 
-Synchronization activity is instrumented through Micrometer metrics and structured logging, enabling synchronization duration, success and failure counts, and retry activity to be monitored in production.
+Platform requests are intentionally performed one at a time to keep synchronization predictable and avoid making assumptions about the external platform's ability to handle concurrent requests. If higher synchronization throughput is ever required, concurrent retrieval can be introduced later without changing the overall workflow.  
+  
+Synchronization activity is instrumented through Micrometer metrics and structured logging, enabling synchronization duration, success and failure counts, persistence latency, and retry activity to be monitored in production.
 
 ## Configuration
 
