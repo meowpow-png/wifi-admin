@@ -8,7 +8,7 @@ import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.logging.FaultListener;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(CxfProperties.class)
 public class CxfConfiguration {
 

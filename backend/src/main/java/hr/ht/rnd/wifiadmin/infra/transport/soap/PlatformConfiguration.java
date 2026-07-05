@@ -19,8 +19,8 @@ import jakarta.xml.ws.BindingProvider;
 
 import java.util.Map;
 
-@Configuration
 @EnableScheduling
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(PlatformProperties.class)
 public class PlatformConfiguration {
 

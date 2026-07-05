@@ -8,7 +8,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 @EnableAsync
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class AsyncConfiguration {
 
     @Bean
