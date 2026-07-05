@@ -1,7 +1,6 @@
 set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
 import 'just/api.just'
-import 'just/docker.just'
 
 platform-url := "http://localhost:8080/platform"
 
