@@ -17,25 +17,29 @@ import java.util.Optional;
 class JpaWifiConfigurationRepository implements WifiConfigurationRepository {
 
     private final WifiConfigurationJpaRepository repository;
+    private final WifiConfigurationEntityMapper mapper;
 
-    JpaWifiConfigurationRepository(WifiConfigurationJpaRepository repository) {
+    JpaWifiConfigurationRepository(
+            WifiConfigurationJpaRepository repository,
+            WifiConfigurationEntityMapper mapper
+    ) {
         Objects.requireNonNull(repository, "repository must not be null");
+        Objects.requireNonNull(mapper, "mapper must not be null");
+
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
     public Optional<WifiConfiguration> findByCpeId(String cpeId) {
         Objects.requireNonNull(cpeId, "cpeId must not be null");
-        return findEntityById(cpeId).map(WifiConfigurationEntityMapper::toDomain);
+        return findEntityById(cpeId).map(mapper::toDomain);
     }
 
     @Override
     public void save(WifiConfiguration configuration, @Nullable LocalDate lastSynchronized) {
         Objects.requireNonNull(configuration, "configuration must not be null");
-        saveEntity(WifiConfigurationEntityMapper.toEntity(
-                configuration,
-                lastSynchronized
-        ));
+        saveEntity(mapper.toEntity(configuration, lastSynchronized));
     }
 
     @Override

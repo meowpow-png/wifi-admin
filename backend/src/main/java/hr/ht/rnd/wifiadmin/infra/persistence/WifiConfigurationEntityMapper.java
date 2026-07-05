@@ -1,6 +1,9 @@
 package hr.ht.rnd.wifiadmin.infra.persistence;
 
+import hr.ht.rnd.wifiadmin.application.outbound.PasswordEncryptor;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
+
+import org.springframework.stereotype.Component;
 
 import org.jspecify.annotations.Nullable;
 
@@ -11,9 +14,15 @@ import java.util.Objects;
  * Maps Wi-Fi configurations between
  * domain and persistence models.
  */
+@Component
 final class WifiConfigurationEntityMapper {
 
-    private WifiConfigurationEntityMapper() {}
+    private final PasswordEncryptor encryptor;
+
+    WifiConfigurationEntityMapper(PasswordEncryptor encryptor) {
+        Objects.requireNonNull(encryptor, "encryptor must not be null");
+        this.encryptor = encryptor;
+    }
 
     /**
      * Converts a Wi-Fi configuration
@@ -23,18 +32,23 @@ final class WifiConfigurationEntityMapper {
      * @param lastSynchronized the synchronization date, or {@code null} if unknown
      *
      * @throws NullPointerException if {@code configuration} is {@code null}
+     * @throws IllegalStateException if the password cannot be encrypted
      */
-    static WifiConfigurationEntity toEntity(
+    WifiConfigurationEntity toEntity(
             WifiConfiguration configuration,
             @Nullable LocalDate lastSynchronized
     ) {
         Objects.requireNonNull(configuration, "configuration must not be null");
+
+        var password = configuration.password();
+        var encryptedPassword = password == null ? null : encryptor.encrypt(password);
+
         return new WifiConfigurationEntity(
                 configuration.cpeId(),
                 configuration.wifiBand(),
                 configuration.ssid(),
                 configuration.encryptionType(),
-                configuration.password(),
+                encryptedPassword,
                 lastSynchronized
         );
     }
@@ -45,16 +59,21 @@ final class WifiConfigurationEntityMapper {
      * @param entity the persistence entity to convert
      *
      * @throws NullPointerException if {@code entity} is {@code null}
-     * @throws IllegalArgumentException if {@code entity} contains invalid data
+     * @throws IllegalArgumentException if {@code entity}
+     * contains invalid data or the password cannot be decrypted
      */
-    static WifiConfiguration toDomain(WifiConfigurationEntity entity) {
+    WifiConfiguration toDomain(WifiConfigurationEntity entity) {
         Objects.requireNonNull(entity, "entity must not be null");
+
+        var password = entity.getPassword();
+        var decryptedPassword = password == null ? null : encryptor.decrypt(password);
+
         return new WifiConfiguration(
                 entity.getCpeId(),
                 entity.getWifiBand(),
                 entity.getSsid(),
                 entity.getEncryptionType(),
-                entity.getPassword()
+                decryptedPassword
         );
     }
 }

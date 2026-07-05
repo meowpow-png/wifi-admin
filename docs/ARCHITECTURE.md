@@ -238,7 +238,24 @@ Application configuration is externalized to support environment-specific deploy
 
 ### Security
 
-The application provides authentication and authorization capabilities. Sensitive information, such as WiFi passwords, is excluded from logs and error responses.
+The application protects sensitive information throughout its lifecycle by minimizing exposure, encrypting secrets at rest, and externalizing cryptographic material from the application.
+
+The security architecture addresses the following threats:
+
+- Unauthorized access to application endpoints
+- Disclosure of WiFi passwords through application logs or error responses
+- Disclosure of WiFi passwords through database access or backups
+- Disclosure of cryptographic keys through source control
+
+The following security principles are applied:
+
+- Authentication and authorization protect application endpoints
+- Sensitive information is excluded from logs, error responses, and diagnostic output
+- WiFi passwords are encrypted before persistence and decrypted only when required
+- Cryptographic operations are isolated within the infrastructure layer
+- Cryptographic keys are externalized and never stored in source control
+
+Implementation details are documented in [SECURITY.md](SECURITY.md).
 
 Related architectural decisions:
 
