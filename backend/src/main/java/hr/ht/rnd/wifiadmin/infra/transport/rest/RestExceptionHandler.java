@@ -30,7 +30,7 @@ class RestExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .orElse("Request validation failed");
 
-        log.warn("Request validation failed: {}", message);
+        log.debug("Request validation failed: {}", message);
 
         return new ErrorBodyDto(message, ErrorCode.VALIDATION_FAILED);
     }
@@ -39,7 +39,7 @@ class RestExceptionHandler {
     @ExceptionHandler(InvalidRequestException.class)
     ErrorBodyDto handleInvalidRequest(InvalidRequestException exception) {
         var message = exception.getMessage();
-        log.warn("Invalid request: {}", message);
+        log.debug("Invalid request: {}", message);
 
         return new ErrorBodyDto(message, ErrorCode.VALIDATION_FAILED);
     }
@@ -47,7 +47,7 @@ class RestExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     ErrorBodyDto handleRequestParsingFailure(HttpMessageNotReadableException ignored) {
-        log.warn("Failed to parse request body", ignored);
+        log.debug("Failed to parse request body", ignored);
 
         return new ErrorBodyDto(
                 "Invalid request body",
