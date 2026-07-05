@@ -1,0 +1,59 @@
+package hr.ht.rnd.wifiadmin.infra.security;
+
+import hr.ht.rnd.wifiadmin.infra.transport.rest.ErrorBodyDto;
+import hr.ht.rnd.wifiadmin.infra.transport.rest.ErrorCode;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import tools.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.util.Objects;
+
+@Component
+final class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    private static final Logger log = LoggerFactory.getLogger(ApiAuthenticationEntryPoint.class);
+
+    private final ObjectMapper objectMapper;
+
+    ApiAuthenticationEntryPoint(ObjectMapper objectMapper) {
+        Objects.requireNonNull(objectMapper, "objectMapper must not be null");
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public void commence(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AuthenticationException exception
+    ) throws IOException {
+        log.debug("Authentication failed for {} {} from {} ({})",
+                request.getMethod(),
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                request.getHeader(HttpHeaders.USER_AGENT)
+        );
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+        var error = new ErrorBodyDto(
+                "Authentication required",
+                ErrorCode.AUTHENTICATION_FAILED
+        );
+        objectMapper.writeValue(
+                response.getOutputStream(),
+                error
+        );
+    }
+}

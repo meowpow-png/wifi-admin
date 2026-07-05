@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDate;
 
 /**
- * Spring Data repository for Wi-Fi configurations.
+ * Spring data repository for Wi-Fi configurations.
  */
 interface WifiConfigurationJpaRepository extends JpaRepository<WifiConfigurationEntity, String> {
 

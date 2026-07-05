@@ -88,6 +88,7 @@ val cxfCodegen = configurations.create("cxfCodegen")
 dependencies {
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.validation)
+    implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.cxf.spring.boot.starter.jaxws)
     implementation(libs.springdoc.openapi.starter.webmvc.ui)
@@ -100,6 +101,11 @@ dependencies {
     cxfCodegen(libs.cxf.tools.wsdlto.frontend.jaxws)
     cxfCodegen(libs.cxf.tools.wsdlto.databinding.jaxb)
     cxfCodegen(libs.slf4j.simple)
+
+    implementation(platform(libs.jjwt.bom))
+    implementation(libs.jjwt.api)
+    runtimeOnly(libs.jjwt.impl)
+    runtimeOnly(libs.jjwt.jackson)
 
     testImplementation(libs.spring.boot.starter.test)
 }

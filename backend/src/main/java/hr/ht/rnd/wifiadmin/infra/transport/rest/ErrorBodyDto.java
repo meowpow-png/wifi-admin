@@ -8,7 +8,7 @@ import java.util.Objects;
  * @param message the human-readable error description
  * @param code the application-specific error identifier
  */
-record ErrorBodyDto(String message, String code) {
+public record ErrorBodyDto(String message, String code) {
 
     /**
      * Creates a REST error response.
@@ -18,7 +18,7 @@ record ErrorBodyDto(String message, String code) {
      *
      * @throws NullPointerException if any argument is {@code null}
      */
-    ErrorBodyDto {
+    public ErrorBodyDto {
         Objects.requireNonNull(message, "message must not be null");
         Objects.requireNonNull(code, "code must not be null");
     }
@@ -31,7 +31,7 @@ record ErrorBodyDto(String message, String code) {
      *
      * @throws NullPointerException if any argument is {@code null}
      */
-    ErrorBodyDto(String message, ErrorCode code) {
+    public ErrorBodyDto(String message, ErrorCode code) {
         this(message, code.name());
     }
 }

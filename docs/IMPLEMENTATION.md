@@ -204,24 +204,16 @@ All error responses use the common `ErrorBody` model defined by the OpenAPI spec
 
 ## Security
 
-The application secures the REST API using Spring Security with JWT-based authentication. Clients authenticate by submitting their credentials to the authentication endpoint. Upon successful authentication, the application issues a signed JWT, which clients present in the `Authorization` header when accessing protected endpoints.
+The application secures administrator access through stateless authentication and protects sensitive data using appropriate cryptographic techniques. Security measures include:
 
-```mermaid
-sequenceDiagram
-    actor Client
-    participant API
-    participant Authentication
-    participant JWT
+- JWT-based authentication and authorization
+- BCrypt hashing of administrator passwords
+- AES encryption of persisted WiFi passwords
+- Externalized cryptographic keys and security configuration
+- Centralized authentication and exception handling
+- Exclusion of sensitive information from logs and error responses
 
-    Client->>API: POST /auth/login
-    API->>Authentication: Authenticate credentials
-    Authentication-->>API: Success
-    API->>JWT: Generate token
-    JWT-->>API: JWT
-    API-->>Client: 200 OK + JWT
-```
-
-Authentication and authorization are performed within the application. Access to protected endpoints is restricted to authenticated users with the `ADMIN` role.
+See [SECURITY.md](SECURITY.md) for more implementation details.
 
 ## Observability
 

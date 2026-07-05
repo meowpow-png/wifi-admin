@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import java.util.Objects;
 
 /**
  * REST controller exposing Wi-Fi management endpoints.
  */
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 public final class WifiController {
 
     private final PlatformAdministration admin;
