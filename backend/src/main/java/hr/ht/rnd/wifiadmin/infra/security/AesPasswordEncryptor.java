@@ -1,7 +1,7 @@
 package hr.ht.rnd.wifiadmin.infra.security;
 
 import hr.ht.rnd.wifiadmin.application.outbound.PasswordEncryptor;
-import hr.ht.rnd.wifiadmin.domain.WifiPassword;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiPassword;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;

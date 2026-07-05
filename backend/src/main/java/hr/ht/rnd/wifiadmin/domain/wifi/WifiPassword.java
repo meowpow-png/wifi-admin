@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.domain;
+package hr.ht.rnd.wifiadmin.domain.wifi;
 
 import java.util.Objects;
 

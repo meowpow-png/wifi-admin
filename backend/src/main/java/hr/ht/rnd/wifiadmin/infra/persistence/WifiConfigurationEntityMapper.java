@@ -1,7 +1,7 @@
 package hr.ht.rnd.wifiadmin.infra.persistence;
 
 import hr.ht.rnd.wifiadmin.application.outbound.PasswordEncryptor;
-import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 
 import org.springframework.stereotype.Component;
 

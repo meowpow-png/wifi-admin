@@ -1,6 +1,6 @@
 package hr.ht.rnd.wifiadmin.application.event;
 
-import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 
 import org.jspecify.annotations.Nullable;
 

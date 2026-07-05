@@ -2,7 +2,7 @@ package hr.ht.rnd.wifiadmin.application.service;
 
 import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationPersistence;
 import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationRepository;
-import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package hr.ht.rnd.wifiadmin.application.inbound;
 
-import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 
 /**
  * Exposes platform administration operations.

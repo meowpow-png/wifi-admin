@@ -1,9 +1,9 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap;
 
-import hr.ht.rnd.wifiadmin.domain.WifiBand;
-import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
-import hr.ht.rnd.wifiadmin.domain.WifiEncryptionType;
-import hr.ht.rnd.wifiadmin.domain.WifiPassword;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiBand;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiEncryptionType;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiPassword;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.EncryptionType;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiBandType;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiConfigurationType;

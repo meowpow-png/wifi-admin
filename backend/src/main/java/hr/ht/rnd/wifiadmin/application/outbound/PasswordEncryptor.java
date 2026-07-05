@@ -1,6 +1,6 @@
 package hr.ht.rnd.wifiadmin.application.outbound;
 
-import hr.ht.rnd.wifiadmin.domain.WifiPassword;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiPassword;
 
 /**
  * Encrypts and decrypts Wi-Fi passwords.

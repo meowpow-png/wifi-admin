@@ -7,7 +7,7 @@ import hr.ht.rnd.wifiadmin.application.inbound.PlatformAdministration;
 import hr.ht.rnd.wifiadmin.application.outbound.EventPublisher;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
 import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationRepository;
-import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,7 @@ package hr.ht.rnd.wifiadmin.infra.persistence;
 
 import hr.ht.rnd.wifiadmin.application.exception.PersistenceException;
 import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationRepository;
-import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
