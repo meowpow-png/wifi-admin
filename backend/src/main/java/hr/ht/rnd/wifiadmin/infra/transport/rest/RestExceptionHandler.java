@@ -3,7 +3,6 @@ package hr.ht.rnd.wifiadmin.infra.transport.rest;
 import hr.ht.rnd.wifiadmin.application.exception.*;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
+
 @RestControllerAdvice
 class RestExceptionHandler {
 
@@ -27,12 +28,10 @@ class RestExceptionHandler {
             AuthenticationException ignored,
             HttpServletRequest request
     ) {
-        log.debug("Authentication failed for {} {} from {} ({})",
-                request.getMethod(),
-                request.getRequestURI(),
-                request.getRemoteAddr(),
-                request.getHeader(HttpHeaders.USER_AGENT)
-        );
+        debug(log).withEvent(Event.AUTHENTICATION_FAILED)
+                .withRequest(request)
+                .log();
+
         return new ErrorBodyDto(
                 "Authentication failed",
                 ErrorCode.AUTHENTICATION_FAILED
@@ -41,7 +40,10 @@ class RestExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    ErrorBodyDto handleValidationFailure(MethodArgumentNotValidException exception) {
+    ErrorBodyDto handleValidationFailure(
+            MethodArgumentNotValidException exception,
+            HttpServletRequest request
+    ) {
         var message = exception.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -49,24 +51,39 @@ class RestExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .orElse("Request validation failed");
 
-        log.debug("Request validation failed: {}", message);
+        debug(log).withEvent(Event.REQUEST_VALIDATION_FAILED)
+                .withField(Field.VALIDATION_MESSAGE, message)
+                .withRequest(request)
+                .log();
 
         return new ErrorBodyDto(message, ErrorCode.VALIDATION_FAILED);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
-    ErrorBodyDto handleInvalidRequest(InvalidRequestException exception) {
+    ErrorBodyDto handleInvalidRequest(
+            InvalidRequestException exception,
+            HttpServletRequest request
+    ) {
         var message = exception.getMessage();
-        log.debug("Invalid request: {}", message);
+        debug(log).withEvent(Event.INVALID_REQUEST)
+                .withField(Field.VALIDATION_MESSAGE, message)
+                .withRequest(request)
+                .log();
 
         return new ErrorBodyDto(message, ErrorCode.VALIDATION_FAILED);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    ErrorBodyDto handleRequestParsingFailure(HttpMessageNotReadableException ignored) {
-        log.debug("Failed to parse request body", ignored);
+    ErrorBodyDto handleRequestParsingFailure(
+            HttpMessageNotReadableException exception,
+            HttpServletRequest request
+    ) {
+        debug(log).withEvent(Event.REQUEST_BODY_PARSE_FAILED)
+                .withRequest(request)
+                .withCause(exception)
+                .log();
 
         return new ErrorBodyDto(
                 "Invalid request body",
@@ -76,7 +93,15 @@ class RestExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CpeNotFoundException.class)
-    ErrorBodyDto handleCpeNotFound(CpeNotFoundException ignored) {
+    ErrorBodyDto handleCpeNotFound(
+            CpeNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        debug(log).withEvent(Event.CPE_NOT_FOUND)
+                .withField(Field.CPE_ID, exception.cpeId())
+                .withRequest(request)
+                .log();
+
         return new ErrorBodyDto(
                 "CPE not found",
                 ErrorCode.CPE_NOT_FOUND
@@ -85,8 +110,10 @@ class RestExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     @ExceptionHandler(PlatformResponseException.class)
-    ErrorBodyDto handleInvalidPlatformResponse(PlatformResponseException ignored) {
-        log.error("SOAP platform returned an invalid response", ignored);
+    ErrorBodyDto handleInvalidPlatformResponse(PlatformResponseException exception) {
+        error(log).withEvent(Event.PLATFORM_RESPONSE_INVALID)
+                .withCause(exception)
+                .log();
 
         return new ErrorBodyDto(
                 "Invalid platform response",
@@ -96,8 +123,10 @@ class RestExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     @ExceptionHandler(PlatformTransportException.class)
-    ErrorBodyDto handlePlatformTransportFailure(PlatformTransportException ignored) {
-        log.error("SOAP platform communication failed", ignored);
+    ErrorBodyDto handlePlatformTransportFailure(PlatformTransportException exception) {
+        error(log).withEvent(Event.PLATFORM_COMMUNICATION_FAILED)
+                .withCause(exception)
+                .log();
 
         return new ErrorBodyDto(
                 "Platform communication failed",
@@ -107,8 +136,10 @@ class RestExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(AccountNotFoundException.class)
-    ErrorBodyDto handleAccountNotFound(AccountNotFoundException ignored) {
-        log.error("Administrator account not found", ignored);
+    ErrorBodyDto handleAccountNotFound(AccountNotFoundException exception) {
+        error(log).withEvent(Event.ADMINISTRATOR_ACCOUNT_NOT_FOUND)
+                .withCause(exception)
+                .log();
 
         return new ErrorBodyDto(
                 "Internal server error",
@@ -118,8 +149,14 @@ class RestExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    ErrorBodyDto handleUnexpectedException(Exception ignored) {
-        log.error("Unhandled exception", ignored);
+    ErrorBodyDto handleUnexpectedException(
+            Exception exception,
+            HttpServletRequest request
+    ) {
+        error(log).withEvent(Event.UNHANDLED_EXCEPTION)
+                .withRequest(request)
+                .withCause(exception)
+                .log();
 
         return new ErrorBodyDto(
                 "Internal server error",

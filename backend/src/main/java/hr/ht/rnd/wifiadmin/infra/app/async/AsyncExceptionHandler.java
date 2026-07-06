@@ -10,6 +10,9 @@ import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.Event;
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.error;
+
 /**
  * Handles uncaught exceptions
  * thrown by asynchronous methods.
@@ -25,10 +28,10 @@ public final class AsyncExceptionHandler implements AsyncUncaughtExceptionHandle
             Method method,
             @Nullable Object... parameters
     ) {
-        log.error("Unhandled exception in async method '{}.{}'",
-                method.getDeclaringClass().getSimpleName(),
-                method.getName(),
-                exception
-        );
+        error(log).withEvent(Event.UNHANDLED_ASYNC_EXCEPTION)
+                .withField("class", method.getDeclaringClass().getSimpleName())
+                .withField("method", method.getName())
+                .withCause(exception)
+                .log();
     }
 }

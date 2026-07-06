@@ -1,6 +1,5 @@
 package hr.ht.rnd.wifiadmin.infra.app;
 
-import hr.ht.rnd.wifiadmin.common.DateTimeFormats;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.PlatformProperties;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.sync.PlatformSynchronizer;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.sync.SynchronizationSchedule;
@@ -14,6 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.time.ZoneId;
 import java.util.Objects;
+
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
 
 @Component
 final class ApplicationBootstrap {
@@ -40,14 +41,17 @@ final class ApplicationBootstrap {
 
     @EventListener(ApplicationReadyEvent.class)
     void bootstrap() {
-        log.info("Starting application bootstrap");
-        log.info("Application time zone: {}", ZoneId.systemDefault());
+        info(log).withEvent(Event.APPLICATION_BOOTSTRAP_STARTED)
+                .withField(Field.TIME_ZONE, ZoneId.systemDefault())
+                .log();
+
         if (properties.syncOnStartup()) {
             synchronizer.synchronize();
         }
-        log.info("Next platform synchronization scheduled at {}",
-                DateTimeFormats.LONG.format(schedule.nextExecution())
-        );
-        log.info("Application bootstrap completed");
+        info(log).withEvent(Event.NEXT_PLATFORM_SYNCHRONIZATION_SCHEDULED)
+                .withField(Field.DATE, schedule.nextExecution())
+                .log();
+
+        info(log).withEvent(Event.APPLICATION_BOOTSTRAP_COMPLETED).log();
     }
 }

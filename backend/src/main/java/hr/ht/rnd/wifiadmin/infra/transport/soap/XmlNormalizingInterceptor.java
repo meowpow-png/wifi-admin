@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.debug;
+
 /**
  * Normalizes inbound SOAP responses to improve
  * interoperability with platform implementations
@@ -51,7 +53,7 @@ final class XmlNormalizingInterceptor extends AbstractPhaseInterceptor<Message> 
             int offset = findXmlDeclaration(bytes);
 
             if (offset > 0) {
-                log.debug("Normalized inbound SOAP response");
+                debug(log).withMessage("Normalized inbound SOAP response").log();
                 bytes = Arrays.copyOfRange(bytes, offset, bytes.length);
             }
             message.setContent(InputStream.class, new ByteArrayInputStream(bytes));
