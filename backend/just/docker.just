@@ -1,12 +1,6 @@
 compose_dev := "-f compose.yml -f compose-dev.yml"
 compose_prod := "-f compose.yml -f compose-prod.yml"
 
-# Build the backend and Docker images
-[arg("args", help="Arguments passed to docker compose build")]
-compose-build *args:
-    ./gradlew clean build
-    docker compose build {{args}}
-
 # Run Docker Compose
 [arg("args", help="Arguments passed to docker compose")]
 compose *args:
