@@ -21,3 +21,46 @@ services:
       JAVA_TOOL_OPTIONS: -Duser.timezone=Europe/Zagreb
     ports:
       - "8081:8081"
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    depends_on:
+      alloy:
+        condition: service_started
+    ports:
+      - "3100"
+    volumes:
+      - ./docker/loki.config.yml:/etc/loki/config.yaml:ro,Z
+    command: -config.file=/etc/loki/config.yaml
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    user: root
+    ports:
+      - "12345"
+    security_opt:
+      - label=disable
+    volumes:
+      - ./docker/config.alloy:/etc/alloy/config.alloy:ro,Z
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command:
+      - run
+      - /etc/alloy/config.alloy
+      - --server.http.listen-addr=0.0.0.0:12345
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    depends_on:
+      - loki
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./docker/grafana/dashboards:/etc/grafana/dashboards:ro,Z
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro,Z
+
+volumes:
+  grafana-data:
