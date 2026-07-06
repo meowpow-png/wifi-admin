@@ -37,11 +37,10 @@ final class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(
             HttpServletRequest request,
             HttpServletResponse response,
-            AuthenticationException exception
+            AuthenticationException ignored
     ) throws IOException {
         debug(log).withEvent(Event.AUTHENTICATION_FAILED)
                 .withRequest(request)
-                .withCause(exception)
                 .log();
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
