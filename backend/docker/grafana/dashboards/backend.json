@@ -2,24 +2,70 @@
   "kind": "Dashboard",
   "apiVersion": "dashboard.grafana.app/v1",
   "metadata": {
-    "name": "backend",
+    "name": "xb7tqnr",
     "namespace": "default",
     "labels": {
       "grafana.app/deprecatedInternalID": "2418013728100352"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
-      "grafana.app/folder": "",
       "grafana.app/managedBy": "classic-file-provisioning",
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "WiFi Admin",
-      "grafana.app/saved-from-ui": "Grafana v13.1.0 (b309c9bb3b)",
-      "grafana.app/sourceChecksum": "6cd8c84dfab45db9aaa73629f09dde6d",
-      "grafana.app/sourcePath": "/etc/grafana/dashboards/wifi-admin.json",
-      "grafana.app/sourceTimestamp": "1783339364000",
-      "grafana.app/updatedBy": "user:afrafzqpddiiod",
-      "grafana.app/updatedTimestamp": "2026-07-06T12:08:54Z"
-    }
+      "grafana.app/sourceChecksum": "3e89a835a13bde2f3e33ba3a64486985",
+      "grafana.app/sourcePath": "/etc/grafana/dashboards/backend.json",
+      "grafana.app/sourceTimestamp": "1783430629000"
+    },
+    "managedFields": [
+      {
+        "manager": "grafana",
+        "operation": "Update",
+        "apiVersion": "dashboard.grafana.app/v1",
+        "time": "2026-07-07T13:24:33Z",
+        "fieldsType": "FieldsV1",
+        "fieldsV1": {
+          "f:metadata": {
+            "f:annotations": {
+              ".": {},
+              "f:grafana.app/managedBy": {},
+              "f:grafana.app/managerAllowsEdits": {},
+              "f:grafana.app/managerId": {},
+              "f:grafana.app/sourceChecksum": {},
+              "f:grafana.app/sourcePath": {},
+              "f:grafana.app/sourceTimestamp": {}
+            }
+          },
+          "f:spec": {
+            "f:annotations": {
+              ".": {},
+              "f:list": {}
+            },
+            "f:editable": {},
+            "f:fiscalYearStartMonth": {},
+            "f:graphTooltip": {},
+            "f:id": {},
+            "f:liveNow": {},
+            "f:panels": {},
+            "f:preload": {},
+            "f:refresh": {},
+            "f:schemaVersion": {},
+            "f:time": {
+              ".": {},
+              "f:from": {},
+              "f:to": {}
+            },
+            "f:timepicker": {
+              ".": {},
+              "f:refresh_intervals": {}
+            },
+            "f:timezone": {},
+            "f:title": {},
+            "f:uid": {},
+            "f:version": {}
+          }
+        }
+      }
+    ]
   },
   "spec": {
     "annotations": {
@@ -41,6 +87,7 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
+    "links": [],
     "liveNow": false,
     "panels": [
       {
@@ -49,7 +96,7 @@
           "uid": "loki"
         },
         "gridPos": {
-          "h": 8,
+          "h": 10,
           "w": 12,
           "x": 0,
           "y": 0
@@ -67,7 +114,7 @@
           "fontSize": "small",
           "prettifyLogMessage": true,
           "showControls": false,
-          "showFieldSelector": true,
+          "showFieldSelector": false,
           "showLevel": true,
           "showTime": true,
           "sortOrder": "Descending",
@@ -89,13 +136,157 @@
             "refId": "A"
           }
         ],
-        "title": "Backend",
+        "title": "Server Logs",
+        "type": "logs"
+      },
+      {
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        },
+        "id": 2,
+        "options": {
+          "dedupStrategy": "none",
+          "enableInfiniteScrolling": false,
+          "enableLogDetails": true,
+          "fontSize": "small",
+          "prettifyLogMessage": true,
+          "showControls": false,
+          "showFieldSelector": false,
+          "showLevel": true,
+          "showTime": false,
+          "sortOrder": "Descending",
+          "timestampResolution": "ms",
+          "unwrappedColumns": false,
+          "wrapLogMessage": false
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "loki"
+            },
+            "direction": "backward",
+            "editorMode": "code",
+            "expr": "{service=\"backend\"}",
+            "queryType": "range",
+            "refId": "A"
+          }
+        ],
+        "title": "Container Logs",
+        "type": "logs"
+      },
+      {
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 12,
+          "x": 0,
+          "y": 10
+        },
+        "id": 3,
+        "options": {
+          "dedupStrategy": "none",
+          "displayedFields": [
+            "logger_class",
+            "message"
+          ],
+          "enableInfiniteScrolling": false,
+          "enableLogDetails": true,
+          "fontSize": "small",
+          "prettifyLogMessage": true,
+          "showControls": false,
+          "showFieldSelector": false,
+          "showLevel": true,
+          "showTime": true,
+          "sortOrder": "Descending",
+          "timestampResolution": "ms",
+          "unwrappedColumns": false,
+          "wrapLogMessage": true
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "loki"
+            },
+            "direction": "backward",
+            "editorMode": "code",
+            "expr": "{service=\"backend\"}\n| json\n| logger_name =~ \"^hr\\\\.ht\\\\.rnd\\\\.wifiadmin.*\"",
+            "queryType": "range",
+            "refId": "A"
+          }
+        ],
+        "title": "Application Logs",
+        "type": "logs"
+      },
+      {
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 12,
+          "x": 12,
+          "y": 10
+        },
+        "id": 4,
+        "options": {
+          "dedupStrategy": "none",
+          "displayedFields": [
+            "event",
+            "trace_id"
+          ],
+          "enableInfiniteScrolling": false,
+          "enableLogDetails": true,
+          "fontSize": "small",
+          "prettifyLogMessage": true,
+          "showControls": false,
+          "showFieldSelector": false,
+          "showLevel": true,
+          "showTime": true,
+          "sortOrder": "Descending",
+          "timestampResolution": "ms",
+          "unwrappedColumns": false,
+          "wrapLogMessage": true
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "loki"
+            },
+            "direction": "backward",
+            "editorMode": "code",
+            "expr": "{service=\"backend\"}\n| json\n| event != \"\"",
+            "queryType": "range",
+            "refId": "A"
+          }
+        ],
+        "title": "Event Logs",
         "type": "logs"
       }
     ],
     "preload": false,
     "refresh": "",
     "schemaVersion": 42,
+    "tags": [],
+    "templating": {
+      "list": []
+    },
     "time": {
       "from": "now-6h",
       "to": "now"
@@ -115,6 +306,7 @@
       ]
     },
     "timezone": "Europe/Zagreb",
-    "title": "Backend"
+    "title": "Backend",
+    "weekStart": ""
   }
 }
