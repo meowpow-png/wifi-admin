@@ -49,7 +49,7 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(properties.publicEndpoints().toArray(String[]::new)).permitAll()
-                        .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/favicon.ico").permitAll()
                         .anyRequest().hasRole("ADMIN")
                 )
