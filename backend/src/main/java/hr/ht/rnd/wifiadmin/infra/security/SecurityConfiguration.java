@@ -49,6 +49,7 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(properties.publicEndpoints().toArray(String[]::new)).permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
                         .anyRequest().hasRole("ADMIN")
                 )
                 .addFilterBefore(
