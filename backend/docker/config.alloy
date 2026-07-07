@@ -43,15 +43,21 @@ loki.process "logs" {
       message     = "message",
       level       = "level",
       thread_name = "thread_name",
+      trace_id    = "trace_id",
     }
   }
   stage.regex {
     source     = "logger_name"
     expression = "^(?:.*\\.)?(?P<logger_class>[^.]+)$"
   }
+  stage.regex {
+    source     = "trace_id"
+    expression = "^(?P<trace_short>.{8}).*$"
+  }
   stage.structured_metadata {
     values = {
       logger_class = "",
+      trace_short  = "",
     }
   }
 }
