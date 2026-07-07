@@ -23,7 +23,7 @@ services:
       - "8081:8081"
 
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki:3.7.3
     container_name: loki
     depends_on:
       alloy:
@@ -35,7 +35,7 @@ services:
     command: -config.file=/etc/loki/config.yaml
 
   alloy:
-    image: grafana/alloy:latest
+    image: grafana/alloy:v1.17.1
     container_name: alloy
     user: root
     ports:
@@ -51,7 +51,7 @@ services:
       - --server.http.listen-addr=0.0.0.0:12345
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:13.0.3-distroless-slim
     container_name: grafana
     depends_on:
       - loki

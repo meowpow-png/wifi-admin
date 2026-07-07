@@ -9,72 +9,17 @@
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
+      "grafana.app/folder": "",
       "grafana.app/managedBy": "classic-file-provisioning",
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "WiFi Admin",
-      "grafana.app/sourceChecksum": "22fe590f54fd53de6a57668a9217f1c8",
+      "grafana.app/saved-from-ui": "Grafana v13.0.3 (3ca0684c7c)",
+      "grafana.app/sourceChecksum": "98cc3129f1b0e28503b631d5c751aad2",
       "grafana.app/sourcePath": "/etc/grafana/dashboards/docker.json",
-      "grafana.app/sourceTimestamp": "1783430772000",
-      "grafana.app/updatedBy": "access-policy:service",
-      "grafana.app/updatedTimestamp": "2026-07-07T13:26:17Z"
-    },
-    "managedFields": [
-      {
-        "manager": "grafana",
-        "operation": "Update",
-        "apiVersion": "dashboard.grafana.app/v1",
-        "time": "2026-07-07T13:26:17Z",
-        "fieldsType": "FieldsV1",
-        "fieldsV1": {
-          "f:metadata": {
-            "f:annotations": {
-              ".": {},
-              "f:grafana.app/managedBy": {},
-              "f:grafana.app/managerAllowsEdits": {},
-              "f:grafana.app/managerId": {},
-              "f:grafana.app/sourceChecksum": {},
-              "f:grafana.app/sourcePath": {},
-              "f:grafana.app/sourceTimestamp": {}
-            }
-          },
-          "f:spec": {
-            "f:annotations": {
-              ".": {},
-              "f:list": {}
-            },
-            "f:editable": {},
-            "f:fiscalYearStartMonth": {},
-            "f:graphTooltip": {},
-            "f:id": {},
-            "f:links": {},
-            "f:liveNow": {},
-            "f:panels": {},
-            "f:preload": {},
-            "f:refresh": {},
-            "f:schemaVersion": {},
-            "f:tags": {},
-            "f:templating": {
-              ".": {},
-              "f:list": {}
-            },
-            "f:time": {
-              ".": {},
-              "f:from": {},
-              "f:to": {}
-            },
-            "f:timepicker": {
-              ".": {},
-              "f:refresh_intervals": {}
-            },
-            "f:timezone": {},
-            "f:title": {},
-            "f:uid": {},
-            "f:version": {},
-            "f:weekStart": {}
-          }
-        }
-      }
-    ]
+      "grafana.app/sourceTimestamp": "1783435756000",
+      "grafana.app/updatedBy": "user:dfrevjsz5dybkf",
+      "grafana.app/updatedTimestamp": "2026-07-07T17:55:23Z"
+    }
   },
   "spec": {
     "annotations": {
@@ -96,7 +41,6 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "links": [],
     "liveNow": false,
     "panels": [
       {
@@ -126,7 +70,7 @@
           "unwrappedColumns": false,
           "wrapLogMessage": false
         },
-        "pluginVersion": "13.1.0",
+        "pluginVersion": "13.0.3",
         "targets": [
           {
             "datasource": {
@@ -170,7 +114,7 @@
           "unwrappedColumns": false,
           "wrapLogMessage": false
         },
-        "pluginVersion": "13.1.0",
+        "pluginVersion": "13.0.3",
         "targets": [
           {
             "datasource": {
@@ -214,7 +158,7 @@
           "unwrappedColumns": false,
           "wrapLogMessage": false
         },
-        "pluginVersion": "13.1.0",
+        "pluginVersion": "13.0.3",
         "targets": [
           {
             "datasource": {
@@ -247,6 +191,7 @@
           "dedupStrategy": "none",
           "enableInfiniteScrolling": false,
           "enableLogDetails": true,
+          "fontSize": "small",
           "prettifyLogMessage": true,
           "showControls": false,
           "showFieldSelector": false,
@@ -257,7 +202,7 @@
           "unwrappedColumns": false,
           "wrapLogMessage": false
         },
-        "pluginVersion": "13.1.0",
+        "pluginVersion": "13.0.3",
         "targets": [
           {
             "datasource": {
@@ -278,10 +223,6 @@
     "preload": false,
     "refresh": "",
     "schemaVersion": 42,
-    "tags": [],
-    "templating": {
-      "list": []
-    },
     "time": {
       "from": "now-6h",
       "to": "now"
@@ -301,7 +242,6 @@
       ]
     },
     "timezone": "browser",
-    "title": "Docker",
-    "weekStart": ""
+    "title": "Docker"
   }
 }
