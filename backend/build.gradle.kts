@@ -93,6 +93,7 @@ dependencies {
     implementation(libs.cxf.spring.boot.starter.jaxws)
     implementation(libs.springdoc.openapi.starter.webmvc.ui)
     implementation(libs.spring.boot.starter.flyway)
+    implementation(libs.spring.boot.starter.actuator)
 
     runtimeOnly(libs.flyway.postgresql)
     runtimeOnly(libs.postgresql)
