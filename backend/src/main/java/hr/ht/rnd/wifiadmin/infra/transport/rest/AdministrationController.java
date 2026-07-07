@@ -20,7 +20,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.Objects;
 
-import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.Event;
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.debug;
 
 /**
  * REST controller exposing administration endpoints.
@@ -52,6 +53,10 @@ public final class AdministrationController {
             @Valid @RequestBody ChangePasswordRequest request,
             HttpServletRequest httpRequest
     ) {
+        debug(log).withEvent(Event.ADMINISTRATOR_PASSWORD_CHANGE_ATTEMPT)
+                .withRequest(httpRequest)
+                .log();
+
         password.changePassword(
                 request.currentPassword(),
                 request.newPassword()

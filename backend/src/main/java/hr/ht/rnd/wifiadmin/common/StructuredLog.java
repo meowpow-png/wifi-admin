@@ -118,8 +118,11 @@ public final class StructuredLog {
         RETRIEVED_CONFIGURATION_PERSISTENCE_STARTED("Persisting retrieved configuration"),
         UPDATED_CONFIGURATION_PERSISTENCE_STARTED("Persisting updated configuration"),
 
+        AUTHENTICATION_ATTEMPT("Authentication attempt"),
         AUTHENTICATION_SUCCEEDED("Authentication succeeded"),
         AUTHENTICATION_FAILED("Authentication failed"),
+
+        ADMINISTRATOR_PASSWORD_CHANGE_ATTEMPT("Administrator password change attempt"),
         ADMINISTRATOR_PASSWORD_CHANGED("Administrator password changed"),
 
         REQUEST_VALIDATION_FAILED("Request validation failed"),
