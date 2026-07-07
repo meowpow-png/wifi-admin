@@ -1,5 +1,7 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap.sync;
 
+import hr.ht.rnd.wifiadmin.common.LogContext;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -31,12 +33,14 @@ final class SynchronizationScheduler {
 
     @Scheduled(cron = "#{@platformSyncCronExpression}")
     void synchronize() {
-        debug(log).withEvent(Event.SCHEDULED_SYNCHRONIZATION_TRIGGERED).log();
+        try (var ignored = LogContext.open()) {
+            debug(log).withEvent(Event.SCHEDULED_SYNCHRONIZATION_TRIGGERED).log();
 
-        synchronizer.synchronize();
+            synchronizer.synchronize();
 
-        info(log).withEvent(Event.NEXT_PLATFORM_SYNCHRONIZATION_SCHEDULED)
-                .withField(Field.DATE, schedule.nextExecution())
-                .log();
+            info(log).withEvent(Event.NEXT_PLATFORM_SYNCHRONIZATION_SCHEDULED)
+                    .withField(Field.DATE, schedule.nextExecution())
+                    .log();
+        }
     }
 }

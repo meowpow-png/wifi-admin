@@ -1,6 +1,7 @@
 package hr.ht.rnd.wifiadmin.infra.transport.rest;
 
 import hr.ht.rnd.wifiadmin.application.inbound.PlatformAdministration;
+import hr.ht.rnd.wifiadmin.common.LogContext;
 import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationRequest;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationResponse;
@@ -42,9 +43,10 @@ public final class WifiController {
     WifiConfigurationResponse retrieveConfiguration(
             @NotBlank @PathVariable String cpeId
     ) {
-        var configuration = admin.retrieveConfiguration(cpeId);
-
-        return WifiConfigurationMapper.toResponse(configuration);
+        try (var ignored = LogContext.open()) {
+            var configuration = admin.retrieveConfiguration(cpeId);
+            return WifiConfigurationMapper.toResponse(configuration);
+        }
     }
 
     /**
@@ -60,15 +62,17 @@ public final class WifiController {
     WifiConfigurationResponse updateConfiguration(
             @Valid @RequestBody WifiConfigurationRequest request
     ) {
-        WifiConfiguration configuration;
-        try {
-            configuration = WifiConfigurationMapper.toDomain(request);
+        try (var ignored = LogContext.open()) {
+            WifiConfiguration configuration;
+            try {
+                configuration = WifiConfigurationMapper.toDomain(request);
+            }
+            catch (NullPointerException | IllegalArgumentException e) {
+                throw new InvalidRequestException(e);
+            }
+            return WifiConfigurationMapper.toResponse(
+                    admin.updateConfiguration(configuration)
+            );
         }
-        catch (NullPointerException | IllegalArgumentException e) {
-            throw new InvalidRequestException(e);
-        }
-        return WifiConfigurationMapper.toResponse(
-                admin.updateConfiguration(configuration)
-        );
     }
 }

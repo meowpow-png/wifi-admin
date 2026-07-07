@@ -51,7 +51,7 @@ public final class SynchronizationTracker {
         if (run != null) {
             throw new IllegalStateException("Synchronization already in progress");
         }
-        debug(log).withMessage("Tracking platform synchronization")
+        debug(log).withEvent(Event.PLATFORM_SYNCHRONIZATION_TRACKING_STARTED)
                 .withField(Field.DATE, date)
                 .withField(Field.EXPECTED_CONFIGURATION_COUNT, expected)
                 .log();
@@ -74,12 +74,12 @@ public final class SynchronizationTracker {
         if (run == null || !run.date.equals(date)) {
             return;
         }
-        if (run.complete()) {
-            debug(log).withMessage("Platform synchronization progress updated")
-                    .withField(Field.CONFIGURATION_COUNT, run.completed)
-                    .withField(Field.EXPECTED_CONFIGURATION_COUNT, run.expected)
-                    .log();
+        debug(log).withEvent(Event.PLATFORM_SYNCHRONIZATION_PROGRESS_UPDATED)
+                .withField(Field.CONFIGURATION_COUNT, run.completed)
+                .withField(Field.EXPECTED_CONFIGURATION_COUNT, run.expected)
+                .log();
 
+        if (run.complete()) {
             debug(log).withMessage("Removing stale configurations")
                     .withField(Field.DATE, date)
                     .log();

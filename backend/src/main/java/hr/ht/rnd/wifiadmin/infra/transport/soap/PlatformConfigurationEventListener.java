@@ -42,7 +42,7 @@ class PlatformConfigurationEventListener {
     @Async
     @EventListener
     void on(PlatformConfigurationRetrievedEvent event) {
-        debug(log).withEvent(Event.RETRIEVED_CONFIGURATION_PERSISTENCE_STARTED)
+        debug(log).withEvent(Event.PERSIST_RETRIEVED_CONFIGURATION_STARTED)
                 .withField(Field.CPE_ID, event.configuration().cpeId())
                 .log();
 
@@ -51,6 +51,10 @@ class PlatformConfigurationEventListener {
                     event.configuration(),
                     event.lastSynchronized()
             );
+            debug(log).withEvent(Event.PERSIST_RETRIEVED_CONFIGURATION_COMPLETED)
+                    .withField(Field.CPE_ID, event.configuration().cpeId())
+                    .log();
+
             if (event.lastSynchronized() != null) {
                 tracker.complete(event.lastSynchronized());
             }
@@ -64,7 +68,7 @@ class PlatformConfigurationEventListener {
     @Async
     @EventListener
     void on(PlatformConfigurationUpdatedEvent event) {
-        debug(log).withEvent(Event.UPDATED_CONFIGURATION_PERSISTENCE_STARTED)
+        debug(log).withEvent(Event.PERSIST_UPDATED_CONFIGURATION_STARTED)
                 .withField(Field.CPE_ID, event.configuration().cpeId())
                 .log();
 
@@ -72,5 +76,8 @@ class PlatformConfigurationEventListener {
                 event.configuration(),
                 null
         );
+        debug(log).withEvent(Event.PERSIST_UPDATED_CONFIGURATION_COMPLETED)
+                .withField(Field.CPE_ID, event.configuration().cpeId())
+                .log();
     }
 }

@@ -12,7 +12,12 @@ import java.util.concurrent.Executors;
 public class AsyncConfiguration {
 
     @Bean
+    @SuppressWarnings("resource")
     Executor asyncExecutor() {
-        return Executors.newVirtualThreadPerTaskExecutor();
+        var delegate = Executors.newVirtualThreadPerTaskExecutor();
+
+        return command -> delegate.execute(
+                new MdcTaskDecorator().decorate(command)
+        );
     }
 }
