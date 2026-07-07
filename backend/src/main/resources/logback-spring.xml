@@ -5,7 +5,7 @@
         <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>
-                    [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%thread] [%logger{0}] %msg %kvp%n
+                    [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%thread] [%logger{0}] [%replace(%X{trace_id:-}){'^(.{6}).*','$1'}] %msg %kvp%n
                 </pattern>
             </encoder>
         </appender>
