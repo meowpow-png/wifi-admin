@@ -2,7 +2,7 @@
   "kind": "Dashboard",
   "apiVersion": "dashboard.grafana.app/v1",
   "metadata": {
-    "name": "wifiadmin",
+    "name": "backend",
     "namespace": "default",
     "labels": {
       "grafana.app/deprecatedInternalID": "2418013728100352"
@@ -115,6 +115,6 @@
       ]
     },
     "timezone": "Europe/Zagreb",
-    "title": "Wifi Admin"
+    "title": "Backend"
   }
 }
