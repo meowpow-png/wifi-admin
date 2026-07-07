@@ -107,6 +107,9 @@ public final class StructuredLog {
         APPLICATION_BOOTSTRAP_STARTED("Starting application bootstrap"),
         APPLICATION_BOOTSTRAP_COMPLETED("Application bootstrap completed"),
 
+        APPLICATION_LOG_LEVEL_CHANGED("Changed application log level"),
+        SOAP_PAYLOAD_LOG_LEVEL_CHANGED("Changed SOAP payload log level"),
+
         SCHEDULED_SYNCHRONIZATION_TRIGGERED("Scheduled synchronization triggered"),
         PLATFORM_SYNCHRONIZATION_STARTED("Starting platform synchronization"),
         PLATFORM_SYNCHRONIZATION_TRACKING_STARTED("Starting platform synchronization tracking"),

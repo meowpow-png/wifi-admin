@@ -2,8 +2,10 @@ set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
 import 'just/deploy.just'
 import 'just/docker.just'
+import 'just/server.just'
 import 'just/soap.just'
 
+actuator-url := "http://localhost:8082/actuator"
 platform-url := "http://localhost:8080/platform"
 
 # List available recipes
