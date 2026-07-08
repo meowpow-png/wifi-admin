@@ -27,7 +27,7 @@ import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
  * SOAP-based implementation of {@link PlatformClient}.
  */
 @Component
-final class SoapPlatformClient implements PlatformClient {
+public final class SoapPlatformClient implements PlatformClient {
 
     private static final Logger log = LoggerFactory.getLogger(SoapPlatformClient.class);
 

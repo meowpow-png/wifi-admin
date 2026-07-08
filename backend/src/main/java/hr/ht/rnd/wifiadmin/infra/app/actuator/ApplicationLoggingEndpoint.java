@@ -10,11 +10,12 @@ import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.Event;
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.info;
 
 @Component
 @Endpoint(id = "logging")
-class ApplicationLoggingEndpoint extends LoggingEndpoint{
+class ApplicationLoggingEndpoint extends LoggingEndpoint {
 
     private static final Logger log = LoggerFactory.getLogger(ApplicationLoggingEndpoint.class);
 

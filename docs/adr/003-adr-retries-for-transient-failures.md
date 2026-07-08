@@ -12,15 +12,15 @@ Return an error as soon as a communication failure occurs.
 
 This approach is simple but causes temporary network issues and platform interruptions to become user-visible failures.
 
-### Retry with a fixed delay
-
-Retry failed requests after a constant delay.
-
-This improves reliability but repeatedly sends requests at a fixed rate while the platform is recovering.
-
 ### Retry with exponential backoff
 
 Retry failed requests with progressively increasing delays between attempts.
+
+### Introduce additional resilience mechanisms
+
+Introduce more advanced resilience mechanisms, such as circuit breakers or outbound rate limiting, in addition to retries.
+
+These mechanisms improve resilience in more demanding environments but add complexity that is not currently justified by the application's requirements.
 
 ## Decision
 
@@ -46,3 +46,5 @@ Many communication failures are temporary and can be resolved by retrying the re
 **Implications:**
 
 - Retry logic should be applied only to transient communication failures
+- Permanent platform errors should not be retried
+- More advanced resilience mechanisms remain available if future operational requirements justify their introduction
