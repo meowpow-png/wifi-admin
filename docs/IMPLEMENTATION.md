@@ -327,14 +327,29 @@ sequenceDiagram
     deactivate Worker
 ```
 
-### Health & Metrics
+### Health
 
-The application uses custom health indicators to verify the availability of PostgreSQL and the external SOAP platform. Micrometer is used to expose standard Spring Boot metrics together with the following application-specific metrics:
+The application exposes a health endpoint that reports the health of its infrastructure dependencies. Built-in health indicators monitor application availability, the PostgreSQL database, and available disk space, while a custom health indicator verifies connectivity with the external SOAP platform. The overall health status is derived by aggregating the individual health indicators.
 
-- SOAP request latency
-- Retry count
-- Synchronization duration
-- Synchronization success and failure counts
+The backend container uses this endpoint as its Docker health check, allowing container orchestration to detect when the application is ready to accept requests and to monitor its runtime health.
+
+## Management
+
+### Interface
+
+Application management is implemented using Spring Boot Actuator, which hosts the management interface on port `8082`, separate from the public REST API.
+
+During development, the management interface is exposed to simplify administration and testing. In production, it is intended to remain internal and be protected by infrastructure such as a reverse proxy or firewall, preventing management endpoints from being exposed to public networks.
+
+### Commands
+
+The management interface exposes the following Actuator endpoints:
+
+- `health` reports the health of the application and its infrastructure dependencies
+- `shutdown` gracefully terminates the application
+- `sync` triggers an on-demand synchronization with the external SOAP platform
+- `logging` changes the application log level at runtime
+- `payload-logging` enables or disables SOAP payload logging for troubleshooting
 
 ## Testing
 
