@@ -33,4 +33,11 @@ COPY build/libs/wifi-admin-backend-*.jar application.jar
 
 EXPOSE 8081
 
+HEALTHCHECK \
+    --interval=30s \
+    --timeout=5s \
+    --start-period=20s \
+    --retries=3 \
+    CMD wget -qO- http://localhost:8082/actuator/health > /dev/null || exit 1
+
 ENTRYPOINT ["/opt/java/bin/java", "-jar", "application.jar"]
