@@ -32,7 +32,7 @@ class ApplicationLoggingEndpoint extends LoggingEndpoint{
         setLogLevel(level);
 
         info(log).withEvent(Event.APPLICATION_LOG_LEVEL_CHANGED)
-                .withField("level", level)
+                .withField("log_level", level)
                 .log();
     }
 }
