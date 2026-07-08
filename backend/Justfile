@@ -1,10 +1,13 @@
 set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
+set dotenv-load
 
+import 'just/api.just'
 import 'just/deploy.just'
 import 'just/docker.just'
 import 'just/server.just'
 import 'just/soap.just'
 
+api-url := "http://localhost:8081"
 actuator-url := "http://localhost:8082/actuator"
 platform-url := "http://localhost:8080/platform"
 
@@ -15,3 +18,23 @@ default:
 # Export provisioned Grafana dashboards
 grafana-export:
     @./just/scripts/grafana-export.sh
+
+# Run backend API integration test suite
+api-test:
+    @rm -f .jwt && \
+    printf '\n== Authenticate ==\n' && \
+    just login && \
+    printf '\n== Retrieve Wi-Fi configuration ==\n' && \
+    just wifi-get CPE_001 && \
+    printf '\n== Update Wi-Fi configuration ==\n' && \
+    just wifi-update CPE_001 MyWifi BAND_2_4_GHZ WPA2_PSK MySecurePassword123 && \
+    printf '\n== Verify Wi-Fi configuration ==\n' && \
+    just wifi-get CPE_001 && \
+    printf '\n== Change administrator password ==\n' && \
+    just change-password admin MyNewAdminPassword && \
+    printf '\n== Authenticate with new password ==\n' && \
+    just login admin MyNewAdminPassword && \
+    printf '\n== Restore administrator password ==\n' && \
+    just change-password MyNewAdminPassword admin && \
+    printf '\n== Verify restored credentials ==\n' && \
+    just login

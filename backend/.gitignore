@@ -11,3 +11,6 @@ build/
 out/
 lib/
 !gradle/wrapper/gradle-wrapper.jar
+
+# JWT tokens
+.jwt

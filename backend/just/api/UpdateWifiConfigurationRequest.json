@@ -1,0 +1,7 @@
+{
+  "cpeId": "$CPE_ID",
+  "wifiBand": "$WIFI_BAND",
+  "ssid": "$SSID",
+  "encryptionType": "$ENCRYPTION_TYPE",
+  "password": "$PASSWORD"
+}
