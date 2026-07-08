@@ -14,7 +14,7 @@ This document describes how the architecture defined in [ARCHITECTURE.md](ARCHIT
 | Validation    | Jakarta Bean Validation                             |
 | Security      | Spring Security                                     |
 | Logging       | SLF4J, Logback                                      |
-| Observability | Spring Boot Actuator, Micrometer                    |
+| Observability | Spring Boot Actuator                                |
 | Testing       | JUnit 5, Mockito, Testcontainers, ArchUnit, Gatling |
 | Deployment    | Docker, Docker Compose                              |
 
@@ -82,7 +82,7 @@ Retrieved configurations are served from the local database when available and f
 
 Synchronization is implemented using Spring Scheduling with a configurable execution schedule and set of synchronized devices. Platform configurations are retrieved sequentially and published as application events. Persistence and other follow-up processing execute asynchronously, allowing the scheduler to continue retrieving the next configuration without waiting for local processing to complete.
 
-This event-driven approach provides a natural extension point for additional processing, such as metrics collection, audit logging, or notifications.
+This event-driven approach provides a natural extension point for additional future processing, such as metrics collection, audit logging, or notifications.
 
 ```mermaid
 sequenceDiagram
@@ -132,8 +132,6 @@ flowchart TD
 ```
 
 ### Observability
-
-Synchronization activity is instrumented through Micrometer metrics and structured logging, enabling synchronization duration, success and failure counts, persistence latency, and retry activity to be monitored in production.
 
 ## Configuration
 
@@ -364,25 +362,3 @@ Integration tests execute against production-like infrastructure using Testconta
 ### Architecture Tests
 
 Architecture tests are implemented using ArchUnit to verify package structure, dependency rules, and architectural boundaries.
-
-### Resilience Tests
-
-Resilience tests are implemented as end-to-end system tests using Gatling against the containerized application stack. They verify the application's behavior under transient platform failures, including retry logic, exponential backoff, and timeout handling.
-
-The external SOAP platform is accessed through an Nginx reverse proxy. During normal test execution, requests are forwarded to the reference Mockoon platform. During resilience scenarios, Nginx routes requests to a dedicated WireMock instance that simulates transient failures such as timeouts and temporary server errors.
-
-```mermaid
-flowchart LR
-    G[Gatling]
-    B[Spring Boot]
-    N[Nginx Reverse Proxy]
-    M[Mockoon SOAP Platform]
-    W[WireMock Fault Simulator]
-
-    G -->|HTTP| B
-    B -->|SOAP| N
-    N -->|Normal scenarios| M
-    N -->|Resilience scenarios| W
-```
-
-This approach validates the application's resilience under realistic runtime conditions without modifying either the application or the reference SOAP platform. Fault scenarios are isolated within the test environment, allowing retry and recovery behavior to be verified against the complete containerized stack.
