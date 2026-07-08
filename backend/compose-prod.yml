@@ -21,6 +21,7 @@ services:
       JAVA_TOOL_OPTIONS: -Duser.timezone=Europe/Zagreb
     ports:
       - "8081:8081"
+      - "8082:8082"
 
   loki:
     image: grafana/loki:3.7.3
