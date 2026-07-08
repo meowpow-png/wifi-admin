@@ -26,18 +26,23 @@ services:
   loki:
     image: grafana/loki:3.7.3
     container_name: loki
-    depends_on:
-      alloy:
-        condition: service_started
     ports:
       - "3100"
     volumes:
       - ./docker/loki.config.yml:/etc/loki/config.yaml:ro,Z
-    command: -config.file=/etc/loki/config.yaml
+    healthcheck:
+      test: ["CMD", "loki", "-health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   alloy:
     image: grafana/alloy:v1.17.1
     container_name: alloy
+    depends_on:
+      loki:
+        condition: service_healthy
     user: root
     ports:
       - "12345"
@@ -55,7 +60,8 @@ services:
     image: grafana/grafana:13.0.3-distroless-slim
     container_name: grafana
     depends_on:
-      - loki
+      loki:
+        condition: service_healthy
     ports:
       - "3000:3000"
     volumes:
