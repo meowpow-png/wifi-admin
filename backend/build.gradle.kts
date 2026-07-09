@@ -17,6 +17,7 @@ plugins {
     java
     id("jvm-test-suite")
     id("java-test-fixtures")
+    id("jacoco")
     id("org.springframework.boot") version "4.1.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.flywaydb.flyway") version "12.10.0"
@@ -121,6 +122,8 @@ dependencies {
     testFixturesImplementation(libs.jjwt.api)
     testFixturesImplementation(libs.jjwt.impl)
 }
+val wsdlPackage = "hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl"
+val wsdlPath = wsdlPackage.replace('.', '/')
 
 tasks.register<JavaExec>("wsdl2java") {
     group = "soap"
@@ -133,15 +136,11 @@ tasks.register<JavaExec>("wsdl2java") {
         "-d",
         layout.buildDirectory.dir("generated/sources/wsdl").get().asFile.absolutePath,
         "-p",
-        "hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl",
+        wsdlPackage,
         "-wsdlLocation",
         "classpath:wsdl/wifi-platform.wsdl",
         "${projectDir}/src/main/resources/wsdl/wifi-platform.wsdl"
     )
-}
-
-tasks.compileJava {
-    dependsOn(tasks.named("wsdl2java"))
 }
 
 tasks.withType<Test>().configureEach {
@@ -156,4 +155,46 @@ tasks.withType<Test>().configureEach {
         exceptionFormat = TestExceptionFormat.FULL
         showCauses = true
     }
+}
+
+tasks.register<JacocoReport>("coverage") {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = "Generates an aggregate code coverage report."
+
+    executionData(
+        tasks.named<Test>("test").get(),
+        tasks.named<Test>("integrationTest").get(),
+    )
+    sourceDirectories.setFrom(sourceSets.main.get().allSource.srcDirs)
+    classDirectories.setFrom(
+        files(
+            sourceSets.main.get().output.asFileTree.matching {
+                exclude("$wsdlPath/**")
+            }
+        )
+    )
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        csv.required.set(false)
+    }
+}
+
+tasks.compileJava {
+    dependsOn(tasks.named("wsdl2java"))
+}
+val test = tasks.named<Test>("test")
+val integrationTest = tasks.named<Test>("integrationTest")
+val coverage = tasks.named("coverage")
+
+integrationTest {
+    mustRunAfter(test)
+}
+
+coverage {
+    mustRunAfter(test, integrationTest)
+}
+
+tasks.check {
+    finalizedBy(integrationTest)
 }
