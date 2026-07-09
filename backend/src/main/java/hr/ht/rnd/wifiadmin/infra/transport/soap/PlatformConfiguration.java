@@ -20,6 +20,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxb.JAXBDataBinding;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
 import jakarta.xml.ws.BindingProvider;
 
@@ -43,10 +45,16 @@ public class PlatformConfiguration {
      * explicit namespace prefixes required by the target platform contract.
      */
     @Bean
-    WifiPlatformPortType platformPort(PlatformProperties properties) {
+    WifiPlatformPortType platformPort(
+            PlatformProperties properties,
+            HTTPClientPolicy httpClientPolicy
+    ) {
         var service = new WifiPlatformService();
         var port = service.getWifiPlatformPort();
         var client = ClientProxy.getClient(port);
+
+        var conduit = (HTTPConduit) client.getConduit();
+        conduit.setClient(httpClientPolicy);
 
         var inInterceptors = client.getInInterceptors();
         var outInterceptors = client.getOutInterceptors();
@@ -81,6 +89,19 @@ public class PlatformConfiguration {
                 schedule.getMinute(),
                 schedule.getHour()
         );
+    }
+
+    @Bean
+    HTTPClientPolicy platformHttpClientPolicy(PlatformProperties properties) {
+        var policy = new HTTPClientPolicy();
+
+        policy.setConnectionTimeout(
+                properties.connectionTimeout().toMillis()
+        );
+        policy.setReceiveTimeout(
+                properties.receiveTimeout().toMillis()
+        );
+        return policy;
     }
 
     @Bean

@@ -33,6 +33,14 @@ public record PlatformProperties(
         @NotNull
         LocalTime syncSchedule,
 
+        @NotNull
+        @DurationMin(seconds = 1)
+        Duration connectionTimeout,
+
+        @NotNull
+        @DurationMin(seconds = 1)
+        Duration receiveTimeout,
+
         @Valid
         @NotNull
         Retry retry
