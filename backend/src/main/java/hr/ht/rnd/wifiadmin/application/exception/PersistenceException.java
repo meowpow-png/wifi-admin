@@ -3,7 +3,7 @@ package hr.ht.rnd.wifiadmin.application.exception;
 /**
  * Thrown when a persistence operation fails.
  */
-public class PersistenceException extends RuntimeException {
+public final class PersistenceException extends RuntimeException {
 
     /**
      * Creates a persistence exception.

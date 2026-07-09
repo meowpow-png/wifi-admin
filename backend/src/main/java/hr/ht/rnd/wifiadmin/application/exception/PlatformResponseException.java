@@ -4,7 +4,7 @@ package hr.ht.rnd.wifiadmin.application.exception;
  * Indicates that the platform responded
  * successfully, but the response could not be processed.
  */
-public class PlatformResponseException extends PlatformException {
+public final class PlatformResponseException extends PlatformException {
 
     /**
      * Creates a platform response exception.

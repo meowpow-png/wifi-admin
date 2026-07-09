@@ -3,7 +3,7 @@ package hr.ht.rnd.wifiadmin.application.exception;
 /**
  * Thrown when authentication cannot be completed.
  */
-public class AuthenticationException extends RuntimeException {
+public final class AuthenticationException extends RuntimeException {
 
     /**
      * Creates a new authentication exception.
