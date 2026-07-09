@@ -4,15 +4,11 @@
 
 Use the following annotations consistently throughout the test suite:
 
-- `@UnitTest` — marks unit tests
 - `@IntegrationTest` — marks integration tests
 - `@Nested` — groups related test scenarios
 - `@DisplayName` — provides a readable description in test reports
 
-Nested classes inherit the test type and tags from their enclosing class. They should not declare additional `@UnitTest` or`@IntegrationTest` annotations.
-
 ```java
-@UnitTest
 class ExampleServiceTest {
 
     @Nested

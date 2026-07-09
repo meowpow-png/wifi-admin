@@ -5,6 +5,8 @@ cxf = "4.2.2"
 jjwt = "0.13.0"
 springdoc = "3.0.3"
 slf4j = "2.0.18"
+
+mockito = "5.23.0"
 archunit = "1.4.2"
 
 [libraries]
@@ -33,5 +35,7 @@ jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson" }
 springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 
+mockito-bom = { module = "org.mockito:mockito-bom", version.ref = "mockito" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter" }
 tngtech-archunit = { module = "com.tngtech.archunit:archunit", version.ref = "archunit" }
 tngtech-archunit-junit5 = { module = "com.tngtech.archunit:archunit-junit5", version.ref = "archunit" }

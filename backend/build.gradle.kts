@@ -2,6 +2,8 @@
 
 import hr.ht.rnd.wifiadmin.env.api.Environment
 import hr.ht.rnd.wifiadmin.env.api.EnvironmentExtension
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.kotlin.dsl.the
 
 buildscript {
@@ -14,6 +16,7 @@ buildscript {
 plugins {
     java
     id("jvm-test-suite")
+    id("java-test-fixtures")
     id("org.springframework.boot") version "4.1.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.flywaydb.flyway") version "12.10.0"
@@ -103,6 +106,9 @@ dependencies {
     runtimeOnly(libs.jjwt.jackson)
 
     testImplementation(libs.spring.boot.starter.test)
+    testFixturesImplementation(platform(libs.jjwt.bom))
+    testFixturesImplementation(libs.jjwt.api)
+    testFixturesImplementation(libs.jjwt.impl)
 }
 
 tasks.register<JavaExec>("wsdl2java") {
@@ -125,4 +131,18 @@ tasks.register<JavaExec>("wsdl2java") {
 
 tasks.compileJava {
     dependsOn(tasks.named("wsdl2java"))
+}
+
+tasks.withType<Test>().configureEach {
+    outputs.upToDateWhen { false }
+    useJUnitPlatform()
+    testLogging {
+        events(
+            TestLogEvent.PASSED,
+            TestLogEvent.SKIPPED,
+            TestLogEvent.FAILED,
+        )
+        exceptionFormat = TestExceptionFormat.FULL
+        showCauses = true
+    }
 }
