@@ -24,10 +24,6 @@ final class AdminPasswordService implements ChangeAdminPassword {
             AdminAccountRepository repository,
             PasswordHasher hasher
     ) {
-        Objects.requireNonNull(administrator, "administrator must not be null");
-        Objects.requireNonNull(repository, "repository must not be null");
-        Objects.requireNonNull(hasher, "hasher must not be null");
-
         this.administrator = administrator;
         this.repository = repository;
         this.hasher = hasher;

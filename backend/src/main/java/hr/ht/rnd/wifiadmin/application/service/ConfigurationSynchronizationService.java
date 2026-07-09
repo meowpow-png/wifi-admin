@@ -23,10 +23,6 @@ class ConfigurationSynchronizationService implements WifiConfigurationSynchroniz
             PlatformClient platform,
             Clock clock
     ) {
-        Objects.requireNonNull(events, "events must not be null");
-        Objects.requireNonNull(platform, "platform must not be null");
-        Objects.requireNonNull(clock, "clock must not be null");
-
         this.events = events;
         this.platform = platform;
         this.clock = clock;

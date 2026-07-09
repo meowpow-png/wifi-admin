@@ -21,7 +21,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * Authenticates requests using JWT access tokens.
@@ -43,9 +42,6 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService service;
 
     JwtAuthenticationFilter(AccessTokenVerifier verifier, UserDetailsService service) {
-        Objects.requireNonNull(verifier, "verifier must not be null");
-        Objects.requireNonNull(service, "service must not be null");
-
         this.verifier = verifier;
         this.service = service;
     }

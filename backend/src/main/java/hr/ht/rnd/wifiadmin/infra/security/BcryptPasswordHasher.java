@@ -14,7 +14,7 @@ class BcryptPasswordHasher implements PasswordHasher {
     private final PasswordEncoder encoder;
 
     BcryptPasswordHasher(PasswordEncoder encoder) {
-        this.encoder = Objects.requireNonNull(encoder, "encoder must not be null");
+        this.encoder = encoder;
     }
 
     @Override

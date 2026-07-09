@@ -14,8 +14,6 @@ import jakarta.validation.constraints.NotBlank;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-import java.util.Objects;
-
 /**
  * REST controller exposing Wi-Fi management endpoints.
  */
@@ -26,7 +24,6 @@ public final class WifiController {
     private final PlatformAdministration admin;
 
     WifiController(PlatformAdministration admin) {
-        Objects.requireNonNull(admin, "admin must not be null");
         this.admin = admin;
     }
 

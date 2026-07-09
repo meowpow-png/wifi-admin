@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
-
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
 
 @Component
@@ -24,9 +22,6 @@ final class SynchronizationScheduler {
             PlatformSynchronizer synchronizer,
             SynchronizationSchedule schedule
     ) {
-        Objects.requireNonNull(synchronizer, "synchronizer must not be null");
-        Objects.requireNonNull(schedule, "schedule must not be null");
-
         this.synchronizer = synchronizer;
         this.schedule = schedule;
     }

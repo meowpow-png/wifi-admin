@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.Event;
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.debug;
@@ -30,7 +29,6 @@ final class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper;
 
     ApiAuthenticationEntryPoint(ObjectMapper objectMapper) {
-        Objects.requireNonNull(objectMapper, "objectMapper must not be null");
         this.objectMapper = objectMapper;
     }
 

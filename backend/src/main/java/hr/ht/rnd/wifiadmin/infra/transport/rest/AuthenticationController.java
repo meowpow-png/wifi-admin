@@ -15,8 +15,6 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
-
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.Event;
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.debug;
 
@@ -31,7 +29,6 @@ public final class AuthenticationController {
     private final AuthenticateAdmin authentication;
 
     AuthenticationController(AuthenticateAdmin authentication) {
-        Objects.requireNonNull(authentication, "authentication must not be null");
         this.authentication = authentication;
     }
 

@@ -21,9 +21,6 @@ final class AdminAuthenticationService implements AuthenticateAdmin {
             AuthenticationManager authenticationManager,
             AccessTokenIssuer tokenIssuer
     ) {
-        Objects.requireNonNull(authenticationManager, "authenticationManager must not be null");
-        Objects.requireNonNull(tokenIssuer, "tokenIssuer must not be null");
-
         this.authenticationManager = authenticationManager;
         this.tokenIssuer = tokenIssuer;
     }

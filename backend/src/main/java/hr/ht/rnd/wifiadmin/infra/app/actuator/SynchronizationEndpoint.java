@@ -6,8 +6,6 @@ import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 @Component
 @Endpoint(id = "sync")
 class SynchronizationEndpoint {
@@ -15,7 +13,6 @@ class SynchronizationEndpoint {
     private final PlatformSynchronizer synchronizer;
 
     SynchronizationEndpoint(PlatformSynchronizer synchronizer) {
-        Objects.requireNonNull(synchronizer, "synchronizer must not be null");
         this.synchronizer = synchronizer;
     }
 

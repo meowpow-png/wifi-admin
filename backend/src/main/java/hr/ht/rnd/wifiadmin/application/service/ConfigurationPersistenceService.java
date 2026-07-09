@@ -17,7 +17,6 @@ class ConfigurationPersistenceService implements WifiConfigurationPersistence {
     private final WifiConfigurationRepository repository;
 
     ConfigurationPersistenceService(WifiConfigurationRepository repository) {
-        Objects.requireNonNull(repository, "repository must not be null");
         this.repository = repository;
     }
 
