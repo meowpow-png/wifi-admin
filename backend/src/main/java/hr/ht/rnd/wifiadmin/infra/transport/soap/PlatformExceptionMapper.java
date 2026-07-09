@@ -43,6 +43,9 @@ public final class PlatformExceptionMapper {
             Throwable throwable,
             Set<Throwable> visited
     ) {
+        if (throwable == null) {
+            return Optional.empty();
+        }
         if (!visited.add(throwable)) {
             return Optional.empty();
         }

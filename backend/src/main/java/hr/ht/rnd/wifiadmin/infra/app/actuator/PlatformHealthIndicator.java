@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.infra.app;
+package hr.ht.rnd.wifiadmin.infra.app.actuator;
 
 import hr.ht.rnd.wifiadmin.application.exception.CpeNotFoundException;
 import hr.ht.rnd.wifiadmin.application.exception.PlatformException;

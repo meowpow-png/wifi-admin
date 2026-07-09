@@ -3,8 +3,7 @@ package hr.ht.rnd.wifiadmin.infra.security;
 import hr.ht.rnd.wifiadmin.application.exception.AuthenticationException;
 import hr.ht.rnd.wifiadmin.application.outbound.AccessTokenVerifier;
 
-import org.springframework.stereotype.Component;
-
+import io.jsonwebtoken.Clock;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -16,13 +15,14 @@ import javax.crypto.SecretKey;
 /**
  * Verifies JWT access tokens.
  */
-@Component
 final class JwtAccessTokenVerifier implements AccessTokenVerifier {
 
     private final SecurityProperties properties;
+    private final Clock clock;
 
-    JwtAccessTokenVerifier(SecurityProperties properties) {
+    JwtAccessTokenVerifier(SecurityProperties properties, Clock clock) {
         this.properties = properties;
+        this.clock = clock;
     }
 
     @Override
@@ -33,6 +33,7 @@ final class JwtAccessTokenVerifier implements AccessTokenVerifier {
         }
         try {
             return Jwts.parser()
+                    .clock(clock)
                     .verifyWith(signingKey())
                     .build()
                     .parseSignedClaims(token)

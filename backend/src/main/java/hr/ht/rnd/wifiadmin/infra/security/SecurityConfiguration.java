@@ -21,6 +21,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import jakarta.servlet.DispatcherType;
 
+import java.sql.Date;
+import java.time.Clock;
 import java.util.Base64;
 import java.util.List;
 import javax.crypto.SecretKey;
@@ -111,5 +113,13 @@ public class SecurityConfiguration {
             throw new IllegalStateException("AES key must be 256 bits");
         }
         return new SecretKeySpec(key, "AES");
+    }
+
+    @Bean
+    JwtAccessTokenVerifier jwtAccessTokenVerifier(Clock clock, SecurityProperties properties) {
+        return new JwtAccessTokenVerifier(
+                properties,
+                () -> Date.from(clock.instant())
+        );
     }
 }

@@ -42,6 +42,13 @@ final class AesPasswordEncryptor implements PasswordEncryptor {
         this.secureRandom = new SecureRandom();
     }
 
+    /**
+     * Returns the ciphertext prefix used for encryption.
+     */
+    static String ciphertextPrefix() {
+        return CIPHERTEXT_PREFIX;
+    }
+
     @Override
     public String encrypt(WifiPassword password) {
         Objects.requireNonNull(password, "password must not be null");
