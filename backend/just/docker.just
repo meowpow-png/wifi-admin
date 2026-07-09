@@ -9,7 +9,8 @@ compose *args:
 # Run Docker Compose for the development stack
 [arg("args", help="Arguments passed to docker compose")]
 compose-dev *args:
-    @docker compose {{compose_dev}} {{args}}
+    @LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) \
+        docker compose {{compose_dev}} {{args}}
 
 # Run Docker Compose for the production stack
 [arg("args", help="Arguments passed to docker compose")]
@@ -17,6 +18,15 @@ compose-prod *args:
     @docker compose {{compose_prod}} {{args}}
 
 # Build the backend Docker image
-compose-build:
-    @./gradlew clean build
-    @just compose-dev build
+compose-build *args:
+    @./gradlew clean build -x test
+    @just compose-dev build {{args}}
+
+# Build codex agent docker image
+codex-build *args:
+    @just compose-dev build codex {{args}}
+
+# Start and enter codex agent docker container
+codex-run:
+    @just codex-build
+    @just compose-dev run --rm codex

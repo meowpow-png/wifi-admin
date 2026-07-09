@@ -29,11 +29,47 @@ flowchart TD
 
 Both environments deploy the same Docker image, with runtime behavior determined by the active Spring profile and injected environment variables. The production deployment additionally includes the observability stack.
 
-## Docker Image
+## Backend
 
-The backend is packaged as a multi-stage Docker image to minimize the size of the final runtime image. The first stage uses the Eclipse Temurin JDK to analyze the application and build a custom Java runtime, while the second stage contains only the generated runtime and the application JAR.
+### Image
 
-The custom runtime is built using `jdeps` and `jlink` to include only the Java modules required by the application. This reduces the size of the final image, decreases the attack surface by excluding unnecessary runtime components, and avoids shipping a full JDK in production.
+The backend is packaged as a multi-stage Docker image to minimize the size of the final runtime image. The build stage uses the Eclipse Temurin JDK to compile the application and construct a custom Java runtime, while the final stage contains only the generated runtime and the application JAR.
+
+### Runtime
+
+The custom runtime is generated using `jdeps` and `jlink` to include only the Java modules required by the application. This reduces the size of the final image, decreases the attack surface by excluding unnecessary runtime components, and avoids shipping a full JDK in production.
+
+## Codex
+
+The development deployment includes an OpenAI Codex assistant that supports implementation, automated test development, and code review tasks
+
+The assistant is intentionally configured for a narrowly scoped role within the project, providing an isolated environment optimized for repository analysis and implementation while leaving architectural decisions to the developer.
+
+### Image
+
+The Docker image packages OpenAI Codex together with the tooling required to analyze, modify, and test the project. Unlike the backend image, this image is intended exclusively for local development and is not part of the deployed application.
+
+The image includes the dependencies required to provide a controlled execution environment for development tasks. It includes the following development dependencies:
+
+- **OpenJDK** — executes Gradle builds and the project's automated test suite
+- **Git** — enables repository inspection and code review tasks
+- **Node.js** — provides the runtime required by the Codex CLI
+- **Codex CLI** — performs repository analysis, code generation, and review
+- **Gosu** — drops root privileges before launching Codex
+
+The image also provides a custom entrypoint that initializes the runtime environment before launching Codex. During startup, it ensures that the persistent home directory is owned by the configured unprivileged user, provisions the default Codex configuration on first use, and then drops root privileges before executing the assistant. This prevents root-owned generated files while allowing Codex to maintain its persistent runtime state across container executions.
+
+### Workspace
+
+The Codex workspace intentionally exposes only the subset of the repository required to perform testing and code review tasks. Source code, build logic, Gradle configuration, and task definitions are mounted into the container, while unrelated project files remain inaccessible.
+
+The selective workspace reduces the amount of repository content that Codex must analyze, improving context fidelity and keeping development tasks focused on the code under review. Files that Codex is expected only to inspect, such as task definitions and build configuration, are mounted read-only, while source code and build logic remain writable to allow implementation of code changes.
+
+### Environment
+
+Codex is configured to operate without interactive approval prompts and with unrestricted workspace access. The configuration minimizes interruptions during development tasks and avoids the limitations of the CLI's built-in sandbox. 
+
+Since the assistant executes as an unprivileged user inside a dedicated development container with a deliberately restricted workspace, this trade-off provides a more efficient development workflow without increasing exposure beyond the intended scope.
 
 ## Configuration
 

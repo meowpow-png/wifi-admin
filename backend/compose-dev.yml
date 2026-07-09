@@ -22,3 +22,35 @@ services:
     ports:
       - "8081:8081"
       - "8082:8082"
+
+  codex:
+    image: wifi-admin-codex
+    container_name: codex
+    build:
+      context: ./docker/codex
+    working_dir: /workspace
+    security_opt:
+      - seccomp=unconfined
+    environment:
+      LOCAL_UID: ${LOCAL_UID}
+      LOCAL_GID: ${LOCAL_GID}
+      HOME: /home/codex
+    stdin_open: true
+    tty: true
+    volumes:
+      - codex-home:/home/codex
+      - ./docker/codex/AGENTS.md:/workspace/AGENTS.md:ro,Z
+      - ./docker/codex/tasks:/workspace/tasks:ro,Z
+      - ./docs/TESTING.md:/workspace/TESTING.md:ro,Z
+      - ./.gradle:/workspace/.gradle:Z
+      - ./build:/workspace/build:Z
+      - ./src:/workspace/src:Z
+      - ./build-logic:/workspace/build-logic:Z
+      - ./build.gradle.kts:/workspace/build.gradle.kts:ro,Z
+      - ./settings.gradle:/workspace/settings.gradle:ro,Z
+      - ./gradle.properties:/workspace/gradle.properties:ro,Z
+      - ./gradlew:/workspace/gradlew:ro,Z
+      - ./gradle:/workspace/gradle:ro,Z
+
+volumes:
+  codex-home:
