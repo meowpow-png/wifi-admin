@@ -1,8 +1,8 @@
 package hr.ht.rnd.wifiadmin.application.exception;
 
 /**
- * Indicates that communication with the platform
- * failed before a valid response could be processed.
+ * Base exception for failures that occur while
+ * communicating with the platform at the transport level.
  */
 public abstract class PlatformTransportException extends PlatformException {
 

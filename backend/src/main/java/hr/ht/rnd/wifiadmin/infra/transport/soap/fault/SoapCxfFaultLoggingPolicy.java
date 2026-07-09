@@ -1,12 +1,9 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap.fault;
 
+import hr.ht.rnd.wifiadmin.infra.transport.soap.PlatformExceptionMapper;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.cxf.CxfFaultLoggingPolicy;
 
 import org.apache.cxf.message.Message;
-
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.util.Arrays;
 
 /**
  * SOAP-specific {@link CxfFaultLoggingPolicy} implementation.
@@ -26,30 +23,18 @@ public final class SoapCxfFaultLoggingPolicy implements CxfFaultLoggingPolicy {
             String description,
             Message message
     ) {
-        if (hasCause(exception, ConnectException.class)) {
+        if (isTransportFailure(exception)) {
             return false;
         }
-        if (hasCause(exception, SocketTimeoutException.class)) {
-            return false;
-        }
-        var faultMessage = exception.getMessage();
-        if (faultMessage == null) {
-            return true;
-        }
-        return Arrays.stream(SoapFaultCode.values())
-                .map(SoapFaultCode::value)
-                .noneMatch(faultMessage::contains);
+        return !SoapFaultDecoder.isSoapFault(exception);
     }
 
-    private static boolean hasCause(
-            Throwable throwable,
-            Class<? extends Throwable> type
-    ) {
-        while (throwable != null) {
-            if (type.isInstance(throwable)) {
+    private static boolean isTransportFailure(Throwable t) {
+        while (t != null) {
+            if (PlatformExceptionMapper.toTransportException(t).isPresent()) {
                 return true;
             }
-            throwable = throwable.getCause();
+            t = t.getCause();
         }
         return false;
     }
