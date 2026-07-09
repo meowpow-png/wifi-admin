@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, solution, dev ]
+    paths:
+      - ".github/workflows/**"
+      - "backend/build.gradle"
+      - "backend/settings.gradle"
+      - "backend/gradle.properties"
+      - "backend/gradle/**"
+      - "backend/gradlew"
+      - "backend/gradlew.bat"
+      - "backend/build-logic/**"
+      - "backend/src/**"
+      - '!**/*.md'
+
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: false
+          cache-cleanup: never
+
+      - name: Build and test
+        working-directory: backend
+        run: ./gradlew check coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v6
+        with:
+          files: backend/build/reports/jacoco/coverage/coverage.xml
+          disable_search: true
+          fail_ci_if_error: true
