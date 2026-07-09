@@ -6,8 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 class AesPasswordEncryptorTest {
 
@@ -19,8 +18,11 @@ class AesPasswordEncryptorTest {
         @SuppressWarnings("DataFlowIssue")
         @DisplayName("Throws NullPointerException when key is null")
         void should_ThrowNullPointerException_when_KeyIsNull() {
-            assertThatThrownBy(() -> new AesPasswordEncryptor(null))
-                    .isInstanceOf(NullPointerException.class);
+            var thrown = catchThrowable(() -> new AesPasswordEncryptor(
+                    null,
+                    TestPasswordEncryptor.CIPHERTEXT_PREFIX
+            ));
+            assertThat(thrown).isInstanceOf(NullPointerException.class);
         }
     }
 
@@ -37,7 +39,7 @@ class AesPasswordEncryptorTest {
             var encrypted = encryptor.encrypt(password);
 
             assertThat(encrypted)
-                    .startsWith(AesPasswordEncryptor.ciphertextPrefix())
+                    .startsWith(TestPasswordEncryptor.CIPHERTEXT_PREFIX)
                     .doesNotContain(password.value());
         }
 
@@ -96,7 +98,8 @@ class AesPasswordEncryptorTest {
         @Test
         @DisplayName("Throws IllegalArgumentException when ciphertext is malformed")
         void should_ThrowIllegalArgumentException_when_CiphertextIsMalformed() {
-            var prefix = AesPasswordEncryptor.ciphertextPrefix();
+            var prefix = TestPasswordEncryptor.CIPHERTEXT_PREFIX;
+
             assertThatThrownBy(() -> TestPasswordEncryptor.aes().decrypt(prefix + "invalid"))
                     .isInstanceOf(IllegalArgumentException.class);
         }

@@ -97,7 +97,7 @@ public class SecurityConfiguration {
     @Bean
     PasswordEncryptor passwordEncryptor(SecurityProperties properties) {
         var key = aesKey(properties.aesKey());
-        return new AesPasswordEncryptor(key);
+        return new AesPasswordEncryptor(key, "enc:v1:");
     }
 
     private static SecretKey aesKey(String encodedKey) {
