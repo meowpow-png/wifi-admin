@@ -19,7 +19,7 @@ compose-prod *args:
 
 # Build the backend Docker image
 compose-build *args:
-    @./gradlew clean build -x test
+    @./gradlew clean assemble
     @just compose-dev build {{args}}
 
 # Build codex agent docker image
