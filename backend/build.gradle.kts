@@ -62,6 +62,17 @@ testing {
         register<JvmTestSuite>("integrationTest") {
             dependencies {
                 implementation(project())
+                implementation(testFixtures(project()))
+                implementation(libs.spring.boot.starter.test)
+
+                implementation(platform(libs.mockito.bom))
+                implementation(libs.mockito.junit.jupiter)
+
+                implementation(libs.okhttp3.mockwebserver)
+
+                implementation(platform(libs.testcontainers.bom))
+                implementation(libs.testcontainers.postgres)
+                implementation(libs.testcontainers.jdbc)
             }
         }
         register<JvmTestSuite>("architectureTest") {
