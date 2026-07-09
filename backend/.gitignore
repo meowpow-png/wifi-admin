@@ -1,6 +1,7 @@
 # IntelliJ IDEA
 .idea/*
 !.idea/codeStyles/
+!.idea/runConfigurations
 
 # Java
 *.class
