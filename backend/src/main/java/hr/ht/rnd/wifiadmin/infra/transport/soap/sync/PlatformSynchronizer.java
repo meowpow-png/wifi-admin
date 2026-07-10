@@ -42,8 +42,8 @@ public final class PlatformSynchronizer {
 
     /**
      * Starts platform synchronization.
-     *
-     * <p><strong>Implementation Note:</strong>
+     * <p>
+     * <strong>Implementation Note:</strong>
      * Configuration retrieval is dispatched synchronously,
      * while persistence executes asynchronously
      * through application events.
