@@ -29,4 +29,10 @@ codex-build *args:
 # Start and enter codex agent docker container
 codex-run:
     @just codex-build
+    @./gradlew compileAllClasses
     @just compose-dev run --rm codex
+
+# Start an interactive shell in the codex container
+codex-shell:
+    @just codex-build
+    @just compose-dev run --rm -it codex sh

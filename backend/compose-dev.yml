@@ -34,6 +34,7 @@ services:
     environment:
       LOCAL_UID: ${LOCAL_UID}
       LOCAL_GID: ${LOCAL_GID}
+      CODEX_WARMUP: ${CODEX_WARMUP:-false}
       HOME: /home/codex
     stdin_open: true
     tty: true

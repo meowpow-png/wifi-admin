@@ -151,6 +151,19 @@ tasks.register<JavaExec>("wsdl2java") {
     )
 }
 
+tasks.register("compileAllClasses") {
+    group = LifecycleBasePlugin.BUILD_GROUP
+    description = "Compiles all project source sets."
+
+    dependsOn(
+        tasks.named("classes"),
+        tasks.named("testClasses"),
+        tasks.named("testFixturesClasses"),
+        tasks.named("integrationTestClasses"),
+        tasks.named("architectureTestClasses")
+    )
+}
+
 tasks.withType<Test>().configureEach {
     outputs.upToDateWhen { false }
     useJUnitPlatform()
