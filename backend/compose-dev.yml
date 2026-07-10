@@ -40,6 +40,7 @@ services:
     tty: true
     volumes:
       - codex-home:/home/codex
+      - ./.codex:/workspace/.codex:Z
       - ./docker/codex/AGENTS.md:/workspace/AGENTS.md:ro,Z
       - ./docker/codex/tasks:/workspace/tasks:ro,Z
       - ./docs/TESTING.md:/workspace/TESTING.md:ro,Z
