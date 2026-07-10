@@ -5,24 +5,27 @@ import hr.ht.rnd.wifiadmin.application.exception.PlatformResponseException;
 import hr.ht.rnd.wifiadmin.domain.wifi.TestWifiConfigurations;
 import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.flow.support.WifiConfigurationResponses;
+import hr.ht.rnd.wifiadmin.infra.app.TestClock;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class WifiConfigurationRetrievalFlowTest extends WifiConfigurationFlowTest {
 
+    @Autowired
+    private TestClock clock;
+
     @Test
     @DisplayName("Returns cached configuration when configuration exists")
     void should_ReturnCachedConfiguration_when_ConfigurationExists() throws Exception {
         var configuration = TestWifiConfigurations.builder().build();
-        repository.save(configuration, LocalDate.of(2026, 7, 10));
+        repository.save(configuration, clock.localDate());
 
         var result = retrieveConfiguration(configuration)
                 .andExpect(status().isOk());

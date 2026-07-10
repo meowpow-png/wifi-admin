@@ -9,8 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -28,7 +26,7 @@ class WifiConfigurationEntityMapperTest {
                     .withPassword(password)
                     .build();
 
-            var lastSynchronized = LocalDate.now(TestClock.create());
+            var lastSynchronized = TestClock.create().localDate();
             var entity = entityMapper().toEntity(
                     configuration,
                     lastSynchronized
@@ -81,7 +79,7 @@ class WifiConfigurationEntityMapperTest {
                     TestWifiConfigurations.SSID,
                     WifiEncryptionType.WPA2_PSK,
                     encryptor.encrypt(password),
-                    LocalDate.parse("2025-01-01")
+                    TestClock.create().localDate()
             );
             var configuration = entityMapper().toDomain(entity);
 
@@ -101,7 +99,7 @@ class WifiConfigurationEntityMapperTest {
                     TestWifiConfigurations.SSID,
                     WifiEncryptionType.OPEN,
                     null,
-                    LocalDate.parse("2025-01-01")
+                    TestClock.create().localDate()
             );
             var configuration = entityMapper().toDomain(entity);
 

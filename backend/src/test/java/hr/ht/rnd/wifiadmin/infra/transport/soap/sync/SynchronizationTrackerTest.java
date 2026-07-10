@@ -3,6 +3,7 @@ package hr.ht.rnd.wifiadmin.infra.transport.soap.sync;
 import hr.ht.rnd.wifiadmin.application.exception.PersistenceException;
 import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationRepository;
 import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.infra.app.TestClock;
 
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -21,8 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SynchronizationTrackerTest {
 
-    private static final LocalDate SYNCHRONIZATION_DATE =
-            LocalDate.of(2026, 7, 9);
+    private static final LocalDate SYNCHRONIZATION_DATE = TestClock.create().localDate();
 
     @Nested
     @DisplayName("start")

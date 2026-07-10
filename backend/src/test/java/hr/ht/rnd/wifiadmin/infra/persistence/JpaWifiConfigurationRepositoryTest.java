@@ -2,6 +2,7 @@ package hr.ht.rnd.wifiadmin.infra.persistence;
 
 import hr.ht.rnd.wifiadmin.application.exception.PersistenceException;
 import hr.ht.rnd.wifiadmin.domain.wifi.TestWifiConfigurations;
+import hr.ht.rnd.wifiadmin.infra.app.TestClock;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -59,7 +58,7 @@ class JpaWifiConfigurationRepositoryTest {
         @DisplayName("Throws PersistenceException when save fails")
         void should_ThrowPersistenceException_when_SaveFails() {
             var configuration = TestWifiConfigurations.builder().build();
-            var date = LocalDate.of(2025, 10, 26);
+            var date = TestClock.create().localDate();
             var entity = Mockito.mock(WifiConfigurationEntity.class);
             var cause = new RuntimeException("boom");
 
@@ -79,7 +78,7 @@ class JpaWifiConfigurationRepositoryTest {
         @Test
         @DisplayName("Throws PersistenceException when delete fails")
         void should_ThrowPersistenceException_when_DeleteFails() {
-            var date = LocalDate.of(2025, 10, 26);
+            var date = TestClock.create().localDate();
             var cause = new RuntimeException("boom");
 
             Mockito.doThrow(cause).when(jpaRepository).deleteOlderThan(date);
