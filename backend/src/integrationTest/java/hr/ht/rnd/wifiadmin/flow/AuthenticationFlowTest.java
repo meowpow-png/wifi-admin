@@ -3,8 +3,9 @@ package hr.ht.rnd.wifiadmin.flow;
 import hr.ht.rnd.wifiadmin.application.outbound.AccessTokenVerifier;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.LoginRequest;
 import hr.ht.rnd.wifiadmin.test.autoconfigure.MockMvcIntegrationTest;
+import hr.ht.rnd.wifiadmin.test.config.AuthenticationTestConfiguration;
+import hr.ht.rnd.wifiadmin.test.support.AuthenticationHandler;
 import hr.ht.rnd.wifiadmin.test.support.AuthenticationRequests;
-import hr.ht.rnd.wifiadmin.test.support.AuthenticationResponses;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,17 +19,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @MockMvcIntegrationTest
-@Import({
-        AuthenticationRequests.class,
-        AuthenticationResponses.class
-})
+@Import(AuthenticationTestConfiguration.class)
 public class AuthenticationFlowTest {
 
     @Autowired
-    private AuthenticationRequests requests;
-
-    @Autowired
-    private AuthenticationResponses responses;
+    private AuthenticationHandler auth;
 
     @Autowired
     private AccessTokenVerifier tokenVerifier;
@@ -40,9 +35,9 @@ public class AuthenticationFlowTest {
                 AuthenticationRequests.ADMIN_USERNAME,
                 AuthenticationRequests.ADMIN_PASSWORD
         );
-        var result = requests.login(request).andExpect(status().isOk());
+        var result = auth.requests().login(request).andExpect(status().isOk());
 
-        var response = responses.login(result);
+        var response = auth.responses().login(result);
 
         assertThat(response.token()).isNotBlank();
         assertThat(tokenVerifier.verify(response.token()))
@@ -52,21 +47,23 @@ public class AuthenticationFlowTest {
     @Test
     @DisplayName("Returns unauthorized for invalid credentials")
     void should_ReturnUnauthorized_when_CredentialsAreInvalid() throws Exception {
-        requests.login(AuthenticationRequests.ADMIN_USERNAME, "invalid-password")
+        var password = "invalid-password";
+
+        auth.requests().login(AuthenticationRequests.ADMIN_USERNAME, password)
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     @DisplayName("Returns bad request for blank credentials")
     void should_ReturnBadRequest_when_CredentialsAreBlank() throws Exception {
-        requests.login("", "")
+        auth.requests().login("", "")
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("Returns bad request for malformed JSON")
     void should_ReturnBadRequest_when_JsonIsMalformed() throws Exception {
-        requests.loginWithBody("{\"username\":\"admin\"")
+        auth.requests().loginWithBody("{\"username\":\"admin\"")
                 .andExpect(status().isBadRequest());
     }
 }

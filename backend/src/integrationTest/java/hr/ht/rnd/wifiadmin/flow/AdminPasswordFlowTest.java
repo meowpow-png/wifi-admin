@@ -4,9 +4,10 @@ import hr.ht.rnd.wifiadmin.application.outbound.AdminAccountRepository;
 import hr.ht.rnd.wifiadmin.application.outbound.PasswordHasher;
 import hr.ht.rnd.wifiadmin.domain.account.AdminAccount;
 import hr.ht.rnd.wifiadmin.test.autoconfigure.MockMvcIntegrationTest;
+import hr.ht.rnd.wifiadmin.test.config.AuthenticationTestConfiguration;
 import hr.ht.rnd.wifiadmin.test.support.AdminPasswordRequests;
+import hr.ht.rnd.wifiadmin.test.support.AuthenticationHandler;
 import hr.ht.rnd.wifiadmin.test.support.AuthenticationRequests;
-import hr.ht.rnd.wifiadmin.test.support.AuthenticationResponses;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,8 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @MockMvcIntegrationTest
 @Import({
-        AuthenticationRequests.class,
-        AuthenticationResponses.class,
+        AuthenticationTestConfiguration.class,
         AdminPasswordRequests.class
 })
 class AdminPasswordFlowTest {
@@ -31,10 +31,7 @@ class AdminPasswordFlowTest {
     private static final String NEW_PASSWORD = "new-password";
 
     @Autowired
-    private AuthenticationRequests authRequests;
-
-    @Autowired
-    private AuthenticationResponses authResponses;
+    private AuthenticationHandler auth;
 
     @Autowired
     private AdminPasswordRequests passwordRequests;
@@ -57,7 +54,7 @@ class AdminPasswordFlowTest {
     @Test
     @DisplayName("Changes password when request is authenticated")
     void should_ChangePassword_when_RequestIsAuthenticated() throws Exception {
-        var token = accessToken();
+        var token = auth.accessToken();
         var password = AuthenticationRequests.ADMIN_PASSWORD;
 
         passwordRequests.changePassword(token, password, NEW_PASSWORD)
@@ -67,7 +64,7 @@ class AdminPasswordFlowTest {
     @Test
     @DisplayName("Persists password hash when password is changed")
     void should_PersistPasswordHash_when_PasswordIsChanged() throws Exception {
-        var token = accessToken();
+        var token = auth.accessToken();
         var password = AuthenticationRequests.ADMIN_PASSWORD;
 
         passwordRequests.changePassword(token, password, NEW_PASSWORD)
@@ -91,19 +88,17 @@ class AdminPasswordFlowTest {
     @Test
     @DisplayName("Returns unauthorized when current password is incorrect")
     void should_ReturnUnauthorized_when_CurrentPasswordIsIncorrect() throws Exception {
-        passwordRequests.changePassword(accessToken(), "invalid-password", NEW_PASSWORD)
+        var token = auth.accessToken();
+        var currentPassword = "invalid-password";
+
+        passwordRequests.changePassword(token, currentPassword, NEW_PASSWORD)
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     @DisplayName("Returns bad request when password fields are blank")
     void should_ReturnBadRequest_when_PasswordFieldsAreBlank() throws Exception {
-        passwordRequests.changePassword(accessToken(), "", "")
+        passwordRequests.changePassword(auth.accessToken(), "", "")
                 .andExpect(status().isBadRequest());
-    }
-
-    private String accessToken() throws Exception {
-        var result = authRequests.login().andExpect(status().isOk());
-        return authResponses.login(result).token();
     }
 }
