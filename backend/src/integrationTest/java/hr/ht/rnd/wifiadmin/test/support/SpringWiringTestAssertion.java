@@ -1,7 +1,8 @@
 package hr.ht.rnd.wifiadmin.test.support;
 
 import org.springframework.aop.support.AopUtils;
-import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.scheduling.config.ScheduledTask;
@@ -21,21 +22,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SuppressWarnings("UnusedReturnValue")
 public final class SpringWiringTestAssertion {
 
-    private final AssertableApplicationContext context;
+    private final TestApplicationContext context;
 
-    private SpringWiringTestAssertion(AssertableApplicationContext context) {
+    private SpringWiringTestAssertion(TestApplicationContext context) {
         this.context = context;
-    }
-
-    /**
-     * Creates a fluent assertion for the specified context.
-     *
-     * @param context the context to assert against
-     *
-     * @return the fluent assertion
-     */
-    public static SpringWiringTestAssertion assertThatContext(AssertableApplicationContext context) {
-        return new SpringWiringTestAssertion(context);
     }
 
     /**
@@ -45,7 +35,7 @@ public final class SpringWiringTestAssertion {
      */
     public SpringWiringTestAssertion starts() {
         var message = "Expected application context to start successfully, but it failed";
-        assertThat(context).as(message).hasNotFailed();
+        assertThat(context.startupFailure()).as(message).isNull();
 
         return this;
     }
@@ -60,9 +50,9 @@ public final class SpringWiringTestAssertion {
      */
     public SpringWiringTestAssertion hasSingleBean(Class<?> beanType) {
         var message = "Expected exactly one bean of type %s, but found none or multiple";
-        assertThat(context)
+        assertThat(context.getBeansOfType(beanType))
                 .as(message.formatted(beanType.getSimpleName()))
-                .hasSingleBean(beanType);
+                .hasSize(1);
 
         return this;
     }
@@ -77,9 +67,9 @@ public final class SpringWiringTestAssertion {
      */
     public SpringWiringTestAssertion hasBean(String beanName) {
         var message = "Expected bean named '%s' to be present in context, but it was not found";
-        assertThat(context)
+        assertThat(context.containsBean(beanName))
                 .as(message.formatted(beanName))
-                .hasBean(beanName);
+                .isTrue();
 
         return this;
     }
@@ -94,9 +84,9 @@ public final class SpringWiringTestAssertion {
      */
     public SpringWiringTestAssertion doesNotHaveBean(Class<?> beanType) {
         var message = "Expected no beans of type %s to be present in context, but at least one was found";
-        assertThat(context)
+        assertThat(context.getBeansOfType(beanType))
                 .as(message.formatted(beanType.getSimpleName()))
-                .doesNotHaveBean(beanType);
+                .isEmpty();
 
         return this;
     }
@@ -159,6 +149,56 @@ public final class SpringWiringTestAssertion {
     }
 
     /**
+     * Asserts that a Spring event listener
+     * is declared for the expected event type.
+     *
+     * @param beanType the type of the bean containing the listener method
+     * @param eventType the expected event type
+     *
+     * @return the fluent assertion
+     */
+    public SpringWiringTestAssertion hasEventListenerMethod(Class<?> beanType, Class<?> eventType) {
+        var bean = context.getBean(beanType);
+        var targetClass = AopUtils.getTargetClass(bean);
+
+        var listeners = findEventListenerMethods(targetClass, eventType);
+        var listener = "%s listener for %s".formatted(
+                targetClass.getSimpleName(),
+                eventType.getSimpleName()
+        );
+        assertThat(listeners)
+                .as("Expected %s to declare exactly one event listener method", listener)
+                .hasSize(1);
+
+        return this;
+    }
+
+    /**
+     * Asserts that an asynchronous method
+     * is declared for the expected argument type.
+     *
+     * @param beanType the type of the bean containing the async method
+     * @param argumentType the expected argument type
+     *
+     * @return the fluent assertion
+     */
+    public SpringWiringTestAssertion hasAsyncMethod(Class<?> beanType, Class<?> argumentType) {
+        var bean = context.getBean(beanType);
+        var targetClass = AopUtils.getTargetClass(bean);
+
+        var asyncMethods = findAsyncMethods(targetClass, argumentType);
+        var method = "%s async method for %s".formatted(
+                targetClass.getSimpleName(),
+                argumentType.getSimpleName()
+        );
+        assertThat(asyncMethods)
+                .as("Expected %s to declare exactly one async method", method)
+                .hasSize(1);
+
+        return this;
+    }
+
+    /**
      * Asserts that all public methods of
      * the specified bean are transactional.
      *
@@ -205,7 +245,11 @@ public final class SpringWiringTestAssertion {
         return this;
     }
 
-    AssertableApplicationContext getContext() {
+    static SpringWiringTestAssertion assertThatContext(TestApplicationContext context) {
+        return new SpringWiringTestAssertion(context);
+    }
+
+    TestApplicationContext getContext() {
         return context;
     }
 
@@ -220,6 +264,30 @@ public final class SpringWiringTestAssertion {
     ) {
         return taskDescription.contains(beanType.getSimpleName())
                 && taskDescription.contains(methodName);
+    }
+
+    private List<Method> findEventListenerMethods(Class<?> type, Class<?> eventType) {
+        return Arrays.stream(type.getDeclaredMethods())
+                .filter(method -> method.isAnnotationPresent(EventListener.class))
+                .filter(method -> listensFor(method, eventType))
+                .toList();
+    }
+
+    private List<Method> findAsyncMethods(Class<?> type, Class<?> argumentType) {
+        return Arrays.stream(type.getDeclaredMethods())
+                .filter(method -> Arrays.equals(method.getParameterTypes(), new Class<?>[]{argumentType}))
+                .filter(method -> method.isAnnotationPresent(Async.class))
+                .toList();
+    }
+
+    private boolean listensFor(Method method, Class<?> eventType) {
+        return Arrays.equals(method.getParameterTypes(), new Class<?>[]{eventType})
+                || declaresEventType(method.getAnnotation(EventListener.class), eventType);
+    }
+
+    private boolean declaresEventType(EventListener annotation, Class<?> eventType) {
+        return Arrays.asList(annotation.value()).contains(eventType)
+                || Arrays.asList(annotation.classes()).contains(eventType);
     }
 
     private List<String> findNonTransactionalMethods(Class<?> targetClass) {

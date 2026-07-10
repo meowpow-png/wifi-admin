@@ -11,6 +11,24 @@ public final class TestPlatformProperties {
         return new Builder();
     }
 
+    public static String[] propertyValues(PlatformProperties properties) {
+        var retry = properties.retry();
+
+        return new String[] {
+                "platform.soap-endpoint=" + properties.soapEndpoint(),
+                "platform.cpe-id-format=" + properties.cpeIdFormat(),
+                "platform.cpe-id-count=" + properties.cpeIdCount(),
+                "platform.sync-on-startup=" + properties.syncOnStartup(),
+                "platform.sync-schedule=" + properties.syncSchedule(),
+                "platform.connection-timeout=" + properties.connectionTimeout(),
+                "platform.receive-timeout=" + properties.receiveTimeout(),
+                "platform.retry.max-attempts=" + retry.maxAttempts(),
+                "platform.retry.delay=" + retry.delay(),
+                "platform.retry.max-delay=" + retry.maxDelay(),
+                "platform.retry.delay-multiplier=" + retry.delayMultiplier()
+        };
+    }
+
     public static final class Builder {
 
         private String soapEndpoint = "https://platform.example.com/soap";

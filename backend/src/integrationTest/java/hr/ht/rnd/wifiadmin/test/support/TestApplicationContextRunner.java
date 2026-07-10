@@ -3,8 +3,8 @@ package hr.ht.rnd.wifiadmin.test.support;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.DefaultApplicationArguments;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Fluent builder for configuring and
- * executing {@link ApplicationContextRunner} tests.
+ * executing application context runner tests.
  */
 public final class TestApplicationContextRunner {
 
@@ -31,15 +31,27 @@ public final class TestApplicationContextRunner {
      * @return the builder
      */
     public static Builder from(ApplicationContextRunner runner) {
-        return new Builder(runner);
+        return new Builder(new StandardContextRunner(runner));
+    }
+
+    /**
+     * Creates a builder for the specified
+     * web application context runner.
+     *
+     * @param runner the web application context runner
+     *
+     * @return the builder
+     */
+    public static Builder from(WebApplicationContextRunner runner) {
+        return new Builder(new WebContextRunner(runner));
     }
 
     public static final class Builder {
 
         private final List<Consumer<SpringWiringTestAssertion>> assertions = new ArrayList<>();
-        private ApplicationContextRunner runner;
+        private TestContextRunner runner;
 
-        private Builder(ApplicationContextRunner runner) {
+        private Builder(TestContextRunner runner) {
             this.runner = runner;
         }
 
@@ -49,8 +61,6 @@ public final class TestApplicationContextRunner {
          * @param properties the property values
          *
          * @return the builder
-         *
-         * @see ApplicationContextRunner#withPropertyValues(String...)
          */
         public Builder withPropertyValues(String... properties) {
             this.runner = runner.withPropertyValues(properties);
@@ -64,8 +74,6 @@ public final class TestApplicationContextRunner {
          * @param configs the configuration classes
          *
          * @return the builder
-         *
-         * @see ApplicationContextRunner#withUserConfiguration(Class[])
          */
         public Builder withConfiguration(Class<?>... configs) {
             this.runner = runner.withUserConfiguration(configs);
@@ -148,6 +156,34 @@ public final class TestApplicationContextRunner {
         }
 
         /**
+         * Asserts that a Spring event listener
+         * is declared for the expected event type.
+         *
+         * @param beanType the type of the bean containing the listener method
+         * @param eventType the expected event type
+         *
+         * @return the builder
+         */
+        public Builder hasEventListenerMethod(Class<?> beanType, Class<?> eventType) {
+            assertions.add(a -> a.hasEventListenerMethod(beanType, eventType));
+            return this;
+        }
+
+        /**
+         * Asserts that an asynchronous method
+         * is declared for the expected argument type.
+         *
+         * @param beanType the type of the bean containing the async method
+         * @param argumentType the expected argument type
+         *
+         * @return the builder
+         */
+        public Builder hasAsyncMethod(Class<?> beanType, Class<?> argumentType) {
+            assertions.add(a -> a.hasAsyncMethod(beanType, argumentType));
+            return this;
+        }
+
+        /**
          * Asserts that all public methods of
          * the specified bean are transactional.
          *
@@ -225,10 +261,7 @@ public final class TestApplicationContextRunner {
          * verifies all configured assertions.
          */
         public void doesNotFail() {
-            runner.run(context -> {
-                var assertion = assertion(context).starts();
-                assertions.forEach(a -> a.accept(assertion));
-            });
+            runner.run(this::assertContextStarts);
         }
 
         /**
@@ -243,31 +276,91 @@ public final class TestApplicationContextRunner {
          * @param expected the expected exception type
          */
         public void failsWithException(Class<? extends Throwable> expected) {
-            runner.run(context -> {
-                var startupFailure = context.getStartupFailure();
-                if (startupFailure != null) {
-                    if (expected.isInstance(startupFailure)) {
-                        return;
-                    }
-                    assertThat(startupFailure).hasCauseInstanceOf(expected);
-                    return;
-                }
-                var assertion = assertion(context);
-                try {
-                    assertions.forEach(a -> a.accept(assertion));
-                }
-                catch (ApplicationRunnerException e) {
-                    var cause = e.getCause() != null ? e.getCause() : e;
-                    assertThat(cause).isInstanceOf(expected);
-                    return;
-                }
-                var message = "Expected exception of type %s but nothing was thrown";
-                throw new AssertionError(message.formatted(expected.getName()));
-            });
+            runner.run(context ->
+                    assertContextFailsWith(context, expected)
+            );
         }
 
-        private SpringWiringTestAssertion assertion(AssertableApplicationContext ctx) {
+        private void assertContextStarts(TestApplicationContext context) {
+            var assertion = assertion(context).starts();
+            assertions.forEach(a -> a.accept(assertion));
+        }
+
+        private void assertContextFailsWith(
+                TestApplicationContext context,
+                Class<? extends Throwable> expected
+        ) {
+            var startupFailure = context.startupFailure();
+            if (startupFailure != null) {
+                assertThat(hasException(startupFailure, expected)).isTrue();
+                return;
+            }
+            var assertion = assertion(context);
+            try {
+                assertions.forEach(a -> a.accept(assertion));
+            }
+            catch (ApplicationRunnerException e) {
+                assertThat(hasException(e, expected)).isTrue();
+                return;
+            }
+            var message = "Expected exception of type %s but nothing was thrown";
+            throw new AssertionError(message.formatted(expected.getName()));
+        }
+
+        private static boolean hasException(
+                Throwable failure,
+                Class<? extends Throwable> expected
+        ) {
+            for (var current = failure; current != null; current = current.getCause()) {
+                if (expected.isInstance(current)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private SpringWiringTestAssertion assertion(TestApplicationContext ctx) {
             return SpringWiringTestAssertion.assertThatContext(ctx);
+        }
+    }
+
+    private record StandardContextRunner(ApplicationContextRunner runner) implements TestContextRunner {
+
+        @Override
+        public TestContextRunner withPropertyValues(String... properties) {
+            return new StandardContextRunner(runner.withPropertyValues(properties));
+        }
+
+        @Override
+        public TestContextRunner withUserConfiguration(Class<?>... configs) {
+            return new StandardContextRunner(runner.withUserConfiguration(configs));
+        }
+
+        @Override
+        public void run(TestContextAssertionConsumer consumer) {
+            runner.run(context ->
+                    consumer.accept(TestApplicationContext.from(context))
+            );
+        }
+    }
+
+    private record WebContextRunner(WebApplicationContextRunner runner) implements TestContextRunner {
+
+        @Override
+        public TestContextRunner withPropertyValues(String... properties) {
+            return new WebContextRunner(runner.withPropertyValues(properties));
+        }
+
+        @Override
+        public TestContextRunner withUserConfiguration(Class<?>... configs) {
+            return new WebContextRunner(runner.withUserConfiguration(configs));
+        }
+
+        @Override
+        public void run(TestContextAssertionConsumer consumer) {
+            runner.run(context ->
+                    consumer.accept(TestApplicationContext.from(context))
+            );
         }
     }
 
@@ -279,7 +372,7 @@ public final class TestApplicationContextRunner {
     }
 
     @TestConfiguration
-    @EnableTransactionManagement
+    @EnableTransactionManagement(proxyTargetClass = true)
     static class TestTransactionConfiguration {}
 
     @EnableScheduling
