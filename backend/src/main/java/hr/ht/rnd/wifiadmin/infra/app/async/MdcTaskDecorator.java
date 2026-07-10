@@ -18,6 +18,11 @@ import java.util.Objects;
  * is submitted and restored for the duration of
  * its execution. The restored context is
  * cleared after execution completes.
+ * <p>
+ * <strong>API Note:</strong>
+ * This class is stateless and thread-safe.
+ * A single instance may be safely reused
+ * across multiple task submissions.
  */
 @Component
 final class MdcTaskDecorator implements TaskDecorator {

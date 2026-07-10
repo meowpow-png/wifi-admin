@@ -11,13 +11,15 @@ import java.util.concurrent.Executors;
 @Configuration(proxyBeanMethods = false)
 public class AsyncConfiguration {
 
+    private static final MdcTaskDecorator DECORATOR = new MdcTaskDecorator();
+
     @Bean
     @SuppressWarnings("resource")
     Executor asyncExecutor() {
         var delegate = Executors.newVirtualThreadPerTaskExecutor();
 
         return command -> delegate.execute(
-                new MdcTaskDecorator().decorate(command)
+                DECORATOR.decorate(command)
         );
     }
 }

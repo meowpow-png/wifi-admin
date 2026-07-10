@@ -7,6 +7,17 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Executor;
 
+/**
+ * Configures the application's asynchronous
+ * execution infrastructure.
+ * <p>
+ * <strong>Implementation Note:</strong>
+ * The executor is injected by qualifier rather
+ * than type to allow test configurations to provide
+ * an alternative implementation under the same
+ * bean name, enabling asynchronous execution
+ * to be disabled during integration testing.
+ */
 @Component
 public class AppAsyncConfigurer implements AsyncConfigurer {
 
