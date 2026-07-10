@@ -21,8 +21,6 @@ import org.junit.jupiter.api.BeforeEach;
 })
 abstract class WifiConfigurationFlowTest extends AuthenticatedFlowTest {
 
-    Wifi wifi;
-
     @Autowired
     WifiConfigurationRepository repository;
 
@@ -31,6 +29,8 @@ abstract class WifiConfigurationFlowTest extends AuthenticatedFlowTest {
 
     @Autowired
     private JdbcTemplate jdbc;
+
+    Wifi wifi;
 
     @Autowired
     void setupWifiConfigurationFixtures(

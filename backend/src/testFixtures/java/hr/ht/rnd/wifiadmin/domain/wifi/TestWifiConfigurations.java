@@ -15,6 +15,10 @@ public final class TestWifiConfigurations {
         return new Builder();
     }
 
+    public static WifiConfiguration forCpeId(String cpeId) {
+        return builder().withCpeId(cpeId).build();
+    }
+
     public static final class Builder {
 
         private String cpeId = CPE_ID;

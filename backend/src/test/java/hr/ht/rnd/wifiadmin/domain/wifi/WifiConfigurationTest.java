@@ -59,54 +59,50 @@ class WifiConfigurationTest {
         @Test
         @DisplayName("Throws NullPointerException when CPE ID is null")
         void should_ThrowNullPointerException_when_CpeIdIsNull() {
-            assertThatThrownBy(() -> TestWifiConfigurations.builder()
-                    .withCpeId(null)
-                    .build())
+            assertThatThrownBy(() -> TestWifiConfigurations.forCpeId(null))
                     .isInstanceOf(NullPointerException.class);
         }
 
         @Test
         @DisplayName("Throws IllegalArgumentException when CPE ID is blank")
         void should_ThrowIllegalArgumentException_when_CpeIdIsBlank() {
-            assertThatThrownBy(() -> TestWifiConfigurations.builder()
-                    .withCpeId(" ")
-                    .build())
+            assertThatThrownBy(() -> TestWifiConfigurations.forCpeId(" "))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         @DisplayName("Throws NullPointerException when Wi-Fi band is null")
         void should_ThrowNullPointerException_when_WifiBandIsNull() {
-            assertThatThrownBy(() -> TestWifiConfigurations.builder()
-                    .withWifiBand(null)
-                    .build())
+            var builder = TestWifiConfigurations.builder();
+
+            assertThatThrownBy(() -> builder.withWifiBand(null).build())
                     .isInstanceOf(NullPointerException.class);
         }
 
         @Test
         @DisplayName("Throws NullPointerException when SSID is null")
         void should_ThrowNullPointerException_when_SsidIsNull() {
-            assertThatThrownBy(() -> TestWifiConfigurations.builder()
-                    .withSsid(null)
-                    .build())
+            var builder = TestWifiConfigurations.builder();
+
+            assertThatThrownBy(() -> builder.withSsid(null).build())
                     .isInstanceOf(NullPointerException.class);
         }
 
         @Test
         @DisplayName("Throws IllegalArgumentException when SSID is blank")
         void should_ThrowIllegalArgumentException_when_SsidIsBlank() {
-            assertThatThrownBy(() -> TestWifiConfigurations.builder()
-                    .withSsid(" ")
-                    .build())
+            var builder = TestWifiConfigurations.builder();
+
+            assertThatThrownBy(() -> builder.withSsid(" ").build())
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         @DisplayName("Throws NullPointerException when password is required and missing")
         void should_ThrowNullPointerException_when_PasswordIsRequiredAndMissing() {
-            assertThatThrownBy(() -> TestWifiConfigurations.builder()
-                    .withPassword(null)
-                    .build())
+            var builder = TestWifiConfigurations.builder();
+
+            assertThatThrownBy(() -> builder.withPassword(null).build())
                     .isInstanceOf(NullPointerException.class);
         }
     }
