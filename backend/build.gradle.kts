@@ -126,6 +126,9 @@ dependencies {
 }
 val wsdlPackage = "hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl"
 val wsdlPath = wsdlPackage.replace('.', '/')
+val wsdlInputDir = layout.projectDirectory.dir("src/main/resources/wsdl")
+val wsdlOutputDir = layout.buildDirectory.dir("generated/sources/wsdl")
+val wsdlFile = layout.projectDirectory.file("src/main/resources/wsdl/wifi-platform.wsdl")
 
 tasks.register<JavaExec>("wsdl2java") {
     group = "soap"
@@ -134,14 +137,17 @@ tasks.register<JavaExec>("wsdl2java") {
     classpath = cxfCodegen
     mainClass.set("org.apache.cxf.tools.wsdlto.WSDLToJava")
 
+    inputs.dir(wsdlInputDir)
+    outputs.dir(wsdlOutputDir)
+
     args(
         "-d",
-        layout.buildDirectory.dir("generated/sources/wsdl").get().asFile.absolutePath,
+        wsdlOutputDir.get().asFile.absolutePath,
         "-p",
         wsdlPackage,
         "-wsdlLocation",
         "classpath:wsdl/wifi-platform.wsdl",
-        "${projectDir}/src/main/resources/wsdl/wifi-platform.wsdl"
+        wsdlFile.asFile.absolutePath
     )
 }
 
