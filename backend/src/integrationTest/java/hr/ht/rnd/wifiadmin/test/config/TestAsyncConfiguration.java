@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Primary;
 
 import java.util.concurrent.Executor;
 
-@TestConfiguration
+@TestConfiguration(proxyBeanMethods = false)
 public class TestAsyncConfiguration {
 
     @Primary

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Primary;
 
 import org.jspecify.annotations.NullMarked;
 
-@TestConfiguration
+@TestConfiguration(proxyBeanMethods = false)
 public class TestEncryptionConfiguration {
 
     @Bean

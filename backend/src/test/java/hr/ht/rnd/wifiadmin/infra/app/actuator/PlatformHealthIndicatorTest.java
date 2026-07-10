@@ -57,7 +57,7 @@ class PlatformHealthIndicatorTest {
         @Test
         @DisplayName("Returns up when health check CPE is not found")
         void should_ReturnUp_when_HealthCheckCpeIsNotFound() {
-            var indicator = new PlatformHealthIndicator(client, TestPlatformProperties.builder().build());
+            var indicator = new PlatformHealthIndicator(client, properties);
 
             mockClientThrows(new CpeNotFoundException(
                     TestWifiConfigurations.CPE_ID,
@@ -72,7 +72,7 @@ class PlatformHealthIndicatorTest {
         @Test
         @DisplayName("Returns down when platform communication fails")
         void should_ReturnDown_when_PlatformCommunicationFails() {
-            var indicator = new PlatformHealthIndicator(client, TestPlatformProperties.builder().build());
+            var indicator = new PlatformHealthIndicator(client, properties);
             var exception = new PlatformConnectionException("Connection failed", new RuntimeException());
 
             mockClientThrows(exception);

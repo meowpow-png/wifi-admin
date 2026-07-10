@@ -1,5 +1,6 @@
 package hr.ht.rnd.wifiadmin.infra.app.async;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -15,6 +16,7 @@ public class AsyncConfiguration {
 
     @Bean
     @SuppressWarnings("resource")
+    @ConditionalOnMissingBean(name = "asyncExecutor")
     Executor asyncExecutor() {
         var delegate = Executors.newVirtualThreadPerTaskExecutor();
 

@@ -23,8 +23,7 @@ public final class TestWifiConfigurations {
         private WifiEncryptionType encryptionType = ENCRYPTION_TYPE;
         private WifiPassword password = PASSWORD;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         public Builder withCpeId(String cpeId) {
             this.cpeId = cpeId;
