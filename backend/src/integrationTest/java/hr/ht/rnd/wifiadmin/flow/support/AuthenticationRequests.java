@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.test.support;
+package hr.ht.rnd.wifiadmin.flow.support;
 
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.LoginRequest;
 
@@ -18,9 +18,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class AuthenticationRequests {
 
     private static final String LOGIN_ENDPOINT = "/auth/login";
-
-    public static final String ADMIN_USERNAME = "test";
-    public static final String ADMIN_PASSWORD = "test";
 
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
@@ -56,7 +53,7 @@ public class AuthenticationRequests {
      * @throws Exception if the request cannot be performed
      */
     public ResultActions login() throws Exception {
-        return login(ADMIN_USERNAME, ADMIN_PASSWORD);
+        return login(TestAdminAccount.USERNAME, TestAdminAccount.PASSWORD);
     }
 
     /**

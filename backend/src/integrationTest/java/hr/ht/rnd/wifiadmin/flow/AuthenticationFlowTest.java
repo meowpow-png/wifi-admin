@@ -1,15 +1,10 @@
 package hr.ht.rnd.wifiadmin.flow;
 
 import hr.ht.rnd.wifiadmin.application.outbound.AccessTokenVerifier;
+import hr.ht.rnd.wifiadmin.flow.support.TestAdminAccount;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.LoginRequest;
-import hr.ht.rnd.wifiadmin.test.autoconfigure.MockMvcIntegrationTest;
-import hr.ht.rnd.wifiadmin.test.config.AuthenticationTestConfiguration;
-import hr.ht.rnd.wifiadmin.test.support.AuthenticationHandler;
-import hr.ht.rnd.wifiadmin.test.support.AuthenticationRequests;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,13 +12,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@MockMvcIntegrationTest
-@Import(AuthenticationTestConfiguration.class)
-public class AuthenticationFlowTest {
-
-    @Autowired
-    private AuthenticationHandler auth;
+public class AuthenticationFlowTest extends AuthenticatedFlowTest {
 
     @Autowired
     private AccessTokenVerifier tokenVerifier;
@@ -32,8 +21,8 @@ public class AuthenticationFlowTest {
     @DisplayName("Returns JWT when credentials are valid")
     void should_ReturnJwt_when_CredentialsAreValid() throws Exception {
         var request = new LoginRequest(
-                AuthenticationRequests.ADMIN_USERNAME,
-                AuthenticationRequests.ADMIN_PASSWORD
+                TestAdminAccount.USERNAME,
+                TestAdminAccount.PASSWORD
         );
         var result = auth.requests().login(request).andExpect(status().isOk());
 
@@ -41,7 +30,7 @@ public class AuthenticationFlowTest {
 
         assertThat(response.token()).isNotBlank();
         assertThat(tokenVerifier.verify(response.token()))
-                .isEqualTo(AuthenticationRequests.ADMIN_USERNAME);
+                .isEqualTo(TestAdminAccount.USERNAME);
     }
 
     @Test
@@ -49,7 +38,7 @@ public class AuthenticationFlowTest {
     void should_ReturnUnauthorized_when_CredentialsAreInvalid() throws Exception {
         var password = "invalid-password";
 
-        auth.requests().login(AuthenticationRequests.ADMIN_USERNAME, password)
+        auth.requests().login(TestAdminAccount.USERNAME, password)
                 .andExpect(status().isUnauthorized());
     }
 

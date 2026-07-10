@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.test.support;
+package hr.ht.rnd.wifiadmin.flow.support;
 
 import org.springframework.boot.test.context.TestComponent;
 

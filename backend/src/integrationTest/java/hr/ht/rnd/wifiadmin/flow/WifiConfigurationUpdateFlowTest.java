@@ -6,9 +6,9 @@ import hr.ht.rnd.wifiadmin.application.exception.PlatformResponseException;
 import hr.ht.rnd.wifiadmin.domain.wifi.TestWifiConfigurations;
 import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.domain.wifi.WifiEncryptionType;
+import hr.ht.rnd.wifiadmin.flow.support.WifiConfigurationRequests;
+import hr.ht.rnd.wifiadmin.flow.support.WifiConfigurationResponses;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationRequest;
-import hr.ht.rnd.wifiadmin.test.support.WifiConfigurationRequests;
-import hr.ht.rnd.wifiadmin.test.support.WifiConfigurationResponses;
 
 import org.springframework.test.web.servlet.ResultActions;
 
