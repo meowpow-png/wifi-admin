@@ -4,6 +4,8 @@ import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationRepository;
 import hr.ht.rnd.wifiadmin.flow.support.WifiConfigurationRequests;
 import hr.ht.rnd.wifiadmin.flow.support.WifiConfigurationResponses;
 import hr.ht.rnd.wifiadmin.test.autoconfigure.DisableAsync;
+import hr.ht.rnd.wifiadmin.test.autoconfigure.DisableEncryption;
+import hr.ht.rnd.wifiadmin.test.autoconfigure.DisableHashing;
 import hr.ht.rnd.wifiadmin.test.config.TestPlatformClientConfiguration;
 import hr.ht.rnd.wifiadmin.test.support.TestPlatformClient;
 
@@ -14,6 +16,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.junit.jupiter.api.BeforeEach;
 
 @DisableAsync
+@DisableHashing
+@DisableEncryption
 @Import({
         WifiConfigurationRequests.class,
         WifiConfigurationResponses.class,

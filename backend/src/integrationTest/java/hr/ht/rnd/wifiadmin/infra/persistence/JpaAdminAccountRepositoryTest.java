@@ -2,7 +2,6 @@ package hr.ht.rnd.wifiadmin.infra.persistence;
 
 import hr.ht.rnd.wifiadmin.application.outbound.AdminAccountRepository;
 import hr.ht.rnd.wifiadmin.domain.account.TestAccounts;
-import hr.ht.rnd.wifiadmin.test.autoconfigure.DisableEncryption;
 import hr.ht.rnd.wifiadmin.test.autoconfigure.JpaIntegrationTest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisableEncryption
 @JpaIntegrationTest
 @Import({
         JpaAdminAccountRepository.class,
