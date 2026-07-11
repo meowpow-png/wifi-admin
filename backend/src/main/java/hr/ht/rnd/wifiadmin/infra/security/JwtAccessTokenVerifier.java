@@ -6,8 +6,6 @@ import hr.ht.rnd.wifiadmin.application.outbound.AccessTokenVerifier;
 import io.jsonwebtoken.Clock;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 
 import java.util.Objects;
 import javax.crypto.SecretKey;
@@ -17,11 +15,11 @@ import javax.crypto.SecretKey;
  */
 final class JwtAccessTokenVerifier implements AccessTokenVerifier {
 
-    private final SecurityProperties properties;
+    private final SecretKey signingKey;
     private final Clock clock;
 
-    JwtAccessTokenVerifier(SecurityProperties properties, Clock clock) {
-        this.properties = properties;
+    JwtAccessTokenVerifier(SecretKey signingKey, Clock clock) {
+        this.signingKey = signingKey;
         this.clock = clock;
     }
 
@@ -34,7 +32,7 @@ final class JwtAccessTokenVerifier implements AccessTokenVerifier {
         try {
             return Jwts.parser()
                     .clock(clock)
-                    .verifyWith(signingKey())
+                    .verifyWith(signingKey)
                     .build()
                     .parseSignedClaims(token)
                     .getPayload()
@@ -43,10 +41,5 @@ final class JwtAccessTokenVerifier implements AccessTokenVerifier {
         catch (JwtException e) {
             throw new AuthenticationException(e);
         }
-    }
-
-    private SecretKey signingKey() {
-        var key = Decoders.BASE64.decode(properties.jwtSecret());
-        return Keys.hmacShaKeyFor(key);
     }
 }

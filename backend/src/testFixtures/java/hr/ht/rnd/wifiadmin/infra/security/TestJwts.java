@@ -21,7 +21,8 @@ public final class TestJwts {
             SecurityProperties properties,
             Clock clock
     ) {
-        return new JwtAccessTokenIssuer(properties, clock);
+        var key = signingKey(properties);
+        return new JwtAccessTokenIssuer(properties, key, clock);
     }
 
     public static AccessTokenIssuer tokenIssuer() {
@@ -36,7 +37,7 @@ public final class TestJwts {
             Clock clock
     ) {
         return new JwtAccessTokenVerifier(
-                properties,
+                signingKey(properties),
                 () -> Date.from(clock.instant())
         );
     }
@@ -54,5 +55,10 @@ public final class TestJwts {
                 .clock(new FixedClock(Date.from(clock.instant())))
                 .verifyWith(Keys.hmacShaKeyFor(decodedSecret))
                 .build();
+    }
+
+    private static javax.crypto.SecretKey signingKey(SecurityProperties properties) {
+        var decodedSecret = Decoders.BASE64.decode(properties.jwtSecret());
+        return Keys.hmacShaKeyFor(decodedSecret);
     }
 }

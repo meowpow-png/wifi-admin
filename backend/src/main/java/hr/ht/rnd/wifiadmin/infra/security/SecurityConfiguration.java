@@ -21,6 +21,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import jakarta.servlet.DispatcherType;
 
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+
 import java.sql.Date;
 import java.time.Clock;
 import java.util.Base64;
@@ -116,9 +119,21 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    JwtAccessTokenVerifier jwtAccessTokenVerifier(Clock clock, SecurityProperties properties) {
+    SecretKey jwtSigningKey(SecurityProperties properties) {
+        try {
+            var key = Decoders.BASE64.decode(properties.jwtSecret());
+            return Keys.hmacShaKeyFor(key);
+        }
+        catch (RuntimeException e) {
+            var message = "JWT secret must be a valid Base64-encoded HMAC key";
+            throw new IllegalStateException(message, e);
+        }
+    }
+
+    @Bean
+    JwtAccessTokenVerifier jwtAccessTokenVerifier(Clock clock, SecretKey jwtSigningKey) {
         return new JwtAccessTokenVerifier(
-                properties,
+                jwtSigningKey,
                 () -> Date.from(clock.instant())
         );
     }
