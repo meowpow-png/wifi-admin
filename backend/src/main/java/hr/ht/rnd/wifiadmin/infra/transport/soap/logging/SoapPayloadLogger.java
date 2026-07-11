@@ -1,5 +1,7 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap.logging;
 
+import hr.ht.rnd.wifiadmin.common.LoggerNames;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +22,7 @@ import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
 
 final class SoapPayloadLogger {
 
-    private static final String NAME = "hr.ht.rnd.wifiadmin.infra.transport.soap.payload";
-    private static final Logger log = LoggerFactory.getLogger(NAME);
+    private static final Logger log = LoggerFactory.getLogger(LoggerNames.SOAP_PAYLOAD);
 
     private SoapPayloadLogger() {}
 
