@@ -8,7 +8,7 @@ server-start:
 
 # Check application health
 server-health:
-    @curl -s {{actuator-url}}/health | jq
+    @curl -s {{actuator-url}}/health/platform | jq
 
 # Synchronize platform and database
 server-sync:
@@ -22,4 +22,4 @@ server-logging level:
 # Enable or disable SOAP payload logging
 [arg("enabled", help="Whether SOAP payload logging is enabled", pattern="true|false")]
 server-payload-logging enabled:
-    @curl -X POST {{actuator-url}}/payload-logging/{{enabled}}
+    @curl -X POST {{actuator-url}}/payloadlogging/{{enabled}}

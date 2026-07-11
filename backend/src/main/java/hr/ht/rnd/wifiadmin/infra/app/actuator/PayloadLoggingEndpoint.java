@@ -14,7 +14,7 @@ import static hr.ht.rnd.wifiadmin.common.StructuredLog.Event;
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.info;
 
 @Component
-@Endpoint(id = "payload-logging")
+@Endpoint(id = ActuatorEndpoints.PAYLOAD_LOGGING)
 class PayloadLoggingEndpoint extends LoggingEndpoint {
 
     private static final Logger log = LoggerFactory.getLogger(PayloadLoggingEndpoint.class);
