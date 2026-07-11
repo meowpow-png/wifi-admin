@@ -43,7 +43,12 @@ services:
       - ./.codex:/workspace/.codex:Z
       - ./docker/codex/AGENTS.md:/workspace/AGENTS.md:ro,Z
       - ./docker/codex/tasks:/workspace/tasks:ro,Z
-      - ./docs/TESTING.md:/workspace/TESTING.md:ro,Z
+      - ./docs:/workspace/docs:Z
+      - ./mockoon:/workspace/mockoon:ro,Z
+      - ./openapi:/workspace/openapi:ro,Z
+      - ./just:/workspace/just:Z
+      - ./Justfile:/workspace/Justfile:Z
+      - ./README.md:/workspace/README.md:Z
       - ./.gradle:/workspace/.gradle:Z
       - ./build:/workspace/build:Z
       - ./src:/workspace/src:Z
