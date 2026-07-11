@@ -71,7 +71,7 @@ class WifiConfigurationRetrievalFlowTest extends WifiConfigurationFlowTest {
         var cpeId = TestWifiConfigurations.CPE_ID;
 
         platformClient.onRetrieveConfiguration(cpeId, () -> {
-                    throw TestPlatformExceptions.responseException();
+                    throw TestPlatformExceptions.invalidResponse();
                 }
         );
         wifi.requests().retrieveConfiguration(auth.accessToken(), cpeId)
@@ -84,7 +84,7 @@ class WifiConfigurationRetrievalFlowTest extends WifiConfigurationFlowTest {
         var cpeId = TestWifiConfigurations.CPE_ID;
 
         platformClient.onRetrieveConfiguration(cpeId, () -> {
-                    throw TestPlatformExceptions.connectionException();
+                    throw TestPlatformExceptions.failedConnection();
                 }
         );
         wifi.requests().retrieveConfiguration(auth.accessToken(), cpeId)

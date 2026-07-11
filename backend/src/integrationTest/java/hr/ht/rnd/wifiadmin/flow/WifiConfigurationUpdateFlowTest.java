@@ -110,7 +110,7 @@ class WifiConfigurationUpdateFlowTest extends WifiConfigurationFlowTest {
     void should_ReturnBadGateway_when_PlatformResponseIsInvalid() throws Exception {
         var configuration = TestWifiConfigurations.builder().build();
         platformClient.onUpdateConfiguration(configuration.cpeId(), () -> {
-                    throw TestPlatformExceptions.responseException();
+                    throw TestPlatformExceptions.invalidResponse();
                 }
         );
         updateConfiguration(configuration)
@@ -122,7 +122,7 @@ class WifiConfigurationUpdateFlowTest extends WifiConfigurationFlowTest {
     void should_ReturnBadGateway_when_PlatformTransportFails() throws Exception {
         var configuration = TestWifiConfigurations.builder().build();
         platformClient.onUpdateConfiguration(configuration.cpeId(), () -> {
-                    throw TestPlatformExceptions.connectionException();
+                    throw TestPlatformExceptions.failedConnection();
                 }
         );
         updateConfiguration(configuration)

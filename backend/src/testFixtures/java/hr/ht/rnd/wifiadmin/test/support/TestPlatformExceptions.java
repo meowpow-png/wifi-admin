@@ -13,20 +13,20 @@ public final class TestPlatformExceptions {
         return new CpeNotFoundException(cpeId, cause);
     }
 
-    public static PlatformConnectionException connectionException() {
-        return connectionException("failure");
+    public static PlatformConnectionException failedConnection() {
+        return failedConnection("failure");
     }
 
-    public static PlatformConnectionException connectionException(String causeMessage) {
+    public static PlatformConnectionException failedConnection(String causeMessage) {
         var cause = new RuntimeException(causeMessage);
         return new PlatformConnectionException("Connection failed", cause);
     }
 
-    public static PlatformResponseException responseException() {
-        return responseException("invalid");
+    public static PlatformResponseException invalidResponse() {
+        return invalidResponse("invalid");
     }
 
-    public static PlatformResponseException responseException(String causeMessage) {
+    public static PlatformResponseException invalidResponse(String causeMessage) {
         return new PlatformResponseException(new RuntimeException(causeMessage));
     }
 }

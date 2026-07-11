@@ -33,7 +33,7 @@ class SynchronizationEndpointFailureFlowTest extends WifiConfigurationFlowTest {
     @Test
     @DisplayName("Propagates failure when platform transport fails")
     void should_PropagateFailure_when_PlatformTransportFails() {
-        var exception = TestPlatformExceptions.connectionException();
+        var exception = TestPlatformExceptions.failedConnection();
 
         platformClient.addConfiguration(TestWifiConfigurations.forCpeId("CPE_001"));
         platformClient.onRetrieveConfiguration("CPE_002", () -> {
@@ -46,7 +46,7 @@ class SynchronizationEndpointFailureFlowTest extends WifiConfigurationFlowTest {
     @Test
     @DisplayName("Aborts synchronization when platform transport fails")
     void should_AbortSynchronization_when_PlatformTransportFails() {
-        var exception = TestPlatformExceptions.connectionException();
+        var exception = TestPlatformExceptions.failedConnection();
         var staleConfiguration = TestWifiConfigurations.forCpeId("CPE_999");
 
         repository.save(

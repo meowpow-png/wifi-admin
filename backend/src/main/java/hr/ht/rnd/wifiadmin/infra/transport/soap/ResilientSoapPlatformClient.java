@@ -26,7 +26,7 @@ final class ResilientSoapPlatformClient
 
     private static final Logger log = LoggerFactory.getLogger(ResilientSoapPlatformClient.class);
 
-    private final SoapPlatformClient delegate;
+    private final PlatformClient delegate;
 
     /**
      * Creates a new resilient SOAP client.
@@ -34,7 +34,7 @@ final class ResilientSoapPlatformClient
      * @param retryTemplate the retry template
      * @param delegate the SOAP client to decorate
      */
-    ResilientSoapPlatformClient(RetryTemplate retryTemplate, SoapPlatformClient delegate) {
+    ResilientSoapPlatformClient(RetryTemplate retryTemplate, PlatformClient delegate) {
         super(retryTemplate);
 
         this.delegate = delegate;

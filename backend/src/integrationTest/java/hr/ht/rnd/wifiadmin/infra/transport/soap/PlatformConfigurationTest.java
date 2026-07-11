@@ -145,7 +145,7 @@ class PlatformConfigurationTest {
             Consumer<RetryTemplate> assertion = template -> {
                 var policy = template.getRetryPolicy();
 
-                assertThat(policy.shouldRetry(TestPlatformExceptions.connectionException())).isTrue();
+                assertThat(policy.shouldRetry(TestPlatformExceptions.failedConnection())).isTrue();
                 assertThat(policy.shouldRetry(new IllegalStateException("failure"))).isFalse();
             };
             TestApplicationContextRunner.from(runner)

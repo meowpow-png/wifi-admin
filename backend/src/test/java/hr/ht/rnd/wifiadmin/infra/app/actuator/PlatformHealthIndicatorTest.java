@@ -71,7 +71,7 @@ class PlatformHealthIndicatorTest {
         @DisplayName("Returns down when platform communication fails")
         void should_ReturnDown_when_PlatformCommunicationFails() {
             var indicator = new PlatformHealthIndicator(client, properties);
-            var exception = TestPlatformExceptions.connectionException();
+            var exception = TestPlatformExceptions.failedConnection();
 
             mockClientThrows(exception);
 
