@@ -83,7 +83,7 @@ final class ResilientSoapPlatformClient
     }
 
     @Override
-    protected void onRecovery(Throwable cause, SoapRequestContext context) {
+    protected void onRetryExhausted(Throwable cause, SoapRequestContext context) {
         warn(log).withEvent(Event.PLATFORM_RETRY_EXHAUSTED)
                 .withField(Field.PLATFORM_REQUEST_CONTEXT, context.operation())
                 .withField(Field.CPE_ID, context.cpeId())

@@ -57,6 +57,7 @@ class ResilientClientTest {
             assertThat(result).isEqualTo(RESULT);
             assertThat(client.recoveryCause()).isNull();
             assertThat(client.recoveryContext()).isNull();
+            assertThat(client.onRetryExhaustedCalled()).isFalse();
             assertThat(client.onRecoveryCalled()).isFalse();
         }
 
@@ -76,6 +77,9 @@ class ResilientClientTest {
             assertThat(result).isEqualTo(RECOVERED_RESULT);
             assertThat(client.recoveryCause()).isSameAs(cause);
             assertThat(client.recoveryContext()).isEqualTo(CONTEXT);
+            assertThat(client.onRetryExhaustedCalled()).isTrue();
+            assertThat(client.onRetryExhaustedCause()).isSameAs(cause);
+            assertThat(client.onRetryExhaustedContext()).isEqualTo(CONTEXT);
             assertThat(client.onRecoveryCalled()).isTrue();
             assertThat(client.onRecoveryCause()).isSameAs(cause);
             assertThat(client.onRecoveryContext()).isEqualTo(CONTEXT);
@@ -98,6 +102,9 @@ class ResilientClientTest {
 
             assertThat(client.recoveryCause()).isSameAs(cause);
             assertThat(client.recoveryContext()).isEqualTo(CONTEXT);
+            assertThat(client.onRetryExhaustedCalled()).isTrue();
+            assertThat(client.onRetryExhaustedCause()).isSameAs(cause);
+            assertThat(client.onRetryExhaustedContext()).isEqualTo(CONTEXT);
             assertThat(client.onRecoveryCalled()).isFalse();
         }
     }

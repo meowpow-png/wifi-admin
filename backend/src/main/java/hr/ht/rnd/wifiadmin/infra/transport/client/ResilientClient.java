@@ -48,10 +48,22 @@ public abstract class ResilientClient<C> {
     }
 
     private <T> T attemptRecovery(Throwable cause, C context) {
+        onRetryExhausted(cause, context);
+
         T result = recoverOrThrow(cause, context);
         onRecovery(cause, context);
         return result;
     }
+
+    /**
+     * Invoked when retry attempts are exhausted.
+     * <p>
+     * The default implementation does nothing.
+     *
+     * @param cause the last failure
+     * @param context the request context
+     */
+    protected void onRetryExhausted(Throwable cause, C context) {}
 
     /**
      * Recovers from an exhausted retry attempt

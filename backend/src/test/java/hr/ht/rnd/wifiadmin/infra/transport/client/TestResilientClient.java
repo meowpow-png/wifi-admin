@@ -12,6 +12,9 @@ final class TestResilientClient extends ResilientClient<String> {
     private RuntimeException recoveryFailure;
     private Throwable recoveryCause;
     private String recoveryContext;
+    private boolean onRetryExhaustedCalled;
+    private Throwable onRetryExhaustedCause;
+    private String onRetryExhaustedContext;
     private boolean onRecoveryCalled;
     private Throwable onRecoveryCause;
     private String onRecoveryContext;
@@ -47,6 +50,14 @@ final class TestResilientClient extends ResilientClient<String> {
 
     @Override
     @NullMarked
+    protected void onRetryExhausted(Throwable cause, String context) {
+        onRetryExhaustedCalled = true;
+        onRetryExhaustedCause = cause;
+        onRetryExhaustedContext = context;
+    }
+
+    @Override
+    @NullMarked
     protected void onRecovery(Throwable cause, String context) {
         onRecoveryCalled = true;
         onRecoveryCause = cause;
@@ -59,6 +70,18 @@ final class TestResilientClient extends ResilientClient<String> {
 
     String recoveryContext() {
         return recoveryContext;
+    }
+
+    boolean onRetryExhaustedCalled() {
+        return onRetryExhaustedCalled;
+    }
+
+    Throwable onRetryExhaustedCause() {
+        return onRetryExhaustedCause;
+    }
+
+    String onRetryExhaustedContext() {
+        return onRetryExhaustedContext;
     }
 
     boolean onRecoveryCalled() {
