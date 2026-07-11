@@ -35,4 +35,7 @@ codex-run:
 # Start an interactive shell in the codex container
 codex-shell:
     @just codex-build
-    @just compose-dev run --rm -it codex sh
+    docker compose {{compose_dev}} run \
+        --rm \
+        --user root \
+        --entrypoint sh codex
