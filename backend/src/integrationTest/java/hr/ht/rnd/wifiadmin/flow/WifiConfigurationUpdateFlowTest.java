@@ -1,14 +1,12 @@
 package hr.ht.rnd.wifiadmin.flow;
 
-import hr.ht.rnd.wifiadmin.application.exception.CpeNotFoundException;
-import hr.ht.rnd.wifiadmin.application.exception.PlatformConnectionException;
-import hr.ht.rnd.wifiadmin.application.exception.PlatformResponseException;
 import hr.ht.rnd.wifiadmin.domain.wifi.TestWifiConfigurations;
 import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.domain.wifi.WifiEncryptionType;
 import hr.ht.rnd.wifiadmin.flow.support.WifiConfigurationRequests;
 import hr.ht.rnd.wifiadmin.flow.support.WifiConfigurationResponses;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationRequest;
+import hr.ht.rnd.wifiadmin.test.support.TestPlatformExceptions;
 
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -100,10 +98,7 @@ class WifiConfigurationUpdateFlowTest extends WifiConfigurationFlowTest {
     void should_ReturnNotFound_when_PlatformReportsMissingCpe() throws Exception {
         var configuration = TestWifiConfigurations.builder().build();
         platformClient.onUpdateConfiguration(configuration.cpeId(), () -> {
-                    throw new CpeNotFoundException(
-                            configuration.cpeId(),
-                            new RuntimeException("missing")
-                    );
+                    throw TestPlatformExceptions.cpeNotFound(configuration.cpeId());
                 }
         );
         updateConfiguration(configuration)
@@ -115,7 +110,7 @@ class WifiConfigurationUpdateFlowTest extends WifiConfigurationFlowTest {
     void should_ReturnBadGateway_when_PlatformResponseIsInvalid() throws Exception {
         var configuration = TestWifiConfigurations.builder().build();
         platformClient.onUpdateConfiguration(configuration.cpeId(), () -> {
-                    throw new PlatformResponseException(new RuntimeException("invalid"));
+                    throw TestPlatformExceptions.responseException();
                 }
         );
         updateConfiguration(configuration)
@@ -127,10 +122,7 @@ class WifiConfigurationUpdateFlowTest extends WifiConfigurationFlowTest {
     void should_ReturnBadGateway_when_PlatformTransportFails() throws Exception {
         var configuration = TestWifiConfigurations.builder().build();
         platformClient.onUpdateConfiguration(configuration.cpeId(), () -> {
-                    throw new PlatformConnectionException(
-                            "Connection failed",
-                            new RuntimeException("failure")
-                    );
+                    throw TestPlatformExceptions.connectionException();
                 }
         );
         updateConfiguration(configuration)

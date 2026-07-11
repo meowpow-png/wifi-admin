@@ -1,10 +1,10 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap;
 
-import hr.ht.rnd.wifiadmin.application.exception.PlatformConnectionException;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.cxf.CxfFaultLoggingPolicy;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiPlatformPortType;
 import hr.ht.rnd.wifiadmin.test.autoconfigure.WiringIntegrationTest;
 import hr.ht.rnd.wifiadmin.test.support.TestApplicationContextRunner;
+import hr.ht.rnd.wifiadmin.test.support.TestPlatformExceptions;
 
 import org.springframework.boot.context.properties.bind.validation.BindValidationException;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -145,17 +145,13 @@ class PlatformConfigurationTest {
             Consumer<RetryTemplate> assertion = template -> {
                 var policy = template.getRetryPolicy();
 
-                assertThat(policy.shouldRetry(platformConnectionFailure())).isTrue();
+                assertThat(policy.shouldRetry(TestPlatformExceptions.connectionException())).isTrue();
                 assertThat(policy.shouldRetry(new IllegalStateException("failure"))).isFalse();
             };
             TestApplicationContextRunner.from(runner)
                     .withBean(RetryTemplate.class, assertion)
                     .doesNotFail();
         }
-    }
-
-    private static PlatformConnectionException platformConnectionFailure() {
-        return new PlatformConnectionException("failure", new RuntimeException("cause"));
     }
 
     @TestConfiguration(proxyBeanMethods = false)

@@ -1,11 +1,10 @@
 package hr.ht.rnd.wifiadmin.flow;
 
-import hr.ht.rnd.wifiadmin.application.exception.PlatformConnectionException;
-import hr.ht.rnd.wifiadmin.application.exception.PlatformResponseException;
 import hr.ht.rnd.wifiadmin.domain.wifi.TestWifiConfigurations;
 import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.flow.support.WifiConfigurationResponses;
 import hr.ht.rnd.wifiadmin.infra.app.TestClock;
+import hr.ht.rnd.wifiadmin.test.support.TestPlatformExceptions;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
@@ -72,7 +71,7 @@ class WifiConfigurationRetrievalFlowTest extends WifiConfigurationFlowTest {
         var cpeId = TestWifiConfigurations.CPE_ID;
 
         platformClient.onRetrieveConfiguration(cpeId, () -> {
-                    throw new PlatformResponseException(new RuntimeException("invalid"));
+                    throw TestPlatformExceptions.responseException();
                 }
         );
         wifi.requests().retrieveConfiguration(auth.accessToken(), cpeId)
@@ -85,10 +84,7 @@ class WifiConfigurationRetrievalFlowTest extends WifiConfigurationFlowTest {
         var cpeId = TestWifiConfigurations.CPE_ID;
 
         platformClient.onRetrieveConfiguration(cpeId, () -> {
-                    throw new PlatformConnectionException(
-                            "Connection failed",
-                            new RuntimeException("failure")
-                    );
+                    throw TestPlatformExceptions.connectionException();
                 }
         );
         wifi.requests().retrieveConfiguration(auth.accessToken(), cpeId)

@@ -1,12 +1,11 @@
 package hr.ht.rnd.wifiadmin.infra.app.actuator;
 
-import hr.ht.rnd.wifiadmin.application.exception.CpeNotFoundException;
-import hr.ht.rnd.wifiadmin.application.exception.PlatformConnectionException;
 import hr.ht.rnd.wifiadmin.domain.wifi.TestWifiConfigurations;
 import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.PlatformProperties;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.SoapPlatformClient;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.TestPlatformProperties;
+import hr.ht.rnd.wifiadmin.test.support.TestPlatformExceptions;
 
 import org.springframework.boot.health.contributor.Status;
 
@@ -59,10 +58,9 @@ class PlatformHealthIndicatorTest {
         void should_ReturnUp_when_HealthCheckCpeIsNotFound() {
             var indicator = new PlatformHealthIndicator(client, properties);
 
-            mockClientThrows(new CpeNotFoundException(
-                    TestWifiConfigurations.CPE_ID,
-                    new RuntimeException()
-            ));
+            mockClientThrows(TestPlatformExceptions.cpeNotFound(
+                    TestWifiConfigurations.CPE_ID)
+            );
             var health = indicator.health();
 
             assertThat(health.getStatus()).isEqualTo(Status.UP);
@@ -73,7 +71,7 @@ class PlatformHealthIndicatorTest {
         @DisplayName("Returns down when platform communication fails")
         void should_ReturnDown_when_PlatformCommunicationFails() {
             var indicator = new PlatformHealthIndicator(client, properties);
-            var exception = new PlatformConnectionException("Connection failed", new RuntimeException());
+            var exception = TestPlatformExceptions.connectionException();
 
             mockClientThrows(exception);
 

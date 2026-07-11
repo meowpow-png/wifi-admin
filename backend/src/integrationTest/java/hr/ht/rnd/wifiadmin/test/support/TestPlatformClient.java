@@ -1,6 +1,5 @@
 package hr.ht.rnd.wifiadmin.test.support;
 
-import hr.ht.rnd.wifiadmin.application.exception.CpeNotFoundException;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
 import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 
@@ -67,7 +66,7 @@ public final class TestPlatformClient implements PlatformClient {
         if (configuration != null) {
             return configuration;
         }
-        throw new CpeNotFoundException(cpeId, new RuntimeException());
+        throw TestPlatformExceptions.cpeNotFound(cpeId);
     }
 
     private WifiConfiguration defaultUpdate(WifiConfiguration configuration) {
