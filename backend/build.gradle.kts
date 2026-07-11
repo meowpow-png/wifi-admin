@@ -66,6 +66,7 @@ testing {
                 implementation(testFixtures(project()))
                 implementation(libs.spring.boot.starter.test)
                 implementation(libs.spring.boot.starter.security)
+                implementation(libs.spring.boot.starter.actuator)
                 implementation(libs.spring.boot.jpa.test)
                 implementation(libs.spring.boot.webmvc.test)
                 implementation(libs.cxf.spring.boot.starter.jaxws)

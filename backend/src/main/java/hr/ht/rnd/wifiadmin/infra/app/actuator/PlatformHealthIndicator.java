@@ -10,7 +10,7 @@ import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.stereotype.Component;
 
-@Component("platform")
+@Component(ActuatorEndpoints.HEALTH)
 class PlatformHealthIndicator implements HealthIndicator {
 
     private final SoapPlatformClient client;
