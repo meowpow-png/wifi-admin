@@ -321,10 +321,13 @@ This project uses Gradle for build and verification tasks. Just recipes provide 
 | `./gradlew integrationTest`   | Run integration tests                                                 |
 | `./gradlew architectureTest`  | Run architecture tests                                                |
 | `./gradlew coverage`          | Generate aggregate JaCoCo coverage reports                            |
+| `./gradlew setup`             | Create the local `.env` file when it does not already exist           |
 | `./gradlew compileAllClasses` | Compile all source sets without running tests                         |
 | `./gradlew wsdl2java`         | Generate SOAP client classes from `wifi-platform.wsdl`                |
 
 **Note:** `check` task is finalized by `integrationTest`, so `./gradlew check` also triggers integration tests after the main check work completes.
+
+The `setup` task is provided by the project's internal environment Gradle plugin. It prepares a local development environment file with the variables expected by Gradle, Docker Compose, and the application runtime, while leaving an existing `.env` file unchanged.
 
 ### Just
 
@@ -428,11 +431,11 @@ The backend emits structured logs through Logback and exposes operational state 
 
 The application uses trace identifiers to correlate synchronous REST handling, SOAP platform calls, asynchronous event handling, and persistence follow-up work. SOAP payload logging is controlled separately from the main application logging level because payloads may contain sensitive data.
 
-Production compose deployment includes Grafana, Loki, and Alloy for log aggregation and dashboards.
+Production Docker Compose deployment includes Grafana, Loki, and Alloy for log aggregation and dashboards.
 
 ## Deployment
 
-The backend is packaged as a Docker image and can be deployed with compose recipes.
+The backend is packaged as a Docker image and can be deployed with Docker Compose recipes.
 
 Development deployment:
 

@@ -33,7 +33,7 @@ Both environments deploy the same Docker image, with runtime behavior determined
 
 ### Image
 
-The backend is packaged as a multi-stage Docker image to minimize the size of the final runtime image. The build stage uses the Eclipse Temurin JDK to compile the application and construct a custom Java runtime, while the final stage contains only the generated runtime and the application JAR.
+The backend is packaged as a multi-stage Docker image to minimize the size of the final runtime image. The application JAR is assembled before the Docker image is built, and the Docker build stage uses the Eclipse Temurin JDK to inspect the JAR and construct a custom Java runtime. The final stage contains only the generated runtime and the application JAR.
 
 ### Runtime
 
@@ -63,7 +63,7 @@ The image also provides a custom entrypoint that initializes the runtime environ
 
 The Codex workspace intentionally exposes only the subset of the repository required to perform testing and code review tasks. Source code, build logic, Gradle configuration, and task definitions are mounted into the container, while unrelated project files remain inaccessible.
 
-The selective workspace reduces the amount of repository content that Codex must analyze, improving context fidelity and keeping development tasks focused on the code under review. Files that Codex is expected only to inspect, such as task definitions and build configuration, are mounted read-only, while source code and build logic remain writable to allow implementation of code changes.
+The selective workspace reduces the amount of repository content that Codex must analyze, improving context fidelity and keeping development tasks focused on the code under review. Files that Codex is expected only to inspect, such as task definitions and generated API/mock inputs, are mounted read-only, while source code, documentation, build logic, and local helper scripts remain writable to allow implementation of code changes.
 
 ### Environment
 
@@ -83,7 +83,7 @@ The only exception is the SOAP platform endpoint, which is intentionally configu
 
 The production deployment includes an observability stack consisting of Grafana, Loki, and Alloy. Alloy collects structured logs from Docker containers, enriches them with additional metadata, and forwards them to Loki for centralized storage.
 
-Loki and Alloy are intentionally accessible only within the Docker network, as they are consumed exclusively by other containers. Grafana is exposed to the host to provide access to dashboards and log exploration during local deployment.
+Loki and Alloy are consumed exclusively by other containers and are not bound to fixed host ports. Grafana is exposed to the host to provide access to dashboards and log exploration during local deployment.
 
 ### Dashboards
 
@@ -139,5 +139,5 @@ Note that Grafana intentionally does not define a health check. The selected dis
 
 - The project intentionally uses an untagged Docker image because deployments are performed directly from the local source tree and no image registry or release process exists. Future production deployments should instead use immutable versioned image tags produced by a CI/CD pipeline
 - The backend (`8081`) and Actuator (`8082`) ports are intentionally exposed to the host to simplify local development and demonstration
-- Loki and Alloy are intentionally accessible only within the Docker network
+- Loki and Alloy are not bound to fixed host ports; Grafana is exposed on `3000`
 - A production deployment should place the application behind a reverse proxy and restrict access to management endpoints through network-level controls

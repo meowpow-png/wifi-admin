@@ -33,7 +33,7 @@ flowchart LR
 
 The application uses stateless token-based authentication to protect the REST API. 
 
-Administrator credentials are verified during login, after which authenticated clients receive a signed JWT that is presented with subsequent requests.Authentication is performed and authorization enforced by the infrastructure layer, allowing application services to operate independently of the underlying security framework.
+Administrator credentials are verified during login, after which authenticated clients receive a signed JWT that is presented with subsequent requests. Authentication is performed and authorization enforced by the infrastructure layer, allowing application services to operate independently of the underlying security framework.
 
 Note that the application does not maintain server-side authentication sessions. Instead, each request is authenticated independently using the JWT presented by the client.
 
@@ -87,7 +87,7 @@ flowchart LR
 
 ### Algorithm
 
-WiFi passwords are encrypted using AES-256-GCM with a randomly generated 96-bit nonce and a 128-bit authentication tag. A new nonce is generated using `SecureRandom` for every encryption operation and is never reused with the same encryption key. This provides confidentiality and integrity for persisted passwords.
+WiFi passwords are encrypted using AES-256-GCM with a randomly generated 96-bit nonce and a 128-bit authentication tag. A new nonce is generated using `SecureRandom` for every encryption operation, making nonce reuse with the same encryption key statistically unlikely. This provides confidentiality and integrity for persisted passwords.
 
 ### Ciphertext Format
 
@@ -107,8 +107,8 @@ The ciphertext is stored as text rather than binary to produce a self-describing
 Cryptographic keys are externalized through application configuration and supplied via environment variables. They are never stored in source control or persisted alongside protected data.
 
 ```properties
-wifi-admin.security.aes-key=${AES_KEY}
-wifi-admin.security.jwt-secret=${JWT_SECRET}
+security.aes-key=${AES_KEY}
+security.jwt-secret=${JWT_SECRET}
 ```
 
 ### Persistence
@@ -164,10 +164,10 @@ Authentication failures are logged with request context while omitting credentia
 
 Security-sensitive inputs are validated to detect configuration errors, malformed data, and invalid cryptographic material as early as possible.
 
-- The JWT signing key is validated during application startup
+- The JWT signing key is validated during application startup and must be a valid Base64-encoded HMAC key
 - The AES encryption key is validated during application startup and must be a valid Base64-encoded 256-bit AES key
 - JWTs are validated before an authenticated account is established for the request
 - Unknown ciphertext versions are rejected without attempting decryption
 - Ciphertext format is validated before decryption
 - Malformed or tampered ciphertext is rejected without attempting partial decryption
-- WiFi passwords are re-encrypted only when their plaintext value changes
+- WiFi passwords are encrypted whenever a WiFi configuration with a password is saved
