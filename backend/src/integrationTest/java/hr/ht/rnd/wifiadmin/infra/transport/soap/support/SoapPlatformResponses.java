@@ -23,6 +23,14 @@ public final class SoapPlatformResponses {
                 """.formatted(configuration(configuration))));
     }
 
+    public static MockResponse retrievedWithLeadingWhitespace(WifiConfiguration configuration) {
+        return soapOk("\n\t " + envelope("""
+                <tns:GetCpeIdResponse>
+                    %s
+                </tns:GetCpeIdResponse>
+                """.formatted(configuration(configuration))));
+    }
+
     public static MockResponse updated(WifiConfiguration configuration) {
         return soapOk(envelope("""
                 <tns:UpdateCpeIdResponse>

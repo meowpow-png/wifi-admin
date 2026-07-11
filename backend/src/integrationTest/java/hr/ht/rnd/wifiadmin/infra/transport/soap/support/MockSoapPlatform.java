@@ -34,6 +34,10 @@ public final class MockSoapPlatform {
         enqueue(SoapPlatformResponses.retrieved(configuration));
     }
 
+    public void enqueueRetrievedWithLeadingWhitespace(WifiConfiguration configuration) {
+        enqueue(SoapPlatformResponses.retrievedWithLeadingWhitespace(configuration));
+    }
+
     public void enqueueUpdated(WifiConfiguration configuration) {
         enqueue(SoapPlatformResponses.updated(configuration));
     }

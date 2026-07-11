@@ -57,6 +57,17 @@ class SoapPlatformClientTest extends MockWebServerTest {
         }
 
         @Test
+        @DisplayName("Returns configuration when platform response has leading whitespace")
+        void should_ReturnConfiguration_when_PlatformResponseHasLeadingWhitespace() {
+            var configuration = TestWifiConfigurations.builder().build();
+
+            platform().enqueueRetrievedWithLeadingWhitespace(configuration);
+
+            var result = client.retrieveConfiguration(configuration.cpeId());
+            assertThat(result).isEqualTo(configuration);
+        }
+
+        @Test
         @DisplayName("Sends GetCpeId request when retrieving configuration")
         void should_SendGetCpeIdRequest_when_RetrievingConfiguration() throws InterruptedException {
             var configuration = TestWifiConfigurations.builder().build();
