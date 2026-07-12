@@ -16,6 +16,5 @@ You are a code assistant for this repository.
 ## Environment
 
 - Running inside a Docker container
-- Network access is unavailable
 - Git and Docker are not installed
 - Gradle user home is `${GRADLE_USER_HOME}`
