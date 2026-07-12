@@ -1,4 +1,4 @@
-name: wifi-admin
+name: wifi-admin-api
 
 services:
   api:
@@ -24,7 +24,7 @@ services:
       - "8081:8081"
       - "8082:8082"
 
-  api-codex:
+  codex:
     image: hr-telekom/wifi-admin-codex:21-jdk
     build:
       context: ./docker/codex

@@ -14,10 +14,10 @@ flowchart TD
     BASE["postgres<br/>platform-mock"]
 
     DEV_NOTE["compose-dev.yml"]
-    DEV["wifi-admin-api"]
+    DEV["api<br/>codex"]
 
     PROD_NOTE["compose-prod.yml"]
-    PROD["wifi-admin-api<br/>loki<br/>alloy<br/>grafana"]
+    PROD["api<br/>loki<br/>alloy<br/>grafana"]
 
     BASE_NOTE --> BASE
     DEV_NOTE --> DEV
@@ -120,7 +120,7 @@ flowchart TD
 
     PLATFORM["SOAP Platform"]
 
-    WIFI_ADMIN_API["wifi-admin-api"]
+    WIFI_ADMIN_API["API"]
 
     LOKI["Loki"]
 
