@@ -1,7 +1,9 @@
+name: wifi-admin
+
 services:
-  backend:
-    image: wifi-admin-backend
-    container_name: backend
+  api:
+    image: hr-telekom/wifi-admin-api:1.0.0
+    container_name: api
     depends_on:
       postgres:
         condition: service_healthy

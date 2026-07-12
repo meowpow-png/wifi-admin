@@ -341,7 +341,7 @@ The `setup` task is provided by the project's internal environment Gradle plugin
 | `just compose <args>`                                                       | Run `docker compose` with arbitrary arguments                |
 | `just compose-dev <args>`                                                   | Run Docker Compose with development overlays                 |
 | `just compose-prod <args>`                                                  | Run Docker Compose with production overlays                  |
-| `just compose-build <args>`                                                 | Assemble the application and build the backend Docker image  |
+| `just compose-build <args>`                                                 | Assemble the application and build the `wifi-admin-api` Docker image |
 | `just server-start`                                                         | Start the backend with Gradle                                |
 | `just server-shutdown`                                                      | Shut down the backend through Actuator                       |
 | `just server-health`                                                        | Read platform health through Actuator                        |
@@ -435,7 +435,7 @@ Production Docker Compose deployment includes Grafana, Loki, and Alloy for log a
 
 ## Deployment
 
-The backend is packaged as a Docker image and can be deployed with Docker Compose recipes.
+The application is packaged as the `wifi-admin-api` Docker image and can be deployed with Docker Compose recipes.
 
 Development deployment:
 

@@ -2,7 +2,7 @@ FROM eclipse-temurin:21-jdk-alpine AS builder
 
 WORKDIR /build
 
-COPY build/libs/wifi-admin-backend-*.jar application.jar
+COPY build/libs/wifi-admin-api-*.jar application.jar
 
 RUN jar -xf application.jar
 
@@ -29,7 +29,7 @@ FROM alpine:3.23
 WORKDIR /app
 
 COPY --from=builder /runtime /opt/java
-COPY build/libs/wifi-admin-backend-*.jar application.jar
+COPY build/libs/wifi-admin-api-*.jar application.jar
 
 EXPOSE 8081
 

@@ -1,4 +1,4 @@
 pluginManagement {
     includeBuild("build-logic")
 }
-rootProject.name = 'wifi-admin-backend'
+rootProject.name = 'wifi-admin-api'

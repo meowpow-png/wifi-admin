@@ -1,8 +1,10 @@
+name: wifi-admin
+
 services:
-  backend:
+  api:
     build: .
-    image: wifi-admin-backend
-    container_name: backend
+    image: hr-telekom/wifi-admin-api:1.0.0
+    container_name: api
     depends_on:
       postgres:
         condition: service_healthy
@@ -23,9 +25,9 @@ services:
       - "8081:8081"
       - "8082:8082"
 
-  codex:
-    image: wifi-admin-codex
-    container_name: codex
+  api-codex:
+    image: hr-telekom/wifi-admin-codex:21-jdk
+    container_name: api-codex
     build:
       context: ./docker/codex
     working_dir: /workspace

@@ -2,7 +2,7 @@
 
 This document describes the project's deployment setup using Docker Compose.
 
-The application provides separate development and production deployments that share the same backend image while differing in runtime configuration and supporting services. It also explains the design decisions and trade-offs behind the deployment configuration.
+The application provides separate development and production deployments that share the same image while differing in runtime configuration and supporting services. It also explains the design decisions and trade-offs behind the deployment configuration.
 
 ## Architecture
 
@@ -14,10 +14,10 @@ flowchart TD
     BASE["postgres<br/>platform-mock"]
 
     DEV_NOTE["compose-dev.yml"]
-    DEV["backend"]
+    DEV["wifi-admin-api"]
 
     PROD_NOTE["compose-prod.yml"]
-    PROD["backend<br/>loki<br/>alloy<br/>grafana"]
+    PROD["wifi-admin-api<br/>loki<br/>alloy<br/>grafana"]
 
     BASE_NOTE --> BASE
     DEV_NOTE --> DEV
@@ -33,7 +33,7 @@ Both environments deploy the same Docker image, with runtime behavior determined
 
 ### Image
 
-The backend is packaged as a multi-stage Docker image to minimize the size of the final runtime image. The application JAR is assembled before the Docker image is built, and the Docker build stage uses the Eclipse Temurin JDK to inspect the JAR and construct a custom Java runtime. The final stage contains only the generated runtime and the application JAR.
+The backend application is packaged as a multi-stage Docker image to minimize the size of the final runtime image. The application JAR is assembled before the Docker image is built, and the Docker build stage uses the Eclipse Temurin JDK to inspect the JAR and construct a custom Java runtime. The final stage contains only the generated runtime and the application JAR.
 
 ### Runtime
 
@@ -120,7 +120,7 @@ flowchart TD
 
     PLATFORM["SOAP Platform"]
 
-    BACKEND["Backend"]
+    WIFI_ADMIN_API["wifi-admin-api"]
 
     LOKI["Loki"]
 
@@ -128,8 +128,8 @@ flowchart TD
 
     GRAFANA["Grafana"]
 
-    POSTGRES -->|healthy| BACKEND
-    PLATFORM -->|started| BACKEND
+    POSTGRES -->|healthy| WIFI_ADMIN_API
+    PLATFORM -->|started| WIFI_ADMIN_API
     LOKI -->|healthy| ALLOY
 ```
 
@@ -137,7 +137,7 @@ Note that Grafana intentionally does not define a health check. The selected dis
 
 ## Notes
 
-- The project intentionally uses an untagged Docker image because deployments are performed directly from the local source tree and no image registry or release process exists. Future production deployments should instead use immutable versioned image tags produced by a CI/CD pipeline
+- The project currently uses the local `hr-telekom/wifi-admin-api:1.0.0` image tag for Docker Compose deployments. Future production deployments should instead use immutable versioned image tags produced by a CI/CD pipeline
 - The backend (`8081`) and Actuator (`8082`) ports are intentionally exposed to the host to simplify local development and demonstration
 - Loki and Alloy are not bound to fixed host ports; Grafana is exposed on `3000`
 - A production deployment should place the application behind a reverse proxy and restrict access to management endpoints through network-level controls
