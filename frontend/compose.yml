@@ -20,6 +20,7 @@ services:
       - ./.codex:/workspace/shared:Z
       - ./docker/codex/AGENTS.md:/workspace/AGENTS.md:ro,Z
       - ./docker/codex/tasks:/workspace/tasks:ro,Z
+      - ./docker/codex/figma.json:/workspace/figma.json:ro,Z
       - ./docs:/workspace/docs:ro,Z
       - ./index.html:/workspace/index.html:Z
       - ./public:/workspace/public:Z
