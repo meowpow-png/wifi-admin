@@ -7,13 +7,18 @@ import styles from './LoginPage.module.css'
 
 type FormSubmitHandler = NonNullable<ComponentPropsWithoutRef<'form'>['onSubmit']>
 
-function LoginPage() {
+type LoginPageProps = {
+  onLogin: () => void
+}
+
+function LoginPage({ onLogin }: LoginPageProps) {
   const [username, setUsername] = useState('admin')
   const [password, setPassword] = useState('password')
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
   const handleSubmit: FormSubmitHandler = (event) => {
     event.preventDefault()
+    onLogin()
   }
 
   const loginFormProps = {

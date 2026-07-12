@@ -1,0 +1,403 @@
+.page {
+  min-height: 100svh;
+  overflow-x: auto;
+  background: var(--color-surface-black);
+  color: var(--color-text-primary);
+  font-family:
+    Inter,
+    'TeleNeo Web',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 980px;
+  height: 50px;
+  padding: 0 24px;
+  background: var(--color-surface-panel);
+  border-bottom: 1px solid var(--color-border-strong);
+}
+
+.headerBrand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  width: 26px;
+  height: 30px;
+  pointer-events: none;
+  --logo-size: 26px;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border-strong);
+}
+
+.productTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.productTitle svg {
+  color: var(--color-accent);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerActions time {
+  color: var(--color-ui-regular);
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.actionDivider {
+  width: 1px;
+  height: 16px;
+  background: var(--color-border-strong);
+}
+
+.userName {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.logoutButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid rgba(246, 20, 136, 0.31);
+  border-radius: 2px;
+  background: rgba(246, 20, 136, 0.09);
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  cursor: pointer;
+}
+
+.logoutButton:hover {
+  background: rgba(246, 20, 136, 0.19);
+}
+
+.logoutButton:focus-visible,
+.actionCell button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.searchInput:focus,
+.selectInput:focus,
+.securitySelect:focus {
+  border-color: var(--color-border-strong);
+  outline: none;
+}
+
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 980px;
+  height: 49px;
+  padding: 10px 24px 11px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border-strong);
+}
+
+.searchInput,
+.selectInput,
+.securitySelect {
+  height: 28px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 2px;
+  background: var(--color-surface-input);
+  color: var(--color-text-secondary);
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 12px;
+  line-height: 16px;
+  outline: none;
+}
+
+.searchInput {
+  width: 220px;
+  padding: 0 12px;
+  color: var(--color-text-primary);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.selectInput,
+.securitySelect {
+  appearance: none;
+  padding: 0 28px;
+  cursor: pointer;
+}
+
+.selectControl {
+  position: relative;
+}
+
+.selectIcon,
+.selectChevron {
+  position: absolute;
+  top: 50%;
+  color: var(--color-ui-regular);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.selectIcon {
+  left: 10px;
+}
+
+.selectChevron {
+  right: 8px;
+}
+
+.selectInput {
+  width: 154px;
+}
+
+.securitySelect {
+  width: 184px;
+}
+
+.recordCount {
+  margin-left: auto;
+  color: var(--color-ui-regular);
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.tableShell {
+  min-width: 980px;
+  padding: 16px 24px 32px;
+}
+
+.table {
+  width: 100%;
+  min-width: 936px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  color: var(--color-text-primary);
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+}
+
+.table th,
+.table td {
+  border-bottom: 1px solid var(--color-border-strong);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table th {
+  height: 33px;
+  padding: 0 16px;
+  color: var(--color-text-secondary);
+  background: var(--color-surface-panel);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 20%;
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 25%;
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: 21%;
+}
+
+.table th:nth-child(4),
+.table td:nth-child(4) {
+  width: 31%;
+}
+
+.table th:nth-child(5),
+.table td:nth-child(5) {
+  width: 42px;
+  padding: 0;
+  text-align: center;
+}
+
+.table th:nth-child(5) {
+  color: var(--color-text-secondary);
+}
+
+.table td {
+  height: 38px;
+  padding: 0 16px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.table tbody tr:nth-child(odd) {
+  background: var(--color-surface);
+}
+
+.table tbody tr:nth-child(even) {
+  background: var(--color-surface-panel);
+}
+
+.table tbody tr:hover {
+  background: var(--color-surface-subtle);
+}
+
+.sortedColumn {
+  color: var(--color-accent) !important;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 33px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+.sortButton svg {
+  opacity: 0.5;
+}
+
+.sortButton:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.cpeId {
+  color: var(--color-text-primary) !important;
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 20px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.badge svg {
+  flex: 0 0 auto;
+}
+
+.badgeBAND_2_4_GHZ {
+  border-color: rgba(253, 144, 56, 0.25);
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-on-subtle);
+}
+
+.badgeBAND_5_GHZ,
+.badgeWPA2_PSK,
+.badgeWPA2_ENTERPRISE {
+  border-color: rgba(125, 148, 249, 0.25);
+  background: var(--color-info-subtle);
+  color: var(--color-info-on-subtle);
+}
+
+.badgeOPEN {
+  border-color: rgba(146, 146, 150, 0.25);
+  background: var(--color-border-strong);
+  color: var(--color-ui-strong);
+}
+
+.badgeWPA3_SAE {
+  border-color: rgba(27, 210, 127, 0.25);
+  background: var(--color-success-subtle);
+  color: var(--color-success-on-subtle);
+}
+
+.badgeWPA_PSK {
+  border-color: rgba(253, 144, 56, 0.25);
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-on-subtle);
+}
+
+.badgeWEP {
+  border-color: rgba(251, 106, 85, 0.25);
+  background: var(--color-danger-subtle);
+  color: var(--color-danger-on-subtle);
+}
+
+.actionCell button {
+  display: grid;
+  width: 42px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  place-items: center;
+}
+
+.actionCell button:hover {
+  color: var(--color-accent);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 760px) {
+  .page {
+    min-width: 980px;
+  }
+}
