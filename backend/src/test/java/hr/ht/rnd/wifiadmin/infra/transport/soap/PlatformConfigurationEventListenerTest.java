@@ -5,6 +5,7 @@ import hr.ht.rnd.wifiadmin.application.event.PlatformConfigurationUpdatedEvent;
 import hr.ht.rnd.wifiadmin.application.exception.PersistenceException;
 import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationPersistence;
 import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationProjection;
+import hr.ht.rnd.wifiadmin.application.outbound.ConfigurationChangeNotifier;
 import hr.ht.rnd.wifiadmin.domain.wifi.TestWifiConfigurations;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.sync.SynchronizationTracker;
 
@@ -32,6 +33,9 @@ class PlatformConfigurationEventListenerTest {
     private WifiConfigurationProjection projection;
 
     @Mock
+    private ConfigurationChangeNotifier notifier;
+
+    @Mock
     private SynchronizationTracker tracker;
 
     private PlatformConfigurationEventListener listener;
@@ -41,6 +45,7 @@ class PlatformConfigurationEventListenerTest {
         listener = new PlatformConfigurationEventListener(
                 persistence,
                 projection,
+                notifier,
                 tracker
         );
     }
@@ -50,8 +55,8 @@ class PlatformConfigurationEventListenerTest {
     class OnMethodTests {
 
         @Test
-        @DisplayName("Persists and projects retrieved configuration")
-        void should_PersistAndProjectConfiguration_when_EventIsPlatformConfigurationRetrieved() {
+        @DisplayName("Persists, projects, and notifies retrieved configuration")
+        void should_PersistProjectAndNotifyConfiguration_when_EventIsPlatformConfigurationRetrieved() {
             var configuration = TestWifiConfigurations.builder().build();
             var event = new PlatformConfigurationRetrievedEvent(configuration, null);
 
@@ -59,6 +64,7 @@ class PlatformConfigurationEventListenerTest {
 
             Mockito.verify(persistence).persist(configuration, null);
             Mockito.verify(projection).put(configuration);
+            Mockito.verify(notifier).notifyConfigurationsChanged();
             Mockito.verifyNoInteractions(tracker);
         }
 
@@ -75,6 +81,7 @@ class PlatformConfigurationEventListenerTest {
 
             Mockito.verify(persistence).persist(configuration, lastSynchronized);
             Mockito.verify(projection).put(configuration);
+            Mockito.verify(notifier).notifyConfigurationsChanged();
             Mockito.verify(tracker).complete(lastSynchronized);
         }
 
@@ -90,7 +97,7 @@ class PlatformConfigurationEventListenerTest {
 
             assertThatThrownBy(() -> listener.on(event)).isSameAs(failure);
             Mockito.verify(tracker).abort();
-            Mockito.verifyNoInteractions(projection);
+            Mockito.verifyNoInteractions(projection, notifier);
         }
 
         @Test
@@ -105,11 +112,12 @@ class PlatformConfigurationEventListenerTest {
             assertThatThrownBy(() -> listener.on(event)).isSameAs(failure);
             Mockito.verify(persistence).persist(configuration, null);
             Mockito.verify(tracker).abort();
+            Mockito.verifyNoInteractions(notifier);
         }
 
         @Test
-        @DisplayName("Persists and projects updated configuration")
-        void should_PersistAndProjectConfiguration_when_EventIsPlatformConfigurationUpdated() {
+        @DisplayName("Persists, projects, and notifies updated configuration")
+        void should_PersistProjectAndNotifyConfiguration_when_EventIsPlatformConfigurationUpdated() {
             var configuration = TestWifiConfigurations.builder().build();
             var event = new PlatformConfigurationUpdatedEvent(configuration);
 
@@ -117,6 +125,7 @@ class PlatformConfigurationEventListenerTest {
 
             Mockito.verify(persistence).persist(configuration, null);
             Mockito.verify(projection).put(configuration);
+            Mockito.verify(notifier).notifyConfigurationsChanged();
             Mockito.verifyNoInteractions(tracker);
         }
 
@@ -131,7 +140,7 @@ class PlatformConfigurationEventListenerTest {
             Mockito.doThrow(failure).when(persistence).persist(configuration, null);
 
             assertThatThrownBy(() -> listener.on(event)).isSameAs(failure);
-            Mockito.verifyNoInteractions(projection, tracker);
+            Mockito.verifyNoInteractions(projection, notifier, tracker);
         }
     }
 }

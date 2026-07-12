@@ -2,7 +2,9 @@
 
 This is a backend service for administering Wi-Fi parameters on CPE devices. 
 
-The service exposes a REST API for administrator authentication, password management, and Wi-Fi configuration retrieval/update. It persists configuration data locally in PostgreSQL and integrates with the external WiFi platform through SOAP.
+The service exposes a REST API for administrator authentication, password management, 
+and Wi-Fi configuration retrieval/update. It persists configuration data locally 
+in PostgreSQL and integrates with the external WiFi platform through SOAP.
 
 ## Architecture
 
@@ -262,6 +264,37 @@ Each object has the following fields:
 
 * `200 OK` - Wi-Fi configurations returned successfully
 * `401 Unauthorized` - Missing or invalid access token
+
+### Subscribe to Configuration Changes
+
+Subscribes to Wi-Fi configuration change notifications using Server-Sent Events (SSE). 
+A notification is published whenever the set of known Wi-Fi configurations changes.
+
+**Path**
+
+```text
+GET /admin/events
+```
+
+Protected endpoint requiring a JWT bearer token.
+
+**Response**
+
+Returns a `text/event-stream` response that remains open until the client disconnects.
+
+**Event**
+
+```text
+event: configurations-changed
+```
+
+Clients should retrieve the latest Wi-Fi configurations after receiving a notification.
+
+**Responses**
+
+* `200 OK` - Event stream established successfully
+* `401 Unauthorized` - Missing or invalid access token
+
 
 ### Error Response
 
