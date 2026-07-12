@@ -7,7 +7,7 @@ Implement a screen from the design documentation.
 1. Determine the target screen from the current user request
 2. Read the corresponding screen specification from `./docs/screens/`
 3. Read `./docs/ARCHITECTURE.md` before making architectural decisions
-4. Use screenshots from `./docs/screenshots/` only when additional visual clarification is needed
+4. Use screenshots from `./docs/screen/refs/` only when additional visual clarification is needed
 5. Reuse existing components and patterns whenever possible
 6. Match the documented layout, styling, and behavior
 7. Do not implement functionality not described in the design or architecture documentation
