@@ -17,9 +17,9 @@ export type SortDirection = 'asc' | 'desc'
 export type SortKey = 'id' | 'wifiBand' | 'ssid' | 'encryptionType'
 
 export type CpeRecord = {
-  id: string
-  wifiBand: WifiBand
-  ssid: string
-  encryptionType: EncryptionType
-  password?: string
+    id: string
+    wifiBand: WifiBand
+    ssid: string
+    encryptionType: EncryptionType
+    password?: string
 }

@@ -1,9 +1,9 @@
-import { ChevronDown, Filter } from 'lucide-react'
+import {ChevronDown, Filter} from 'lucide-react'
 
-import { bandOptions, securityOptions } from '../options'
+import {bandOptions, securityOptions} from '../options'
 import styles from '../DashboardPage.module.css'
 
-import type { BandFilter, SecurityFilter } from '../types'
+import type {BandFilter, SecurityFilter} from '../types'
 
 type FilterBarProps = {
     searchQuery: string
@@ -37,7 +37,7 @@ function FilterBar({
             />
 
             <div className={styles.selectControl}>
-                <Filter className={styles.selectIcon} size={10} strokeWidth={2} aria-hidden="true" />
+                <Filter className={styles.selectIcon} size={10} strokeWidth={2} aria-hidden="true"/>
                 <select
                     className={styles.selectInput}
                     aria-label="Filter by Wi-Fi band"
@@ -59,7 +59,7 @@ function FilterBar({
             </div>
 
             <div className={styles.selectControl}>
-                <Filter className={styles.selectIcon} size={10} strokeWidth={2} aria-hidden="true" />
+                <Filter className={styles.selectIcon} size={10} strokeWidth={2} aria-hidden="true"/>
                 <select
                     className={styles.securitySelect}
                     aria-label="Filter by security"

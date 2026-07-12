@@ -1,12 +1,12 @@
-import { Eye, Settings, X } from 'lucide-react'
-import { useState } from 'react'
+import {Eye, Settings, X} from 'lucide-react'
+import {useState} from 'react'
 
-import { bandOptions, securityOptions } from '../options'
+import {bandOptions, securityOptions} from '../options'
 import styles from '../DashboardPage.module.css'
 
-import type { CpeRecord } from '../types'
+import type {CpeRecord} from '../types'
 
-import { BandBadge, EncryptionBadge } from './CpeBadges'
+import {BandBadge, EncryptionBadge} from './CpeBadges'
 
 type CpeDetailPanelProps = {
     isOpen: boolean
@@ -42,9 +42,9 @@ function CpeDetailPanel({
                     onClick={onToggleEditing}
                 >
                     {isEditing ? (
-                        <X size={16} strokeWidth={2} aria-hidden="true" />
+                        <X size={16} strokeWidth={2} aria-hidden="true"/>
                     ) : (
-                        <Settings size={16} strokeWidth={2} aria-hidden="true" />
+                        <Settings size={16} strokeWidth={2} aria-hidden="true"/>
                     )}
                 </button>
             </div>
@@ -65,9 +65,7 @@ function CpeDetailPanel({
                                 defaultValue={record.wifiBand}
                                 tabIndex={isOpen ? 0 : -1}
                             >
-                                {bandOptions
-                                .filter((option) => option.value !== 'all')
-                                .map((option) => (
+                                {bandOptions.filter((option) => option.value !== 'all').map((option) => (
                                     <option key={option.value} value={option.value}>
                                         {option.label}
                                     </option>
@@ -94,9 +92,7 @@ function CpeDetailPanel({
                                 defaultValue={record.encryptionType}
                                 tabIndex={isOpen ? 0 : -1}
                             >
-                                {securityOptions
-                                .filter((option) => option.value !== 'all')
-                                .map((option) => (
+                                {securityOptions.filter((option) => option.value !== 'all').map((option) => (
                                     <option key={option.value} value={option.value}>
                                         {option.label}
                                     </option>
@@ -133,7 +129,7 @@ function CpeDetailPanel({
                         <div className={styles.detailField}>
                             <dt>Wi-Fi Band</dt>
                             <dd>
-                                <BandBadge value={record.wifiBand} />
+                                <BandBadge value={record.wifiBand}/>
                             </dd>
                         </div>
 
@@ -145,7 +141,7 @@ function CpeDetailPanel({
                         <div className={styles.detailField}>
                             <dt>Encryption</dt>
                             <dd>
-                                <EncryptionBadge value={record.encryptionType} />
+                                <EncryptionBadge value={record.encryptionType}/>
                             </dd>
                         </div>
 
@@ -166,7 +162,7 @@ function CpeDetailPanel({
                             )
                         }
                     >
-                        <Eye size={16} strokeWidth={2} aria-hidden="true" />
+                        <Eye size={16} strokeWidth={2} aria-hidden="true"/>
                         {isPasswordVisible ? 'Hide password' : 'Reveal password'}
                     </button>
                 </>

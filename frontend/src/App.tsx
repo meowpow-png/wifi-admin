@@ -1,15 +1,15 @@
-import { useState } from 'react'
+import {useState} from 'react'
 
-import { DashboardPage, LoginPage } from './wifi'
+import {DashboardPage, LoginPage} from './wifi'
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  if (isAuthenticated) {
-    return <DashboardPage onLogout={() => setIsAuthenticated(false)} />
-  }
+    if (isAuthenticated) {
+        return <DashboardPage onLogout={() => setIsAuthenticated(false)}/>
+    }
 
-  return <LoginPage onLogin={() => setIsAuthenticated(true)} />
+    return <LoginPage onLogin={() => setIsAuthenticated(true)}/>
 }
 
 export default App
