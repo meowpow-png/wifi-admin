@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="architecture-tests" type="JUnit" factoryName="JUnit">
-    <module name="wifi-admin-backend.architectureTest" />
+    <module name="wifi-admin-api.architectureTest" />
     <extension name="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
       <option name="IS_SUBST" value="false" />

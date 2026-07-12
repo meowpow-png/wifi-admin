@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="wiring-integration-tests" type="JUnit" factoryName="JUnit">
-    <module name="wifi-admin-backend.integrationTest" />
+    <module name="wifi-admin-api.integrationTest" />
     <extension name="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
       <option name="IS_SUBST" value="false" />
