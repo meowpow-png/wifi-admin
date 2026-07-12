@@ -21,7 +21,7 @@ services:
       - ./docker/codex/AGENTS.md:/workspace/AGENTS.md:ro,Z
       - ./docker/codex/tasks:/workspace/tasks:ro,Z
       - ./docker/codex/figma.json:/workspace/figma.json:ro,Z
-      - ./docs:/workspace/docs:ro,Z
+      - ./docs:/workspace/docs:Z
       - ./index.html:/workspace/index.html:Z
       - ./public:/workspace/public:Z
       - ./src:/workspace/src:Z
