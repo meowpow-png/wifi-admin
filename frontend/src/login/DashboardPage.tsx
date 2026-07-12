@@ -1,6 +1,7 @@
 import {
   ChevronDown,
   ChevronRight,
+  Eye,
   Filter,
   Lock,
   LogOut,
@@ -8,6 +9,7 @@ import {
   ShieldAlert,
   ShieldCheck,
   ShieldOff,
+  Settings,
   Wifi,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
@@ -55,6 +57,8 @@ function DashboardPage({ onLogout }: DashboardPageProps) {
   const [securityFilter, setSecurityFilter] = useState<SecurityFilter>('all')
   const [sortKey, setSortKey] = useState<SortKey>('id')
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
+  const [selectedCpeId, setSelectedCpeId] = useState<string | null>(null)
+  const [detailRecord, setDetailRecord] = useState<CpeRecord>(cpeRecords[0])
 
   const visibleRecords = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase()
@@ -87,6 +91,16 @@ function DashboardPage({ onLogout }: DashboardPageProps) {
     setSortDirection((currentDirection) => (currentDirection === 'asc' ? 'desc' : 'asc'))
   }
 
+  function handleRecordToggle(record: CpeRecord) {
+    if (selectedCpeId === record.id) {
+      setSelectedCpeId(null)
+      return
+    }
+
+    setDetailRecord(record)
+    setSelectedCpeId(record.id)
+  }
+
   return (
     <main className={styles.page} aria-label="Wi-Fi CPE dashboard">
       <AdminHeader onLogout={onLogout} />
@@ -100,12 +114,23 @@ function DashboardPage({ onLogout }: DashboardPageProps) {
         onBandFilterChange={setBandFilter}
         onSecurityFilterChange={setSecurityFilter}
       />
-      <CpeTable
-        records={visibleRecords}
-        sortKey={sortKey}
-        sortDirection={sortDirection}
-        onSortToggle={handleSortToggle}
-      />
+      <div
+        className={`${styles.contentArea} ${
+          selectedCpeId !== null ? styles.contentAreaWithPanel : ''
+        }`}
+      >
+        <div className={styles.tablePane}>
+          <CpeTable
+            records={visibleRecords}
+            selectedCpeId={selectedCpeId}
+            sortKey={sortKey}
+            sortDirection={sortDirection}
+            onSortToggle={handleSortToggle}
+            onToggleRecord={handleRecordToggle}
+          />
+        </div>
+        <CpeDetailPanel isOpen={selectedCpeId !== null} record={detailRecord} />
+      </div>
     </main>
   )
 }
@@ -220,12 +245,21 @@ function FilterBar({
 
 type CpeTableProps = {
   records: CpeRecord[]
+  selectedCpeId: string | null
   sortKey: SortKey
   sortDirection: SortDirection
   onSortToggle: (sortKey: SortKey) => void
+  onToggleRecord: (record: CpeRecord) => void
 }
 
-function CpeTable({ records, sortKey, sortDirection, onSortToggle }: CpeTableProps) {
+function CpeTable({
+  records,
+  selectedCpeId,
+  sortKey,
+  sortDirection,
+  onSortToggle,
+  onToggleRecord,
+}: CpeTableProps) {
   return (
     <section className={styles.tableShell} aria-label="CPE records">
       <table className={styles.table}>
@@ -266,7 +300,19 @@ function CpeTable({ records, sortKey, sortDirection, onSortToggle }: CpeTablePro
         </thead>
         <tbody>
           {records.map((record) => (
-            <tr key={record.id}>
+            <tr
+              key={record.id}
+              className={record.id === selectedCpeId ? styles.selectedRow : undefined}
+              tabIndex={0}
+              aria-selected={record.id === selectedCpeId}
+              onClick={() => onToggleRecord(record)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  onToggleRecord(record)
+                }
+              }}
+            >
               <td className={styles.cpeId}>{record.id}</td>
               <td>
                 <BandBadge value={record.wifiBand} />
@@ -276,7 +322,11 @@ function CpeTable({ records, sortKey, sortDirection, onSortToggle }: CpeTablePro
                 <EncryptionBadge value={record.encryptionType} />
               </td>
               <td className={styles.actionCell}>
-                <button type="button" aria-label={`Open details for ${record.id}`}>
+                <button
+                  type="button"
+                  aria-label={`Open details for ${record.id}`}
+                  aria-pressed={record.id === selectedCpeId}
+                >
                   <ChevronRight size={16} strokeWidth={2} aria-hidden="true" />
                 </button>
               </td>
@@ -285,6 +335,79 @@ function CpeTable({ records, sortKey, sortDirection, onSortToggle }: CpeTablePro
         </tbody>
       </table>
     </section>
+  )
+}
+
+type CpeDetailPanelProps = {
+  isOpen: boolean
+  record: CpeRecord
+}
+
+function CpeDetailPanel({ isOpen, record }: CpeDetailPanelProps) {
+  const [visiblePasswordRecordId, setVisiblePasswordRecordId] = useState<string | null>(null)
+  const isPasswordVisible = visiblePasswordRecordId === record.id
+  const password = record.password ?? `${record.id.toLowerCase()}-secure`
+
+  return (
+    <aside
+      className={`${styles.detailPanel} ${isOpen ? styles.detailPanelOpen : ''}`}
+      aria-hidden={!isOpen}
+      aria-label={`${record.id} details`}
+    >
+      <div className={styles.panelHeader}>
+        <p>CPE DETAILS</p>
+        <h2>{record.id}</h2>
+      </div>
+
+      <dl className={styles.panelBody}>
+        <div className={styles.detailField}>
+          <dt>CPE ID</dt>
+          <dd>{record.id}</dd>
+        </div>
+        <div className={styles.detailField}>
+          <dt>Wi-Fi Band</dt>
+          <dd>
+            <BandBadge value={record.wifiBand} />
+          </dd>
+        </div>
+        <div className={styles.detailField}>
+          <dt>SSID</dt>
+          <dd>{record.ssid}</dd>
+        </div>
+        <div className={styles.detailField}>
+          <dt>Encryption</dt>
+          <dd>
+            <EncryptionBadge value={record.encryptionType} />
+          </dd>
+        </div>
+        <div className={styles.passwordField}>
+          <dt>PASSWORD</dt>
+          <dd>{isPasswordVisible ? password : '••••••••••'}</dd>
+        </div>
+      </dl>
+
+      <button
+        className={styles.revealButton}
+        type="button"
+        tabIndex={isOpen ? 0 : -1}
+        aria-pressed={isPasswordVisible}
+        onClick={() =>
+          setVisiblePasswordRecordId((currentRecordId) =>
+            currentRecordId === record.id ? null : record.id,
+          )
+        }
+      >
+        <Eye size={16} strokeWidth={2} aria-hidden="true" />
+        {isPasswordVisible ? 'Hide password' : 'Reveal password'}
+      </button>
+
+      <div className={styles.panelActions}>
+        <button type="button" tabIndex={isOpen ? 0 : -1}>
+          <Settings size={14} strokeWidth={2} aria-hidden="true" />
+          Configure CPE
+        </button>
+      </div>
+    </aside>
   )
 }
 

@@ -1,4 +1,6 @@
 .page {
+  display: flex;
+  flex-direction: column;
   min-height: 100svh;
   overflow-x: auto;
   background: var(--color-surface-black);
@@ -17,9 +19,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-width: 980px;
-  height: 50px;
-  padding: 0 24px;
+  min-width: 1120px;
+  height: 48px;
+  padding: 0 21px;
   background: var(--color-surface-panel);
   border-bottom: 1px solid var(--color-border-strong);
 }
@@ -48,9 +50,9 @@
   align-items: center;
   gap: 8px;
   color: var(--color-text-primary);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
-  line-height: 18px;
+  line-height: 15px;
 }
 
 .productTitle svg {
@@ -66,8 +68,8 @@
 .headerActions time {
   color: var(--color-ui-regular);
   font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
-  font-size: 12px;
-  line-height: 16px;
+  font-size: 11px;
+  line-height: 14px;
 }
 
 .actionDivider {
@@ -78,24 +80,24 @@
 
 .userName {
   color: var(--color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: 11px;
+  line-height: 13px;
 }
 
 .logoutButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  height: 28px;
-  padding: 0 12px;
+  gap: 6px;
+  height: 25px;
+  padding: 0 10px;
   border: 1px solid rgba(246, 20, 136, 0.31);
   border-radius: 2px;
   background: rgba(246, 20, 136, 0.09);
   color: var(--color-accent);
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 16px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 13px;
   cursor: pointer;
 }
 
@@ -104,7 +106,9 @@
 }
 
 .logoutButton:focus-visible,
-.actionCell button:focus-visible {
+.actionCell button:focus-visible,
+.revealButton:focus-visible,
+.panelActions button:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
@@ -119,10 +123,10 @@
 .filterBar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-width: 980px;
-  height: 49px;
-  padding: 10px 24px 11px;
+  gap: 10px;
+  min-width: 1120px;
+  height: 50px;
+  padding: 11px 21px;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border-strong);
 }
@@ -132,12 +136,12 @@
 .securitySelect {
   height: 28px;
   border: 1px solid var(--color-border-strong);
-  border-radius: 2px;
+  border-radius: 4px;
   background: var(--color-surface-input);
   color: var(--color-text-secondary);
   font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
-  font-size: 12px;
-  line-height: 16px;
+  font-size: 11px;
+  line-height: 14px;
   outline: none;
 }
 
@@ -192,22 +196,45 @@
   margin-left: auto;
   color: var(--color-ui-regular);
   font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
-  font-size: 12px;
-  line-height: 16px;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.contentArea {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: stretch;
+  min-width: 1120px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tablePane {
+  flex: 1 1 auto;
+  min-width: 1120px;
+  padding-right: 0;
+  transition: padding-right 180ms ease;
+}
+
+.contentAreaWithPanel .tablePane {
+  padding-right: 320px;
 }
 
 .tableShell {
-  min-width: 980px;
-  padding: 16px 24px 32px;
+  padding: 20px;
 }
 
 .table {
   width: 100%;
-  min-width: 936px;
+  min-width: 760px;
   border-collapse: collapse;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
   table-layout: fixed;
   color: var(--color-text-primary);
   font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  overflow: hidden;
 }
 
 .table th,
@@ -222,7 +249,7 @@
   padding: 0 16px;
   color: var(--color-text-secondary);
   background: var(--color-surface-panel);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   line-height: 16px;
 }
@@ -262,8 +289,8 @@
   height: 38px;
   padding: 0 16px;
   color: var(--color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: 11px;
+  line-height: 14px;
 }
 
 .table tbody tr:nth-child(odd) {
@@ -276,6 +303,24 @@
 
 .table tbody tr:hover {
   background: var(--color-surface-subtle);
+}
+
+.table tbody tr {
+  cursor: pointer;
+}
+
+.table tbody tr:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.table tbody .selectedRow td:first-child {
+  border-left: 2px solid var(--color-accent);
+  padding-left: 14px;
+}
+
+.table tbody .selectedRow .actionCell button {
+  color: var(--color-accent);
 }
 
 .sortedColumn {
@@ -293,7 +338,7 @@
   color: inherit;
   font: inherit;
   cursor: pointer;
-  letter-spacing: 1px;
+  letter-spacing: 0;
 }
 
 .sortButton svg {
@@ -381,8 +426,154 @@
   place-items: center;
 }
 
-.actionCell button:hover {
-  color: var(--color-accent);
+.detailPanel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 320px;
+  padding: 20px;
+  background: #161618;
+  border-left: 1px solid var(--color-border-strong);
+  transform: translateX(100%);
+  transition: transform 180ms ease;
+  will-change: transform;
+  z-index: 1;
+}
+
+.detailPanelOpen {
+  transform: translateX(0);
+}
+
+.panelHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.panelHeader p,
+.panelHeader h2,
+.panelBody,
+.panelBody dt,
+.panelBody dd {
+  margin: 0;
+}
+
+.panelHeader p {
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+}
+
+.panelHeader h2 {
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 23px;
+}
+
+.panelBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detailField,
+.passwordField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detailField dt,
+.passwordField dt {
+  color: var(--color-ui-regular);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 12px;
+  text-transform: uppercase;
+}
+
+.detailField dd {
+  color: var(--color-text-primary);
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
+.passwordField dd {
+  color: var(--color-text-muted);
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19px;
+  overflow-wrap: anywhere;
+}
+
+.panelBody .badge {
+  height: 18px;
+  padding: 0 7px;
+  font-size: 10px;
+  line-height: 14px;
+}
+
+.panelBody .badge svg {
+  width: 10px;
+  height: 10px;
+}
+
+.revealButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 32px;
+  padding: 7px 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+  cursor: pointer;
+}
+
+.revealButton:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-ui-regular);
+}
+
+.panelActions {
+  padding-top: 2px;
+}
+
+.panelActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 34px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--color-accent);
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 15px;
+  cursor: pointer;
+}
+
+.panelActions button:hover {
+  filter: brightness(1.08);
 }
 
 .srOnly {
@@ -398,6 +589,6 @@
 
 @media (max-width: 760px) {
   .page {
-    min-width: 980px;
+    min-width: 1120px;
   }
 }

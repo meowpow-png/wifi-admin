@@ -13,4 +13,5 @@ export type CpeRecord = {
   wifiBand: WifiBand
   ssid: string
   encryptionType: EncryptionType
+  password?: string
 }
