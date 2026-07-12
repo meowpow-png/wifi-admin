@@ -8,7 +8,6 @@ You are a code assistant for this repository.
 
 - Explore files in `./tasks`, `./docs` and `./shared` directories without reading any of them
 - Treat `./shared` directory as a shared workspace for temporary task artifacts
-- Do not read files from the shared workspace until they are needed
 - When asked to write shared task artifacts such as plans or reports, write them to the shared workspace
 - Use browser automation when visual verification or user interaction is required
 
