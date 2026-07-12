@@ -331,32 +331,32 @@ The `setup` task is provided by the project's internal environment Gradle plugin
 
 ### Just
 
-| Command                                                                     | Description                                                  |
-|-----------------------------------------------------------------------------|--------------------------------------------------------------|
-| `just`                                                                      | List available recipes                                       |
-| `just deploy-dev`                                                           | Build and deploy the local development stack                 |
-| `just redeploy-dev`                                                         | Recreate the local development stack                         |
-| `just deploy-prod`                                                          | Build and deploy the local production stack                  |
-| `just redeploy-prod`                                                        | Recreate the local production stack                          |
-| `just compose <args>`                                                       | Run `docker compose` with arbitrary arguments                |
-| `just compose-dev <args>`                                                   | Run Docker Compose with development overlays                 |
-| `just compose-prod <args>`                                                  | Run Docker Compose with production overlays                  |
+| Command                                                                     | Description                                                          |
+|-----------------------------------------------------------------------------|----------------------------------------------------------------------|
+| `just`                                                                      | List available recipes                                               |
+| `just deploy-dev`                                                           | Build and deploy the local development stack                         |
+| `just redeploy-dev`                                                         | Recreate the local development stack                                 |
+| `just deploy-prod`                                                          | Build and deploy the local production stack                          |
+| `just redeploy-prod`                                                        | Recreate the local production stack                                  |
+| `just compose <args>`                                                       | Run `docker compose` with arbitrary arguments                        |
+| `just compose-dev <args>`                                                   | Run Docker Compose with development overlays                         |
+| `just compose-prod <args>`                                                  | Run Docker Compose with production overlays                          |
 | `just compose-build <args>`                                                 | Assemble the application and build the `wifi-admin-api` Docker image |
-| `just server-start`                                                         | Start the backend with Gradle                                |
-| `just server-shutdown`                                                      | Shut down the backend through Actuator                       |
-| `just server-health`                                                        | Read platform health through Actuator                        |
-| `just server-sync`                                                          | Trigger platform synchronization                             |
-| `just server-logging <level>`                                               | Set application logging level                                |
-| `just server-payload-logging <true\|false>`                                 | Enable or disable SOAP payload logging                       |
-| `just login [username] [password]`                                          | Authenticate and store the returned JWT in `.jwt`            |
-| `just wifi-get <cpe-id>`                                                    | Retrieve Wi-Fi configuration through the REST API            |
-| `just wifi-update <cpe-id> <ssid> [wifi-band] [encryption-type] [password]` | Update Wi-Fi configuration through the REST API              |
-| `just change-password <current-password> <new-password>`                    | Change the authenticated administrator password              |
-| `just soap-get <cpe-id>`                                                    | Retrieve Wi-Fi configuration directly from the SOAP platform |
-| `just soap-put <cpe-id> <ssid> [wifi-band] [encryption-type] [password]`    | Update Wi-Fi configuration directly on the SOAP platform     |
-| `just grafana-export`                                                       | Export provisioned Grafana dashboards                        |
-| `just codex-run`                                                            | Build and run the Codex development container                |
-| `just codex-shell`                                                          | Start an interactive shell in the Codex container            |
+| `just server-start`                                                         | Start the backend with Gradle                                        |
+| `just server-shutdown`                                                      | Shut down the backend through Actuator                               |
+| `just server-health`                                                        | Read platform health through Actuator                                |
+| `just server-sync`                                                          | Trigger platform synchronization                                     |
+| `just server-logging <level>`                                               | Set application logging level                                        |
+| `just server-payload-logging <true\|false>`                                 | Enable or disable SOAP payload logging                               |
+| `just login [username] [password]`                                          | Authenticate and store the returned JWT in `.jwt`                    |
+| `just wifi-get <cpe-id>`                                                    | Retrieve Wi-Fi configuration through the REST API                    |
+| `just wifi-update <cpe-id> <ssid> [wifi-band] [encryption-type] [password]` | Update Wi-Fi configuration through the REST API                      |
+| `just change-password <current-password> <new-password>`                    | Change the authenticated administrator password                      |
+| `just soap-get <cpe-id>`                                                    | Retrieve Wi-Fi configuration directly from the SOAP platform         |
+| `just soap-put <cpe-id> <ssid> [wifi-band] [encryption-type] [password]`    | Update Wi-Fi configuration directly on the SOAP platform             |
+| `just grafana-export`                                                       | Export provisioned Grafana dashboards                                |
+| `just codex-run`                                                            | Start the interactive Codex CLI                                      |
+| `just codex-shell`                                                          | Open a root shell inside the Codex container                         |
 
 ## Testing
 

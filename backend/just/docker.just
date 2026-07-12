@@ -23,16 +23,19 @@ api-build *args:
     @./gradlew clean assemble
     @just compose-dev build {{args}}
 
-# Start and enter codex agent docker container
-codex-run:
-    @just compose-dev build codex
-    @./gradlew compileAllClasses
-    @just compose-dev run --rm codex
+# Execute a command inside the running Codex container
+[arg("args", help="Command to execute inside Codex container")]
+codex-exec *args:
+    @just compose-dev up -d api-codex
+    @just compose-dev exec api-codex {{args}}
 
-# Start an interactive shell in the codex container
+# Start the interactive Codex CLI
+codex-run:
+    @just codex-exec codex
+
+# Open a root shell inside the Codex container
 codex-shell:
-    @just compose-dev build codex
-    docker compose {{compose_dev}} run \
-        --rm \
+    @just compose-dev up -d api-codex
+    @docker compose {{compose_dev}} exec \
         --user root \
-        --entrypoint sh codex
+        api-codex bash
