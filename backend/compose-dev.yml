@@ -37,6 +37,7 @@ services:
       HOME: /home/codex
     stdin_open: true
     tty: true
+    init: true
     volumes:
       - codex-home:/home/codex
       - ./.codex:/workspace/shared:Z
