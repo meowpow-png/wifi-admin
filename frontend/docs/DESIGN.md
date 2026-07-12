@@ -105,6 +105,97 @@ Source: Figma file `Admin-login-and-logs-screen`, node `1:101` (`DashboardScreen
 - Band badges: `BAND_2_4_GHZ` orange/brown, `BAND_5_GHZ` blue
 - Encryption badges: `WPA2_PSK` blue, `OPEN` gray, `WPA3_SAE` green, `WPA_PSK` orange, `WPA2_ENTERPRISE` blue, `WEP` red
 
+## desktop-cpe-details-panel
+
+Source: Figma file `Admin-login-and-logs-screen`, node `23:4` (`desktop-cpe-details-panel`).
+
+Screenshot: [figma-desktop-cpe-details-panel.png](screenshots/figma-desktop-cpe-details-panel.png)
+
+### Canvas
+
+- Desktop frame: 1440 x 1024
+- Background: black (`#000`)
+- Layout: fixed admin header, subheader filter bar, left table area, and fixed right detail panel
+- Content split: table view is 1120 px wide; detail panel is 320 px wide
+- Overall style: dense dark console with compact rows, monospaced data labels, magenta active selection, and square-to-subtle-radius controls
+
+### Header
+
+- Header bounds: x 0, y 0, 1440 x 48 px
+- Background: near-black (`#0e0e0f`)
+- Bottom border: 1 px dark gray (`#39393c`)
+- Horizontal padding: 21 px; vertical padding: 10 px
+- Brand cluster: x 21, y 10, 217 x 28 px
+- Telekom logo: 24 x 28 px
+- Divider: 1 x 20 px, x 38 within brand cluster
+- Product title group: Wi-Fi icon 14 x 14 px plus `Wi-Fi CPE Configuration`
+- Product title text: Inter Medium, 12.25 px, white
+- User actions cluster: x 1132, y 11.5, 287 x 25 px
+- Timestamp: `2026-07-05 11:13:4 UTC`, JetBrains Mono, 10.5 px, muted gray (`#656569`)
+- User label: `admin`, Inter Regular, 10.5 px, muted white
+- Logout button: 74 x 25 px, dark magenta fill, magenta border, 2 px radius, logout icon 12 px and `Logout`
+
+### SubHeader
+
+- Subheader bounds: x 0, y 48, 1440 x 50 px
+- Background: dark gray (`#151517`)
+- Bottom border: 1 px dark gray
+- Controls start at x 21, y 11
+- Search container: 220 x 28 px, dark input fill (`#1c1c1e`), 1 px gray border, 4 px radius
+- Search placeholder: `Search CPE ID or SSID…`, JetBrains Mono, 10.5 px, muted white
+- Status dropdown: x 251, y 11, 120 x 28 px, label `All Status`, chevron icon 10 px
+- Band dropdown: x 381, y 11, 140 x 28 px, label `Band Select`, chevron icon 10 px
+- Flexible divider area spans x 531 to x 1314
+- Record count: `12 / 12 records`, x 1324, y 18, JetBrains Mono, 10.5 px, muted gray
+
+### Table View
+
+- Content area starts at y 98 and is 926 px tall
+- Table view bounds: x 0, y 98, 1120 x 926 px
+- Table inset: x 20, y 20 within table view
+- Table bounds: 1080 x 489 px, 1 px gray border, 4 px radius, clipped overflow
+- Table header: 1080 x 33 px, near-black fill
+- Table data rows: 38 px high
+- Column widths: CPE ID 277 px, Wi-Fi band 351 px, SSID 285 px, encryption flexible, action 42 px
+- Header labels: `cpe_id`, `wifi_band`, `ssid`, `encryption_type`
+- Active sort: `cpe_id` header is magenta with sort icon and upward arrow
+- Row backgrounds alternate `#151517` and `#0e0e0f`
+- Active row: `Row-CPE_001` uses magenta left border and magenta row divider
+- All row dividers are magenta in this selected/detail state
+- CPE IDs are JetBrains Mono Bold, 10.5 px, white
+- SSIDs are JetBrains Mono Regular, 10.5 px, white
+- Action cells center a 14 px chevron-right icon
+
+### Table Data And Badges
+
+- Rows shown: `CPE_001` through `CPE_012`
+- SSIDs shown: `Office-2G`, `Office-5G`, `Guest-2G`, `Guest-5G`, `Lab-Net`, `Lab-Net-5`, `Home-IoT`, `Home-Main`, `Shop-Floor`, `Shop-Office`, `Demo-Open`, `Demo-Secure`
+- Band badges: `BAND_2_4_GHZ` uses brown fill (`#642d07`) with orange text (`#fd9038`); `BAND_5_GHZ` uses blue fill (`#131f7b`) with blue text (`#7d94f9`)
+- Encryption badges: `WPA2_PSK` and `WPA2_ENTERPRISE` blue, `OPEN` gray, `WPA3_SAE` green, `WPA_PSK` orange, `WEP` red
+- Badge typography: JetBrains Mono Medium, 10.5 px
+- Badge padding: 8 px horizontal, 2 px vertical; radius 2 px
+
+### Detail Panel
+
+- Panel bounds: x 1120, y 98, 320 x 926 px
+- Panel background: `#161618`
+- Left border: 1 px dark gray (`#39393c`)
+- Panel padding: 24 px; vertical content gap: 32 px
+- Panel header: x 24, y 24, 272 x 46 px
+- Eyebrow: `CPE DETAILS`, Inter Semi Bold, 11 px uppercase, muted white
+- Device title: `CPE_001`, Inter Semi Bold, 24 px, white
+- Panel body: x 24, y 102, 272 x 351 px; fields stack with 24 px vertical gaps
+- Detail labels: Inter Medium, 11 px uppercase, muted gray (`#656569`)
+- CPE ID value: `CPE_001`, JetBrains Mono Bold, 16 px, white
+- Wi-Fi band value: orange `BAND_2_4_GHZ` badge
+- SSID value: `Office-2G`, JetBrains Mono Bold, 16 px, white
+- Encryption value: blue `WPA2_PSK` badge
+- Password block starts at y 258 within the panel body
+- Password label: `PASSWORD`; value: `••••••••••`, JetBrains Mono Regular, 18 px, muted white
+- Reveal button: 272 x 36 px, 1 px gray border, 4 px radius, eye icon 16 px and `Reveal password`
+- Action footer: x 24, y 842, 272 x 60 px with top border and 20 px top padding
+- Configure button: 272 x 40 px, magenta fill (`#f61488`), 4 px radius, centered `Configure CPE`
+
 ## login-screen-mobile
 
 Source: Figma file `Admin-login-and-logs-screen`, node `5:4` (`login-screen-mobile`).

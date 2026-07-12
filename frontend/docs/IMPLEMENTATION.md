@@ -48,6 +48,38 @@ The row action column should navigate to a selected CPE detail view or open an e
 details panel when that route exists. Logout should be an explicit button action exposed 
 from the header, even if the prototype only resets local UI state.
 
+## desktop-cpe-details-panel
+
+Node: `23:4`
+
+Implement as the desktop authenticated dashboard state with an inline right-side CPE details panel.
+This should reuse the same data, filtering, sorting, badges, header, logout behavior, and table primitives
+as `DashboardScreen`, rather than creating a separate static page. The primary difference from
+`DashboardScreen` is the selected-row state and the persistent `DetailPanel` column.
+
+The layout should be a full-height admin shell with `AdminHeader`, `FilterBar`, `CpeTable`, and
+`CpeDetailPanel` regions. On desktop widths matching the Figma frame, reserve 320 px for the detail panel
+and let the table region fill the remaining width. Keep the table inside a 20 px content inset and preserve
+the compact 33 px header and 38 px row rhythm.
+
+Selection should be modeled explicitly, for example as `selectedCpeId`, defaulting to `CPE_001` for the
+prototype state shown in Figma. The selected table row should display a magenta left border and should drive
+the detail panel values. Row chevron actions should update the selected CPE or navigate to a detail route,
+depending on the final routing model.
+
+The filter model differs slightly from `DashboardScreen`: this node uses search, status, and band controls.
+If both desktop dashboard variants are supported, keep a shared filter state shape that can tolerate optional
+status and security filters. The record count should remain derived from filtered records.
+
+`CpeDetailPanel` should render from the selected shared CPE record and include CPE ID, Wi-Fi band badge,
+SSID, encryption badge, password value, reveal password action, and `Configure CPE` action. The password
+reveal state should be scoped to the detail panel and should not leak into mobile card reveal controls.
+
+Use existing or shared badge primitives for band and encryption colors. Avoid Figma asset URLs in the
+implementation; map icons to local icon primitives or the existing icon library. The Figma screenshot shows
+header/table/detail panel styling that is close to `DashboardScreen`, so any implementation difference should
+be intentional and documented if the existing desktop route is extended instead of duplicated.
+
 ## login-screen-mobile
 
 Node: `5:4`
