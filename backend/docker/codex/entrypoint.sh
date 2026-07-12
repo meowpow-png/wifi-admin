@@ -1,25 +1,19 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -euxo pipefail
 
 HOME=/home/codex
 
 mkdir -p "$HOME/.codex"
 
-if [ "$(stat -c '%u:%g' "$HOME")" != "${LOCAL_UID}:${LOCAL_GID}" ]; then
-    echo "Updating ownership of $HOME..."
-    chown -R "${LOCAL_UID}:${LOCAL_GID}" "$HOME"
-fi
-
-if [ "$(stat -c '%u:%g' /workspace)" != "${LOCAL_UID}:${LOCAL_GID}" ]; then
-    echo "Updating ownership of /workspace..."
-    chown "${LOCAL_UID}:${LOCAL_GID}" /workspace
-fi
-
 if [ ! -f "$HOME/.codex/config.toml" ]; then
     echo "Initializing Codex configuration..."
     cp /usr/local/share/codex/config.toml "$HOME/.codex/config.toml"
-    chown "${LOCAL_UID}:${LOCAL_GID}" "$HOME/.codex/config.toml"
 fi
+echo "Updating ownership of $HOME..."
+chown -R "${LOCAL_UID}:${LOCAL_GID}" "$HOME"
+
+echo "Updating ownership of /workspace..."
+chown "${LOCAL_UID}:${LOCAL_GID}" /workspace
 
 echo "Precompiling project classes..."
 if ! gosu "${LOCAL_UID}:${LOCAL_GID}" \

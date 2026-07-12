@@ -27,7 +27,10 @@ api-build *args:
 [arg("args", help="Command to execute inside Codex container")]
 codex-exec *args:
     @just compose-dev up -d codex
-    @just compose-dev exec codex {{args}}
+    @docker compose {{compose_dev}} exec \
+        --user "$(id -u):$(id -g)" \
+        codex \
+        {{args}}
 
 # Start the interactive Codex CLI
 codex-run:

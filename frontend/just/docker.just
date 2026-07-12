@@ -8,7 +8,10 @@ compose *args:
 [arg("args", help="Command to execute inside Codex container")]
 codex-exec *args:
     @just compose up -d codex
-    @just compose exec codex {{args}}
+    @docker compose exec \
+        --user "$(id -u):$(id -g)" \
+        codex \
+        {{args}}
 
 # Start the interactive Codex CLI
 codex-run:
