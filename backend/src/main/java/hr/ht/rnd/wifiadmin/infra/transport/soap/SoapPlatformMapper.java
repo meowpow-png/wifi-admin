@@ -33,7 +33,7 @@ final class SoapPlatformMapper {
                 toDomain(source.getWifiBand()),
                 source.getSsid(),
                 toDomain(source.getEncryptionType()),
-                password != null ? new WifiPassword(password) : null
+                password == null || password.isBlank() ? null : new WifiPassword(password)
         );
     }
 
