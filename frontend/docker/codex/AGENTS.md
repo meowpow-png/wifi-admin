@@ -6,19 +6,26 @@ You are a code assistant for this repository.
 
 ## Instructions
 
-- Load all relevant task definitions from `./tasks` into context before proceeding
-- Treat `./shared` as a shared workspace for temporary task artifacts
-- Read relevant files from the shared workspace before starting work on a task
-- Write shared task artifacts such as plans, reports, or other generated files to the shared workspace
-- Preserve the existing architecture, coding style, and project conventions
-- Make the smallest change that correctly achieves the requested task
-- Validate completed changes using the project's build, lint, and test commands where applicable
+- Explore files in `./tasks`, `./docs` and `./shared` directories without reading any of them
+- Treat `./shared` directory as a shared workspace for temporary task artifacts
+- Do not read files from the shared workspace until they are needed
+- When asked to write shared task artifacts such as plans or reports, write them to the shared workspace
 - Use browser automation when visual verification or user interaction is required
 
 ## Environment
 
 - Running inside a Docker container
 - Git and Docker are not installed
-- Node.js 26 is installed
 - npm is available
-- Playwright with Chromium is available for browser automation
+- Node.js 26 is installed
+- Playwright with Chromium is available
+
+## Constraints
+
+- Minimize repository exploration and context usage
+- Never scan the entire repository unless explicitly requested
+- Ignore generated, vendor, dependency, and build directories unless explicitly requested
+- Prefer targeted `rg` searches over repository-wide file listings
+- Avoid overly broad commands such as:
+    - `rg --files`
+    - `find .`

@@ -6,7 +6,8 @@ RUN apt-get update && \
         ca-certificates \
         curl \
         git \
-        gosu && \
+        gosu \
+        python3 && \
     npm install --global \
         @openai/codex@0.143.0 \
         playwright && \
@@ -14,9 +15,13 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY config.toml /usr/local/share/codex/config.toml
+COPY hooks/ /usr/local/share/codex/hooks/
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN chmod +x \
+    /usr/local/bin/entrypoint.sh \
+    /usr/local/share/codex/hooks/prevent_repo_scan.py
 
 WORKDIR /workspace
 
