@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { DashboardPage, LoginPage } from './login'
+import { DashboardPage, LoginPage } from './wifi'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)

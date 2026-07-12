@@ -107,6 +107,7 @@
 
 .logoutButton:focus-visible,
 .actionCell button:focus-visible,
+.panelHeaderButton:focus-visible,
 .revealButton:focus-visible,
 .panelActions button:focus-visible {
   outline: 2px solid var(--color-accent);
@@ -115,7 +116,8 @@
 
 .searchInput:focus,
 .selectInput:focus,
-.securitySelect:focus {
+.securitySelect:focus,
+.detailInput:focus {
   border-color: var(--color-border-strong);
   outline: none;
 }
@@ -449,9 +451,11 @@
 }
 
 .panelHeader {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 3px;
+  padding-right: 34px;
 }
 
 .panelHeader p,
@@ -460,6 +464,27 @@
 .panelBody dt,
 .panelBody dd {
   margin: 0;
+}
+
+.panelHeaderButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  place-items: center;
+}
+
+.panelHeaderButton:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-ui-regular);
 }
 
 .panelHeader p {
@@ -490,7 +515,9 @@
 }
 
 .detailField dt,
-.passwordField dt {
+.detailField label,
+.passwordField dt,
+.passwordField label {
   color: var(--color-ui-regular);
   font-size: 10px;
   font-weight: 500;
@@ -498,7 +525,8 @@
   text-transform: uppercase;
 }
 
-.detailField dd {
+.detailField dd,
+.detailField span {
   color: var(--color-text-primary);
   font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
   font-size: 13px;
@@ -513,6 +541,20 @@
   font-weight: 400;
   line-height: 19px;
   overflow-wrap: anywhere;
+}
+
+.detailInput {
+  width: 100%;
+  height: 32px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  background: var(--color-surface-input);
+  color: var(--color-text-primary);
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  padding: 0 10px;
 }
 
 .panelBody .badge {
