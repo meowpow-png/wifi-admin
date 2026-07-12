@@ -4,7 +4,7 @@ import {useState} from 'react'
 import {bandOptions, securityOptions} from '../options'
 import styles from '../DashboardPage.module.css'
 
-import type {CpeRecord} from '../types'
+import type {CpeRecord, EncryptionType, WifiBand} from '../types'
 
 import {BandBadge, EncryptionBadge} from './CpeBadges'
 
@@ -13,6 +13,7 @@ type CpeDetailPanelProps = {
     isEditing: boolean
     record: CpeRecord
     onToggleEditing: () => void
+    onSave: (record: CpeRecord) => void
 }
 
 function CpeDetailPanel({
@@ -20,10 +21,16 @@ function CpeDetailPanel({
     isEditing,
     record,
     onToggleEditing,
-}: CpeDetailPanelProps) {
+    onSave,
+}: CpeDetailPanelProps)  {
     const [visiblePasswordRecordId, setVisiblePasswordRecordId] = useState<string | null>(null)
     const isPasswordVisible = visiblePasswordRecordId === record.id
     const password = record.password ?? `${record.id.toLowerCase()}-secure`
+
+    const [wifiBand, setWifiBand] = useState(record.wifiBand)
+    const [ssid, setSsid] = useState(record.ssid)
+    const [encryptionType, setEncryptionType] = useState(record.encryptionType)
+    const [editedPassword, setEditedPassword] = useState(password)
 
     return (
         <aside
@@ -62,7 +69,8 @@ function CpeDetailPanel({
                             <select
                                 id={`${record.id}-wifiBand`}
                                 className={styles.detailInput}
-                                defaultValue={record.wifiBand}
+                                value={wifiBand}
+                                onChange={(event) => setWifiBand(event.target.value as WifiBand)}
                                 tabIndex={isOpen ? 0 : -1}
                             >
                                 {bandOptions.filter((option) => option.value !== 'all').map((option) => (
@@ -79,7 +87,8 @@ function CpeDetailPanel({
                                 id={`${record.id}-ssid`}
                                 className={styles.detailInput}
                                 type="text"
-                                defaultValue={record.ssid}
+                                value={ssid}
+                                onChange={(event) => setSsid(event.target.value)}
                                 tabIndex={isOpen ? 0 : -1}
                             />
                         </div>
@@ -89,7 +98,10 @@ function CpeDetailPanel({
                             <select
                                 id={`${record.id}-encryption`}
                                 className={styles.detailInput}
-                                defaultValue={record.encryptionType}
+                                value={encryptionType}
+                                onChange={(event) =>
+                                    setEncryptionType(event.target.value as EncryptionType)
+                                }
                                 tabIndex={isOpen ? 0 : -1}
                             >
                                 {securityOptions.filter((option) => option.value !== 'all').map((option) => (
@@ -106,14 +118,27 @@ function CpeDetailPanel({
                                 id={`${record.id}-password`}
                                 className={styles.detailInput}
                                 type="text"
-                                defaultValue={password}
+                                value={editedPassword}
+                                onChange={(event) => setEditedPassword(event.target.value)}
                                 tabIndex={isOpen ? 0 : -1}
                             />
                         </div>
                     </form>
 
                     <div className={styles.panelActions}>
-                        <button type="button" tabIndex={isOpen ? 0 : -1}>
+                        <button
+                            type="button"
+                            tabIndex={isOpen ? 0 : -1}
+                            onClick={() =>
+                                onSave({
+                                    ...record,
+                                    wifiBand,
+                                    ssid,
+                                    encryptionType,
+                                    password: editedPassword,
+                                })
+                            }
+                        >
                             Save Changes
                         </button>
                     </div>

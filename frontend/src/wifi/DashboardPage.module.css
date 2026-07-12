@@ -1,6 +1,7 @@
 .page {
     display: flex;
     flex-direction: column;
+    animation: fadeIn 240ms ease-out;
     min-height: 100svh;
     overflow-x: auto;
     background: var(--color-surface-black);
@@ -12,6 +13,15 @@
     BlinkMacSystemFont,
     'Segoe UI',
     sans-serif;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .header {

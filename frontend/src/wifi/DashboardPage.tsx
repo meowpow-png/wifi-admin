@@ -4,24 +4,34 @@ import AdminHeader from './components/AdminHeader'
 import CpeDetailPanel from './components/CpeDetailPanel'
 import CpeTable from './components/CpeTable'
 import FilterBar from './components/FilterBar'
-import {cpeRecords} from './cpeData'
+
 import styles from './DashboardPage.module.css'
 
 import type {BandFilter, CpeRecord, SecurityFilter, SortDirection, SortKey,} from './types'
+import useWifiConfigurations from "./hooks/useWifiConfigurations";
+import {updateWifiConfiguration} from "./api";
 
 type DashboardPageProps = {
     token: string
     onLogout: () => void
 }
 
-function DashboardPage({onLogout}: DashboardPageProps) {
+function DashboardPage({token, onLogout}: DashboardPageProps) {
+    const {
+      records: cpeRecords,
+      isLoading,
+      isRefreshing,
+      errorMessage,
+      reload,
+    } = useWifiConfigurations(token)
+
     const [searchQuery, setSearchQuery] = useState('')
     const [bandFilter, setBandFilter] = useState<BandFilter>('all')
     const [securityFilter, setSecurityFilter] = useState<SecurityFilter>('all')
     const [sortKey, setSortKey] = useState<SortKey>('id')
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
     const [selectedCpeId, setSelectedCpeId] = useState<string | null>(null)
-    const [detailRecord, setDetailRecord] = useState<CpeRecord>(cpeRecords[0])
+    const [detailRecord, setDetailRecord] = useState<CpeRecord | null>(null)
     const [isEditing, setIsEditing] = useState(false)
 
     const visibleRecords = useMemo(() => {
@@ -50,6 +60,7 @@ function DashboardPage({onLogout}: DashboardPageProps) {
         })
     }, [
         bandFilter,
+        cpeRecords,
         searchQuery,
         securityFilter,
         sortDirection,
@@ -71,12 +82,37 @@ function DashboardPage({onLogout}: DashboardPageProps) {
     function handleRecordToggle(record: CpeRecord) {
         if (selectedCpeId === record.id) {
             setSelectedCpeId(null)
+            setDetailRecord(null)
             return
         }
 
         setIsEditing(false)
         setDetailRecord(record)
         setSelectedCpeId(record.id)
+    }
+
+    async function handleSave(record: CpeRecord) {
+        const updatedRecord = await updateWifiConfiguration(token, record)
+
+        setDetailRecord(updatedRecord)
+        setIsEditing(false)
+
+        reload()
+    }
+
+    if (isLoading) {
+        return <main className={styles.page}/>
+    }
+
+    if (errorMessage !== null) {
+        return (
+            <main className={styles.page}>
+                <p>{errorMessage}</p>
+                <button type="button" onClick={reload}>
+                    Retry
+                </button>
+            </main>
+        )
     }
 
     return (
@@ -112,14 +148,18 @@ function DashboardPage({onLogout}: DashboardPageProps) {
                     />
                 </div>
 
-                <CpeDetailPanel
-                    isOpen={selectedCpeId !== null}
-                    isEditing={isEditing}
-                    record={detailRecord}
-                    onToggleEditing={() =>
-                        setIsEditing((current) => !current)
-                    }
-                />
+                {detailRecord !== null && (
+                    <CpeDetailPanel
+                        key={detailRecord.id}
+                        isOpen={selectedCpeId !== null}
+                        isEditing={isEditing}
+                        record={detailRecord}
+                        onToggleEditing={() =>
+                            setIsEditing((current) => !current)
+                        }
+                        onSave={handleSave}
+                    />
+                )}
             </div>
         </main>
     )
