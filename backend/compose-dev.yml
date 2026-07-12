@@ -44,7 +44,7 @@ services:
       - ./docker/codex/AGENTS.md:/workspace/AGENTS.md:ro,Z
       - ./docker/codex/tasks:/workspace/tasks:ro,Z
       - ./docs:/workspace/docs:Z
-      - ./mockoon:/workspace/mockoon:ro,Z
+      - ./mockoon:/workspace/mockoon:ro,z
       - ./openapi:/workspace/openapi:ro,Z
       - ./README.md:/workspace/README.md:Z
       - ./src:/workspace/src:Z
