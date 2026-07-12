@@ -4,7 +4,6 @@ services:
   api:
     build: .
     image: hr-telekom/wifi-admin-api:1.0.0
-    container_name: api
     depends_on:
       postgres:
         condition: service_healthy
@@ -27,7 +26,6 @@ services:
 
   api-codex:
     image: hr-telekom/wifi-admin-codex:21-jdk
-    container_name: api-codex
     build:
       context: ./docker/codex
     working_dir: /workspace
