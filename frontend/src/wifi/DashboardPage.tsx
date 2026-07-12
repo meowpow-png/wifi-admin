@@ -18,11 +18,10 @@ type DashboardPageProps = {
 
 function DashboardPage({token, onLogout}: DashboardPageProps) {
     const {
-      records: cpeRecords,
-      isLoading,
-      isRefreshing,
-      errorMessage,
-      reload,
+        records: cpeRecords,
+        isLoading,
+        errorMessage,
+        reload,
     } = useWifiConfigurations(token)
 
     const [searchQuery, setSearchQuery] = useState('')
@@ -73,7 +72,6 @@ function DashboardPage({token, onLogout}: DashboardPageProps) {
             setSortDirection('asc')
             return
         }
-
         setSortDirection((currentDirection) =>
             currentDirection === 'asc' ? 'desc' : 'asc',
         )
@@ -85,7 +83,6 @@ function DashboardPage({token, onLogout}: DashboardPageProps) {
             setDetailRecord(null)
             return
         }
-
         setIsEditing(false)
         setDetailRecord(record)
         setSelectedCpeId(record.id)
@@ -103,7 +100,6 @@ function DashboardPage({token, onLogout}: DashboardPageProps) {
     if (isLoading) {
         return <main className={styles.page}/>
     }
-
     if (errorMessage !== null) {
         return (
             <main className={styles.page}>
@@ -129,7 +125,6 @@ function DashboardPage({token, onLogout}: DashboardPageProps) {
                 onBandFilterChange={setBandFilter}
                 onSecurityFilterChange={setSecurityFilter}
             />
-
             <div
                 className={`${styles.contentArea} ${
                     selectedCpeId !== null
@@ -147,7 +142,6 @@ function DashboardPage({token, onLogout}: DashboardPageProps) {
                         onToggleRecord={handleRecordToggle}
                     />
                 </div>
-
                 {detailRecord !== null && (
                     <CpeDetailPanel
                         key={detailRecord.id}

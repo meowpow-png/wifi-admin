@@ -22,7 +22,7 @@ function CpeDetailPanel({
     record,
     onToggleEditing,
     onSave,
-}: CpeDetailPanelProps)  {
+}: CpeDetailPanelProps) {
     const [visiblePasswordRecordId, setVisiblePasswordRecordId] = useState<string | null>(null)
     const isPasswordVisible = visiblePasswordRecordId === record.id
     const password = record.password ?? `${record.id.toLowerCase()}-secure`

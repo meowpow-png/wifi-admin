@@ -36,13 +36,10 @@ export async function login(
             password,
         }),
     })
-
     if (!response.ok) {
         throw new Error(getResponseErrorMessage(response.status))
     }
-
     const {token}: LoginResponse = await response.json()
-
     return token
 }
 
@@ -54,13 +51,10 @@ export async function getWifiConfigurations(
             Authorization: `Bearer ${token}`,
         },
     })
-
     if (!response.ok) {
         throw new Error(getResponseErrorMessage(response.status))
     }
-
     const configurations: WifiConfigurationResponse[] = await response.json()
-
     return configurations.map(toCpeRecord)
 }
 
@@ -80,17 +74,14 @@ export async function updateWifiConfiguration(
             ssid: record.ssid,
             encryptionType: record.encryptionType,
             password: record.encryptionType === 'OPEN' || record.password === ''
-                    ? null
-                    : record.password,
+                ? null
+                : record.password,
         } satisfies UpdateWifiConfigurationRequest),
     })
-
     if (!response.ok) {
         throw new Error(getResponseErrorMessage(response.status))
     }
-
     const configuration: WifiConfigurationResponse = await response.json()
-
     return toCpeRecord(configuration)
 }
 
@@ -110,10 +101,8 @@ function getResponseErrorMessage(status: number): string {
     if (status === 400) {
         return 'Enter a username and password.'
     }
-
     if (status === 401) {
         return 'The username or password is incorrect.'
     }
-
     return 'Unable to sign in. Please try again.'
 }

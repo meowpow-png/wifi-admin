@@ -1,6 +1,5 @@
-import {useCallback, useEffect, useState} from 'react'
-
 import * as React from 'react'
+import {useCallback, useEffect, useState} from 'react'
 
 import {getWifiConfigurations} from '../api'
 

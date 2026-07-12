@@ -35,7 +35,6 @@ function LoginPage({onLogin}: LoginPageProps) {
             setIsSubmitting(false)
         }
     }
-
     const loginFormProps = {
         username,
         password,
@@ -48,7 +47,6 @@ function LoginPage({onLogin}: LoginPageProps) {
             setIsPasswordVisible((isVisible) => !isVisible),
         onSubmit: handleSubmit,
     }
-
     return (
         <main className={styles.page} aria-label="Administrator login">
             <DesktopLogin loginFormProps={loginFormProps}/>
@@ -66,7 +64,6 @@ function DesktopLogin({loginFormProps}: LoginShellProps) {
         <div className={styles.desktopLayout}>
             <aside className={styles.brandPanel}>
                 <BrandHeader logoSize={30}/>
-
                 <section className={styles.brandMessage} aria-labelledby="desktop-login-title">
                     <div className={styles.eyebrow}>
                         <Wifi size={14} strokeWidth={2} aria-hidden="true"/>
@@ -76,7 +73,6 @@ function DesktopLogin({loginFormProps}: LoginShellProps) {
                     <p>Manage Wi-Fi parameters for subscriber CPE devices.</p>
                 </section>
             </aside>
-
             <section className={styles.loginArea}>
                 <LoginForm {...loginFormProps} />
             </section>
@@ -91,7 +87,6 @@ function MobileLogin({loginFormProps}: LoginShellProps) {
                 <BrandHeader logoSize={26}/>
                 <Wifi className={styles.mobileHeaderIcon} size={14} strokeWidth={2} aria-hidden="true"/>
             </header>
-
             <section className={styles.mobileContent} aria-labelledby="mobile-login-title">
                 <h1 id="mobile-login-title">Wi-Fi CPE Configuration</h1>
                 <LoginForm {...loginFormProps} />
@@ -156,7 +151,6 @@ function LoginForm({
                 <h2>Administrator login</h2>
                 <p>Sign in to access the Wi-Fi CPE configuration console.</p>
             </div>
-
             <label className={styles.field} htmlFor={usernameId}>
                 <span>Username</span>
                 <input
@@ -172,7 +166,6 @@ function LoginForm({
                     onChange={(event) => onUsernameChange(event.target.value)}
                 />
             </label>
-
             <label className={styles.field} htmlFor={passwordId}>
                 <span>Password</span>
                 <div className={styles.passwordInput}>
@@ -198,11 +191,9 @@ function LoginForm({
                     </button>
                 </div>
             </label>
-
             <button className={styles.submitButton} type="submit" disabled={isSubmitting}>
                 {isSubmitting ? 'Signing in...' : 'Sign in'}
             </button>
-
             {errorMessage === null ? null : (
                 <p id={errorId} className={styles.errorMessage} role="alert">
                     {errorMessage}

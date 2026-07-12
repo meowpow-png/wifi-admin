@@ -35,7 +35,6 @@ function FilterBar({
                 value={searchQuery}
                 onChange={(event) => onSearchQueryChange(event.target.value)}
             />
-
             <div className={styles.selectControl}>
                 <Filter className={styles.selectIcon} size={10} strokeWidth={2} aria-hidden="true"/>
                 <select
@@ -57,7 +56,6 @@ function FilterBar({
                     aria-hidden="true"
                 />
             </div>
-
             <div className={styles.selectControl}>
                 <Filter className={styles.selectIcon} size={10} strokeWidth={2} aria-hidden="true"/>
                 <select
@@ -79,7 +77,6 @@ function FilterBar({
                     aria-hidden="true"
                 />
             </div>
-
             <span className={styles.recordCount}>
         {visibleCount} / {totalCount} records
       </span>
