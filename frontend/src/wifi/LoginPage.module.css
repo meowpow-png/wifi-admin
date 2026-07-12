@@ -162,6 +162,11 @@
     line-height: normal;
 }
 
+.field input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 1;
+}
+
 .field input:focus {
     border-color: var(--color-info-on-subtle);
     outline: none;
@@ -220,6 +225,22 @@
 .submitButton:focus-visible {
     outline: 2px solid var(--color-text-primary);
     outline-offset: 3px;
+}
+
+.submitButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.72;
+}
+
+.errorMessage {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border: 1px solid rgba(251, 106, 85, 0.45);
+    background: var(--color-danger-subtle);
+    color: var(--color-danger-on-subtle);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
 }
 
 @media (max-width: 760px) {

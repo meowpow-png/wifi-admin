@@ -3,13 +3,17 @@ import {useState} from 'react'
 import {DashboardPage, LoginPage} from './wifi'
 
 function App() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [token, setToken] = useState<string | null>(null)
 
-    if (isAuthenticated) {
-        return <DashboardPage onLogout={() => setIsAuthenticated(false)}/>
+    if (token === null) {
+        return <LoginPage onLogin={setToken}/>
     }
-
-    return <LoginPage onLogin={() => setIsAuthenticated(true)}/>
+    return (
+        <DashboardPage
+            token={token}
+            onLogout={() => setToken(null)}
+        />
+    )
 }
 
 export default App

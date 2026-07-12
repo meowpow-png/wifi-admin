@@ -3,6 +3,7 @@ import {useId, useState} from 'react'
 import {Eye, EyeOff, Wifi} from 'lucide-react'
 
 import styles from './LoginPage.module.css'
+import {login} from './api'
 
 type FormSubmitHandler = NonNullable<ComponentPropsWithoutRef<'form'>['onSubmit']>
 
@@ -11,22 +12,40 @@ type LoginPageProps = {
 }
 
 function LoginPage({onLogin}: LoginPageProps) {
-    const [username, setUsername] = useState('admin')
-    const [password, setPassword] = useState('password')
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-    const handleSubmit: FormSubmitHandler = (event) => {
+    const handleSubmit: FormSubmitHandler = async (event) => {
         event.preventDefault()
-        onLogin()
+
+        setIsSubmitting(true)
+        setErrorMessage(null)
+
+        try {
+            const token = await login(username, password)
+            onLogin(token)
+        }
+        catch (error) {
+            setErrorMessage(getLoginErrorMessage(error))
+        }
+        finally {
+            setIsSubmitting(false)
+        }
     }
 
     const loginFormProps = {
         username,
         password,
         isPasswordVisible,
+        isSubmitting,
+        errorMessage,
         onUsernameChange: setUsername,
         onPasswordChange: setPassword,
-        onPasswordVisibilityToggle: () => setIsPasswordVisible((isVisible) => !isVisible),
+        onPasswordVisibilityToggle: () =>
+            setIsPasswordVisible((isVisible) => !isVisible),
         onSubmit: handleSubmit,
     }
 
@@ -105,6 +124,8 @@ type LoginFormProps = {
     username: string
     password: string
     isPasswordVisible: boolean
+    isSubmitting: boolean
+    errorMessage: string | null
     onUsernameChange: (value: string) => void
     onPasswordChange: (value: string) => void
     onPasswordVisibilityToggle: () => void
@@ -115,6 +136,8 @@ function LoginForm({
     username,
     password,
     isPasswordVisible,
+    isSubmitting,
+    errorMessage,
     onUsernameChange,
     onPasswordChange,
     onPasswordVisibilityToggle,
@@ -122,6 +145,9 @@ function LoginForm({
 }: LoginFormProps) {
     const usernameId = useId()
     const passwordId = useId()
+    const errorId = useId()
+    const [isUsernameFocused, setIsUsernameFocused] = useState(false)
+    const [isPasswordFocused, setIsPasswordFocused] = useState(false)
     const PasswordIcon = isPasswordVisible ? EyeOff : Eye
 
     return (
@@ -137,7 +163,12 @@ function LoginForm({
                     id={usernameId}
                     type="text"
                     value={username}
+                    placeholder={isUsernameFocused ? '' : 'username'}
                     autoComplete="username"
+                    aria-invalid={errorMessage !== null}
+                    aria-describedby={errorMessage === null ? undefined : errorId}
+                    onFocus={() => setIsUsernameFocused(true)}
+                    onBlur={() => setIsUsernameFocused(false)}
                     onChange={(event) => onUsernameChange(event.target.value)}
                 />
             </label>
@@ -149,7 +180,12 @@ function LoginForm({
                         id={passwordId}
                         type={isPasswordVisible ? 'text' : 'password'}
                         value={password}
+                        placeholder={isPasswordFocused ? '' : 'password'}
                         autoComplete="current-password"
+                        aria-invalid={errorMessage !== null}
+                        aria-describedby={errorMessage === null ? undefined : errorId}
+                        onFocus={() => setIsPasswordFocused(true)}
+                        onBlur={() => setIsPasswordFocused(false)}
                         onChange={(event) => onPasswordChange(event.target.value)}
                     />
                     <button
@@ -163,11 +199,27 @@ function LoginForm({
                 </div>
             </label>
 
-            <button className={styles.submitButton} type="submit">
-                Sign in
+            <button className={styles.submitButton} type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Signing in...' : 'Sign in'}
             </button>
+
+            {errorMessage === null ? null : (
+                <p id={errorId} className={styles.errorMessage} role="alert">
+                    {errorMessage}
+                </p>
+            )}
         </form>
     )
+}
+
+function getLoginErrorMessage(error: unknown): string {
+    if (!(error instanceof Error)) {
+        return 'Unable to sign in. Please try again.'
+    }
+    if (error.name === 'TypeError') {
+        return 'Unable to reach the server. Please try again.'
+    }
+    return error.message
 }
 
 export default LoginPage

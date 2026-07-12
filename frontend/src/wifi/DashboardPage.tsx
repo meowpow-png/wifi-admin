@@ -10,6 +10,7 @@ import styles from './DashboardPage.module.css'
 import type {BandFilter, CpeRecord, SecurityFilter, SortDirection, SortKey,} from './types'
 
 type DashboardPageProps = {
+    token: string
     onLogout: () => void
 }
 
