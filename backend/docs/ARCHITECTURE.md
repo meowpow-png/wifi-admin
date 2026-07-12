@@ -270,7 +270,7 @@ The following persistence policies are applied:
 - WiFi configurations are read from the database by default
 - Missing configurations are retrieved from the platform and stored in the database
 - Configuration changes are published for persistence after successful platform updates
-- Successful platform interactions publish events that drive persistence and other follow-up processing
+- Successful platform interactions publish events that drive persistence, projection updates, and other follow-up processing
 - Database failures during retrieval fall back to the external platform when possible
 
 Related architectural decisions:

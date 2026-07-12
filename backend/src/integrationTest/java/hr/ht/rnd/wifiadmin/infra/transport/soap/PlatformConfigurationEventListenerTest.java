@@ -3,6 +3,7 @@ package hr.ht.rnd.wifiadmin.infra.transport.soap;
 import hr.ht.rnd.wifiadmin.application.event.PlatformConfigurationRetrievedEvent;
 import hr.ht.rnd.wifiadmin.application.event.PlatformConfigurationUpdatedEvent;
 import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationPersistence;
+import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationProjection;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.sync.SynchronizationTracker;
 import hr.ht.rnd.wifiadmin.test.autoconfigure.WiringIntegrationTest;
 import hr.ht.rnd.wifiadmin.test.support.TestApplicationContextRunner;
@@ -67,6 +68,11 @@ class PlatformConfigurationEventListenerTest {
         @Bean
         WifiConfigurationPersistence wifiConfigurationPersistence() {
             return mock(WifiConfigurationPersistence.class);
+        }
+
+        @Bean
+        WifiConfigurationProjection wifiConfigurationProjection() {
+            return mock(WifiConfigurationProjection.class);
         }
 
         @Bean

@@ -2,6 +2,8 @@ package hr.ht.rnd.wifiadmin.application.inbound;
 
 import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 
+import java.util.List;
+
 /**
  * Exposes platform administration operations.
  */
@@ -26,4 +28,11 @@ public interface PlatformAdministration {
      * @throws NullPointerException if {@code configuration} is {@code null}
      */
     WifiConfiguration updateConfiguration(WifiConfiguration configuration);
+
+    /**
+     * Retrieves all known Wi-Fi configurations.
+     *
+     * @return the Wi-Fi configurations
+     */
+    List<WifiConfiguration> retrieveConfigurations();
 }

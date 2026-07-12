@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class WifiConfigurationRequests {
 
     private static final String RETRIEVE_ENDPOINT = "/wifi-parameter/{cpeId}";
+    private static final String RETRIEVE_ALL_ENDPOINT = "/wifi-parameters";
     private static final String UPDATE_ENDPOINT = "/wifi-parameter";
     private static final String BEARER_PREFIX = "Bearer ";
 
@@ -43,6 +44,19 @@ public class WifiConfigurationRequests {
      */
     public ResultActions retrieveConfiguration(String token, String cpeId) throws Exception {
         return mockMvc.perform(get(RETRIEVE_ENDPOINT, cpeId)
+                .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + token));
+    }
+
+    /**
+     * Performs an authenticated Wi-Fi configuration collection retrieval request.
+     *
+     * @param token the bearer token
+     *
+     * @return the result of performing the request
+     * @throws Exception if the request cannot be performed
+     */
+    public ResultActions retrieveConfigurations(String token) throws Exception {
+        return mockMvc.perform(get(RETRIEVE_ALL_ENDPOINT)
                 .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + token));
     }
 

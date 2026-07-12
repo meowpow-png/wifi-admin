@@ -213,6 +213,56 @@ Returns the same Wi-Fi configuration model as `GET /wifi-parameter/{cpeId}`.
 - `502 Bad Gateway` - Platform communication or response failure
 - `500 Internal Server Error` - Unexpected server failure
 
+### Retrieve Wi-Fi Configurations
+
+Returns all known Wi-Fi configurations.
+
+**Path**
+
+```text
+GET /wifi-parameters
+```
+
+**Response (application/json)**
+
+Returns an array of Wi-Fi configuration objects.
+
+Each object has the following fields:
+
+| Field          | Type   | Description                        |
+|----------------|--------|------------------------------------|
+| cpeId          | string | CPE device identifier              |
+| wifiBand       | string | Wi-Fi band                         |
+| ssid           | string | Wireless network name              |
+| encryptionType | string | Wireless encryption type, nullable |
+| password       | string | Wireless password, nullable        |
+
+**Example**
+
+```json
+[
+  {
+    "cpeId": "CPE_001",
+    "wifiBand": "BAND_2_4_GHZ",
+    "ssid": "Office WiFi",
+    "encryptionType": "WPA2_PSK",
+    "password": "secret-password"
+  },
+  {
+    "cpeId": "CPE_002",
+    "wifiBand": "BAND_5_GHZ",
+    "ssid": "Guest WiFi",
+    "encryptionType": "OPEN",
+    "password": null
+  }
+]
+```
+
+**Responses**
+
+* `200 OK` - Wi-Fi configurations returned successfully
+* `401 Unauthorized` - Missing or invalid access token
+
 ### Error Response
 
 Error responses use a common response body.
