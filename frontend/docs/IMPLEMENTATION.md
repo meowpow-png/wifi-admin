@@ -4,6 +4,8 @@ Source: Figma file `Admin-login-and-logs-screen` from `figma.json`.
 
 Use `docs/DESIGN.md` as the visual source of truth for dimensions, spacing, typography, and colors. 
 This document translates each Figma node into implementation structure, behavior, data, and reusable UI concerns.
+Figma may report fractional pixel values; implementation CSS should round pixel values to whole numbers
+unless a fractional value is required for a technical reason.
 
 ## LoginScreen
 

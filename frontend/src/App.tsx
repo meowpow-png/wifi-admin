@@ -1,11 +1,7 @@
-import './App.css'
+import { LoginPage } from './login'
 
 function App() {
-  return (
-    <div className="App">
-      <h1>wifi-admin</h1>
-    </div>
-  )
+  return <LoginPage />
 }
 
 export default App
