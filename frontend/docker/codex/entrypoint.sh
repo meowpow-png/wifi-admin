@@ -12,6 +12,14 @@ fi
 echo "Updating ownership of $HOME..."
 chown -R "${LOCAL_UID}:${LOCAL_GID}" "$HOME"
 
+echo "Updating ownership of /workspace..."
+chown "${LOCAL_UID}:${LOCAL_GID}" /workspace
+
+echo "Installing npm dependencies..."
+gosu "${LOCAL_UID}:${LOCAL_GID}" \
+    env HOME="$HOME" \
+    npm ci
+
 exec env \
     HOME="$HOME" \
     CODEX_HOME="$HOME/.codex" \
