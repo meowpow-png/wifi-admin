@@ -20,7 +20,7 @@ wifi-get cpe-id:
 [arg("wifi-band", help="Wi-Fi frequency band")]
 [arg("encryption-type", help="Wi-Fi encryption type")]
 [arg("password", help="Wireless network password")]
-wifi-update cpe-id ssid wifi-band='BAND_2_4_GHZ' encryption-type='OPEN' password='':
+wifi-update cpe-id ssid wifi-band='BAND_2_4_GHZ' encryption-type='OPEN' password='null':
     @export \
         CPE_ID="{{cpe-id}}" \
         WIFI_BAND="{{wifi-band}}" \

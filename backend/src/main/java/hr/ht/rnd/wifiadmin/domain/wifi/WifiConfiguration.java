@@ -21,8 +21,10 @@ public record WifiConfiguration(
      * @param cpeId the CPE device identifier
      * @param wifiBand the Wi-Fi frequency band
      * @param ssid the wireless network name
-     * @param encryptionType the encryption type, or {@code null} to use {@link WifiEncryptionType#OPEN}
-     * @param password the wireless network password, or {@code null} if not specified
+     * @param encryptionType the encryption type,
+     * or {@code null} to use {@link WifiEncryptionType#OPEN}
+     * @param password the wireless network password,
+     * or {@code null} when encryptionType is {@link WifiEncryptionType#OPEN}
      *
      * @throws NullPointerException if {@code cpeId}, {@code wifiBand},
      * or {@code ssid} is {@code null}, or if {@code password} is

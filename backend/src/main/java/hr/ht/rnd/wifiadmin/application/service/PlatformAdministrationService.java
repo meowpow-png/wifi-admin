@@ -4,6 +4,7 @@ import hr.ht.rnd.wifiadmin.application.event.PlatformConfigurationRetrievedEvent
 import hr.ht.rnd.wifiadmin.application.event.PlatformConfigurationUpdatedEvent;
 import hr.ht.rnd.wifiadmin.application.exception.PersistenceException;
 import hr.ht.rnd.wifiadmin.application.inbound.PlatformAdministration;
+import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationView;
 import hr.ht.rnd.wifiadmin.application.outbound.EventPublisher;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
 import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -26,15 +28,18 @@ public class PlatformAdministrationService implements PlatformAdministration {
 
     private final PlatformClient client;
     private final WifiConfigurationRepository repository;
+    private final WifiConfigurationView view;
     private final EventPublisher events;
 
     PlatformAdministrationService(
             PlatformClient client,
             WifiConfigurationRepository repository,
+            WifiConfigurationView view,
             EventPublisher events
     ) {
         this.client = client;
         this.repository = repository;
+        this.view = view;
         this.events = events;
     }
 
@@ -72,6 +77,11 @@ public class PlatformAdministrationService implements PlatformAdministration {
         events.publish(new PlatformConfigurationUpdatedEvent(configuration));
 
         return configuration;
+    }
+
+    @Override
+    public List<WifiConfiguration> retrieveConfigurations() {
+        return view.findAll();
     }
 
     private Optional<WifiConfiguration> findConfigurationByCpeId(String cpeId) {

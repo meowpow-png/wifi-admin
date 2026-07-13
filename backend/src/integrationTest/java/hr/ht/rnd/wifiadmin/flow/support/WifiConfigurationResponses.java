@@ -6,6 +6,8 @@ import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationResponse;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.List;
+
 import tools.jackson.databind.ObjectMapper;
 
 /**
@@ -34,6 +36,23 @@ public class WifiConfigurationResponses {
                 response.getContentAsByteArray(),
                 WifiConfigurationResponse.class
         );
+    }
+
+    /**
+     * Reads the Wi-Fi configuration collection response
+     * from the specified request result.
+     *
+     * @param result the request result
+     *
+     * @return the Wi-Fi configuration responses
+     */
+    public List<WifiConfigurationResponse> retrieveConfigurations(ResultActions result) {
+        var response = result.andReturn().getResponse();
+        var configurations = objectMapper.readValue(
+                response.getContentAsByteArray(),
+                WifiConfigurationResponse[].class
+        );
+        return List.of(configurations);
     }
 
     public static WifiConfigurationResponse from(WifiConfiguration configuration) {

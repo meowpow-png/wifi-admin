@@ -14,6 +14,8 @@ import jakarta.validation.constraints.NotBlank;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
+import java.util.List;
+
 /**
  * REST controller exposing Wi-Fi management endpoints.
  */
@@ -70,6 +72,20 @@ public final class WifiController {
             return WifiConfigurationMapper.toResponse(
                     admin.updateConfiguration(configuration)
             );
+        }
+    }
+
+    /**
+     * Retrieves all known Wi-Fi configurations.
+     *
+     * @return status {@code 200 (OK)}
+     */
+    @GetMapping("/wifi-parameters")
+    List<WifiConfigurationResponse> retrieveConfigurations() {
+        try (var ignored = LogContext.open()) {
+            return admin.retrieveConfigurations().stream()
+                    .map(WifiConfigurationMapper::toResponse)
+                    .toList();
         }
     }
 }

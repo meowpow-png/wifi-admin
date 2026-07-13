@@ -2,7 +2,9 @@
 
 This is a backend service for administering Wi-Fi parameters on CPE devices. 
 
-The service exposes a REST API for administrator authentication, password management, and Wi-Fi configuration retrieval/update. It persists configuration data locally in PostgreSQL and integrates with the external WiFi platform through SOAP.
+The service exposes a REST API for administrator authentication, password management, 
+and Wi-Fi configuration retrieval/update. It persists configuration data locally 
+in PostgreSQL and integrates with the external WiFi platform through SOAP.
 
 ## Architecture
 
@@ -212,6 +214,87 @@ Returns the same Wi-Fi configuration model as `GET /wifi-parameter/{cpeId}`.
 - `404 Not Found` - CPE device was not found
 - `502 Bad Gateway` - Platform communication or response failure
 - `500 Internal Server Error` - Unexpected server failure
+
+### Retrieve Wi-Fi Configurations
+
+Returns all known Wi-Fi configurations.
+
+**Path**
+
+```text
+GET /wifi-parameters
+```
+
+**Response (application/json)**
+
+Returns an array of Wi-Fi configuration objects.
+
+Each object has the following fields:
+
+| Field          | Type   | Description                        |
+|----------------|--------|------------------------------------|
+| cpeId          | string | CPE device identifier              |
+| wifiBand       | string | Wi-Fi band                         |
+| ssid           | string | Wireless network name              |
+| encryptionType | string | Wireless encryption type, nullable |
+| password       | string | Wireless password, nullable        |
+
+**Example**
+
+```json
+[
+  {
+    "cpeId": "CPE_001",
+    "wifiBand": "BAND_2_4_GHZ",
+    "ssid": "Office WiFi",
+    "encryptionType": "WPA2_PSK",
+    "password": "secret-password"
+  },
+  {
+    "cpeId": "CPE_002",
+    "wifiBand": "BAND_5_GHZ",
+    "ssid": "Guest WiFi",
+    "encryptionType": "OPEN",
+    "password": null
+  }
+]
+```
+
+**Responses**
+
+* `200 OK` - Wi-Fi configurations returned successfully
+* `401 Unauthorized` - Missing or invalid access token
+
+### Subscribe to Configuration Changes
+
+Subscribes to Wi-Fi configuration change notifications using Server-Sent Events (SSE). 
+A notification is published whenever the set of known Wi-Fi configurations changes.
+
+**Path**
+
+```text
+GET /admin/events
+```
+
+Protected endpoint requiring a JWT bearer token.
+
+**Response**
+
+Returns a `text/event-stream` response that remains open until the client disconnects.
+
+**Event**
+
+```text
+event: configurations-changed
+```
+
+Clients should retrieve the latest Wi-Fi configurations after receiving a notification.
+
+**Responses**
+
+* `200 OK` - Event stream established successfully
+* `401 Unauthorized` - Missing or invalid access token
+
 
 ### Error Response
 

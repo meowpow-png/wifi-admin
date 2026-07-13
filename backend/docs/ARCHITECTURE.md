@@ -18,7 +18,7 @@ The architecture is guided by the following principles:
 
 ## System Context
 
-The application acts as a bridge between REST clients and the external WiFi platform. It exposes a REST API, persists WiFi configurations locally, and synchronizes data with the external platform.
+The application acts as a bridge between REST clients and the external WiFi platform. It exposes a REST API, streams WiFi configuration change events to authenticated clients, persists WiFi configurations locally, and synchronizes data with the external platform.
 
 ```mermaid
 flowchart LR
@@ -270,7 +270,7 @@ The following persistence policies are applied:
 - WiFi configurations are read from the database by default
 - Missing configurations are retrieved from the platform and stored in the database
 - Configuration changes are published for persistence after successful platform updates
-- Successful platform interactions publish events that drive persistence and other follow-up processing
+- Successful platform interactions publish events that drive persistence, projection updates, change notifications, and other follow-up processing
 - Database failures during retrieval fall back to the external platform when possible
 
 Related architectural decisions:

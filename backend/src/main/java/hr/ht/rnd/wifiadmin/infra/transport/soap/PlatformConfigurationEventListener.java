@@ -3,6 +3,8 @@ package hr.ht.rnd.wifiadmin.infra.transport.soap;
 import hr.ht.rnd.wifiadmin.application.event.PlatformConfigurationRetrievedEvent;
 import hr.ht.rnd.wifiadmin.application.event.PlatformConfigurationUpdatedEvent;
 import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationPersistence;
+import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationProjection;
+import hr.ht.rnd.wifiadmin.application.outbound.ConfigurationChangeNotifier;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.sync.SynchronizationTracker;
 
 import org.springframework.context.event.EventListener;
@@ -24,13 +26,19 @@ class PlatformConfigurationEventListener {
     private static final Logger log = LoggerFactory.getLogger(PlatformConfigurationEventListener.class);
 
     private final WifiConfigurationPersistence persistence;
+    private final WifiConfigurationProjection projection;
+    private final ConfigurationChangeNotifier notifier;
     private final SynchronizationTracker tracker;
 
     PlatformConfigurationEventListener(
             WifiConfigurationPersistence persistence,
+            WifiConfigurationProjection projection,
+            ConfigurationChangeNotifier notifier,
             SynchronizationTracker tracker
     ) {
         this.persistence = persistence;
+        this.projection = projection;
+        this.notifier = notifier;
         this.tracker = tracker;
     }
 
@@ -46,6 +54,9 @@ class PlatformConfigurationEventListener {
                     event.configuration(),
                     event.lastSynchronized()
             );
+            projection.put(event.configuration());
+            notifier.notifyConfigurationsChanged();
+
             debug(log).withEvent(Event.PERSIST_RETRIEVED_CONFIGURATION_COMPLETED)
                     .withField(Field.CPE_ID, event.configuration().cpeId())
                     .log();
@@ -71,6 +82,9 @@ class PlatformConfigurationEventListener {
                 event.configuration(),
                 null
         );
+        projection.put(event.configuration());
+        notifier.notifyConfigurationsChanged();
+
         debug(log).withEvent(Event.PERSIST_UPDATED_CONFIGURATION_COMPLETED)
                 .withField(Field.CPE_ID, event.configuration().cpeId())
                 .log();
