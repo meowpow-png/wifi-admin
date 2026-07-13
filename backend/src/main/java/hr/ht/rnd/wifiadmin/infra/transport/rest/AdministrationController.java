@@ -4,7 +4,6 @@ import hr.ht.rnd.wifiadmin.application.exception.AuthenticationException;
 import hr.ht.rnd.wifiadmin.application.inbound.ChangeAdminPassword;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.ChangePasswordRequest;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.Objects;
+
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
 
 /**
  * REST controller exposing administration endpoints.
@@ -55,11 +56,8 @@ public final class AdministrationController {
                 request.currentPassword(),
                 request.newPassword()
         );
-        log.debug("Password changed for {} {} from {} ({})",
-                httpRequest.getMethod(),
-                httpRequest.getRequestURI(),
-                httpRequest.getRemoteAddr(),
-                httpRequest.getHeader(HttpHeaders.USER_AGENT)
-        );
+        debug(log).withEvent(Event.ADMINISTRATOR_PASSWORD_CHANGED)
+                .withRequest(httpRequest)
+                .log();
     }
 }

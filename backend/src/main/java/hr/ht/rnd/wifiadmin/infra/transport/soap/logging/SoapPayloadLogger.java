@@ -1,5 +1,7 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap.logging;
 
+import hr.ht.rnd.wifiadmin.common.StructuredLog;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +60,8 @@ final class SoapPayloadLogger {
          * Formats an XML document using indentation.
          * <p>
          * <strong>API Note:</strong>
-         * If formatting fails, the original XML is returned unchanged.
+         * If formatting fails, the payload is omitted to prevent
+         * logging unredacted sensitive information.
          *
          * @param xml the XML document to format
          *
@@ -91,7 +94,12 @@ final class SoapPayloadLogger {
                 return removeBlankLines(writer.toString());
             }
             catch (Exception e) {
-                return xml;
+                StructuredLog.warn(log)
+                        .withMessage("Failed to format SOAP payload")
+                        .withCause(e)
+                        .log();
+
+                return "<SOAP payload unavailable>";
             }
         }
 

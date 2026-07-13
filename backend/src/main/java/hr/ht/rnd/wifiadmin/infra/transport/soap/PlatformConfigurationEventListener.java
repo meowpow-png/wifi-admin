@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
+
 /**
  * Spring-backed listener for
  * platform configuration events.
@@ -40,9 +42,10 @@ class PlatformConfigurationEventListener {
     @Async
     @EventListener
     void on(PlatformConfigurationRetrievedEvent event) {
-        log.debug("Persisting retrieved configuration for '{}'",
-                event.configuration().cpeId()
-        );
+        debug(log).withEvent(Event.RETRIEVED_CONFIGURATION_PERSISTENCE_STARTED)
+                .withField(Field.CPE_ID, event.configuration().cpeId())
+                .log();
+
         try {
             persistence.persist(
                     event.configuration(),
@@ -61,9 +64,10 @@ class PlatformConfigurationEventListener {
     @Async
     @EventListener
     void on(PlatformConfigurationUpdatedEvent event) {
-        log.debug("Persisting updated configuration for '{}'",
-                event.configuration().cpeId()
-        );
+        debug(log).withEvent(Event.UPDATED_CONFIGURATION_PERSISTENCE_STARTED)
+                .withField(Field.CPE_ID, event.configuration().cpeId())
+                .log();
+
         persistence.persist(
                 event.configuration(),
                 null

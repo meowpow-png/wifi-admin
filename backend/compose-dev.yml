@@ -1,0 +1,23 @@
+services:
+  backend:
+    build: .
+    image: wifi-admin-backend
+    container_name: backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      platform-mock:
+        condition: service_started
+    environment:
+      AES_KEY: ${AES_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+      SOAP_ENDPOINT: http://platform-mock:3000/platform
+      DB_HOST: postgres
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SPRING_PROFILES_ACTIVE: dev
+      JAVA_TOOL_OPTIONS: -Duser.timezone=Europe/Zagreb
+    ports:
+      - "8081:8081"

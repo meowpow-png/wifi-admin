@@ -14,6 +14,8 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
+
 /**
  * Coordinates platform synchronization.
  */
@@ -57,17 +59,23 @@ public final class PlatformSynchronizer {
      */
     public void synchronize() {
         int idCount = properties.cpeIdCount();
-        log.info("Starting platform synchronization of {} CPE devices", idCount);
+        info(log).withEvent(Event.PLATFORM_SYNCHRONIZATION_STARTED)
+                .withField("cpe_count", idCount)
+                .log();
 
         tracker.start(LocalDate.now(clock), idCount);
         try {
             for (var i = 1; i <= idCount; i++) {
                 var cpeId = properties.cpeIdFormat().formatted(i);
-                log.debug("Synchronizing device '{}'", cpeId);
+                debug(log).withEvent(Event.CPE_SYNCHRONIZATION_STARTED)
+                        .withField(Field.CPE_ID, cpeId)
+                        .log();
 
                 synchronization.synchronize(cpeId);
             }
-            log.info("Platform synchronization dispatching completed");
+            info(log).withEvent(Event.PLATFORM_SYNCHRONIZATION_DISPATCH_COMPLETED)
+                    .withField("cpe_count", idCount)
+                    .log();
         }
         catch (Exception e) {
             tracker.abort();

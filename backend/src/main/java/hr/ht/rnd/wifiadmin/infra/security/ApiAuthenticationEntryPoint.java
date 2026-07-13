@@ -3,7 +3,6 @@ package hr.ht.rnd.wifiadmin.infra.security;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.ErrorBodyDto;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.ErrorCode;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -19,6 +18,8 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Objects;
+
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
 
 @Component
 final class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -36,14 +37,12 @@ final class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(
             HttpServletRequest request,
             HttpServletResponse response,
-            AuthenticationException exception
+            AuthenticationException ignored
     ) throws IOException {
-        log.debug("Authentication failed for {} {} from {} ({})",
-                request.getMethod(),
-                request.getRequestURI(),
-                request.getRemoteAddr(),
-                request.getHeader(HttpHeaders.USER_AGENT)
-        );
+        debug(log).withEvent(Event.AUTHENTICATION_FAILED)
+                .withRequest(request)
+                .log();
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 

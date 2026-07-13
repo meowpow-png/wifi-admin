@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Objects;
 import java.util.Optional;
 
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
+
 @Service
 public class PlatformAdministrationService implements PlatformAdministration {
 
@@ -44,10 +46,14 @@ public class PlatformAdministrationService implements PlatformAdministration {
     public WifiConfiguration retrieveConfiguration(String cpeId) {
         Objects.requireNonNull(cpeId, "cpeId must not be null");
 
-        log.info("Retrieving Wi-Fi configuration for '{}'", cpeId);
+        info(log).withMessage("Retrieving Wi-Fi configuration")
+                .withField(Field.CPE_ID, cpeId)
+                .log();
 
         return findConfigurationByCpeId(cpeId).orElseGet(() -> {
-            log.debug("Wi-Fi configuration for '{}' not found", cpeId);
+            debug(log).withEvent(Event.WIFI_CONFIGURATION_NOT_FOUND)
+                    .withField(Field.CPE_ID, cpeId)
+                    .log();
 
             var configuration = client.retrieveConfiguration(cpeId);
             events.publish(new PlatformConfigurationRetrievedEvent(
@@ -62,9 +68,10 @@ public class PlatformAdministrationService implements PlatformAdministration {
     public WifiConfiguration updateConfiguration(WifiConfiguration configuration) {
         Objects.requireNonNull(configuration, "configuration must not be null");
 
-        log.info("Updating Wi-Fi configuration for '{}'",
-                configuration.cpeId()
-        );
+        info(log).withMessage("Updating Wi-Fi configuration")
+                .withField(Field.CPE_ID, configuration.cpeId())
+                .log();
+
         configuration = client.updateConfiguration(configuration);
         events.publish(new PlatformConfigurationUpdatedEvent(configuration));
 
@@ -75,7 +82,12 @@ public class PlatformAdministrationService implements PlatformAdministration {
         try {
             return repository.findByCpeId(cpeId);
         }
-        catch (PersistenceException ignored) {
+        catch (PersistenceException e) {
+            warn(log).withMessage("Failed to retrieve Wi-Fi configuration from repository")
+                    .withField(Field.CPE_ID, cpeId)
+                    .withCause(e)
+                    .log();
+
             return Optional.empty();
         }
     }

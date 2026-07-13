@@ -21,6 +21,8 @@ import java.net.ConnectException;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
+
 /**
  * SOAP-based implementation of {@link PlatformClient}.
  */
@@ -49,9 +51,10 @@ final class SoapPlatformClient implements PlatformClient {
         }
         catch (SoapFaultException e) {
             if (e.code() == SoapFaultCode.NOT_FOUND) {
-                log.debug("SOAP platform reported CPE '{}' was not found",
-                        cpeId
-                );
+                debug(log).withEvent(Event.PLATFORM_CPE_REPORTED_NOT_FOUND)
+                        .withField(Field.CPE_ID, cpeId)
+                        .log();
+
                 throw new CpeNotFoundException(cpeId, e);
             }
             throw e;

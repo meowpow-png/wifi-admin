@@ -13,6 +13,8 @@ import org.jspecify.annotations.Nullable;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
+
 /**
  * Tracks the progress of platform synchronization.
  * <p>
@@ -49,9 +51,11 @@ public final class SynchronizationTracker {
         if (run != null) {
             throw new IllegalStateException("Synchronization already in progress");
         }
-        log.debug("Tracking synchronization of {} configurations",
-                expected
-        );
+        debug(log).withMessage("Tracking platform synchronization")
+                .withField(Field.DATE, date)
+                .withField(Field.EXPECTED_CONFIGURATION_COUNT, expected)
+                .log();
+
         run = new SynchronizationRun(date, expected);
     }
 
@@ -71,14 +75,22 @@ public final class SynchronizationTracker {
             return;
         }
         if (run.complete()) {
-            log.debug("Synchronization progress: {}/{}",
-                    run.completed,
-                    run.expected
-            );
-            log.debug("Removing stale configurations");
+            debug(log).withMessage("Platform synchronization progress updated")
+                    .withField(Field.CONFIGURATION_COUNT, run.completed)
+                    .withField(Field.EXPECTED_CONFIGURATION_COUNT, run.expected)
+                    .log();
+
+            debug(log).withMessage("Removing stale configurations")
+                    .withField(Field.DATE, date)
+                    .log();
+
             repository.deleteOlderThan(date);
 
-            log.info("Platform synchronization completed");
+            info(log).withEvent(Event.PLATFORM_SYNCHRONIZATION_COMPLETED)
+                    .withField(Field.DATE, date)
+                    .withField(Field.CONFIGURATION_COUNT, run.completed)
+                    .log();
+
             run = null;
         }
     }
@@ -88,7 +100,12 @@ public final class SynchronizationTracker {
      */
     public synchronized void abort() {
         if (run != null) {
-            log.warn("Aborting platform synchronization");
+            warn(log).withEvent(Event.PLATFORM_SYNCHRONIZATION_ABORTED)
+                    .withField(Field.DATE, run.date)
+                    .withField(Field.CONFIGURATION_COUNT, run.completed)
+                    .withField(Field.EXPECTED_CONFIGURATION_COUNT, run.expected)
+                    .log();
+
             run = null;
         }
     }
