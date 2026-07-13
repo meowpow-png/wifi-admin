@@ -1,4 +1,6 @@
 [versions]
+postgresql = "42.7.11"
+flyway = "12.8.1"
 cxf = "4.2.2"
 springdoc = "3.0.3"
 slf4j = "2.0.18"
@@ -7,7 +9,13 @@ archunit = "1.4.2"
 [libraries]
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-boot-starter-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
+flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 
 cxf-tools-wsdlto-core = { module = "org.apache.cxf:cxf-tools-wsdlto-core", version.ref = "cxf" }
 cxf-tools-wsdlto-frontend-jaxws = { module = "org.apache.cxf:cxf-tools-wsdlto-frontend-jaxws", version.ref = "cxf" }

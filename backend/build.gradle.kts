@@ -1,10 +1,18 @@
 @file:Suppress("UnstableApiUsage")
 
+buildscript {
+    dependencies {
+        classpath(libs.postgresql)
+        classpath(libs.flyway.database.postgresql)
+    }
+}
+
 plugins {
     java
     id("jvm-test-suite")
     id("org.springframework.boot") version "4.0.6"
     id("io.spring.dependency-management") version "1.1.7"
+    id("org.flywaydb.flyway") version "12.8.1"
 }
 
 group = "hr.ht.rnd"
@@ -23,6 +31,30 @@ sourceSets {
             srcDir(layout.buildDirectory.dir("generated/sources/wsdl"))
         }
     }
+}
+
+fun loadEnv(file: File): Map<String, String> {
+    if (!file.exists()) {
+        return emptyMap()
+    }
+    return file.readLines()
+        .filter { it.isNotBlank() && !it.startsWith("#") }
+        .associate {
+            val (key, value) = it.split("=", limit = 2)
+            key to value
+        }
+}
+val env = loadEnv(file(".env")) + System.getenv()
+
+tasks.bootRun {
+    environment(env)
+}
+
+flyway {
+    url = "jdbc:postgresql://localhost:${env["DB_PORT"]}/${env["DB_NAME"]}"
+    user = env["DB_USER"]
+    password = env["DB_PASSWORD"]
+    cleanDisabled = false
 }
 
 testing {
@@ -56,8 +88,13 @@ val cxfCodegen = configurations.create("cxfCodegen")
 dependencies {
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.validation)
+    implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.cxf.spring.boot.starter.jaxws)
     implementation(libs.springdoc.openapi.starter.webmvc.ui)
+    implementation(libs.spring.boot.starter.flyway)
+
+    runtimeOnly(libs.flyway.postgresql)
+    runtimeOnly(libs.postgresql)
 
     cxfCodegen(libs.cxf.tools.wsdlto.core)
     cxfCodegen(libs.cxf.tools.wsdlto.frontend.jaxws)
