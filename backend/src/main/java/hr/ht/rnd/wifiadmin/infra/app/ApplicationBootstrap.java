@@ -1,5 +1,6 @@
 package hr.ht.rnd.wifiadmin.infra.app;
 
+import hr.ht.rnd.wifiadmin.common.LogContext;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.PlatformProperties;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.sync.PlatformSynchronizer;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.sync.SynchronizationSchedule;
@@ -41,17 +42,19 @@ final class ApplicationBootstrap {
 
     @EventListener(ApplicationReadyEvent.class)
     void bootstrap() {
-        info(log).withEvent(Event.APPLICATION_BOOTSTRAP_STARTED)
-                .withField(Field.TIME_ZONE, ZoneId.systemDefault())
-                .log();
+        try (var ignore = LogContext.open()) {
+            info(log).withEvent(Event.APPLICATION_BOOTSTRAP_STARTED)
+                    .withField(Field.TIME_ZONE, ZoneId.systemDefault())
+                    .log();
 
-        if (properties.syncOnStartup()) {
-            synchronizer.synchronize();
+            if (properties.syncOnStartup()) {
+                synchronizer.synchronize();
+            }
+            info(log).withEvent(Event.NEXT_PLATFORM_SYNCHRONIZATION_SCHEDULED)
+                    .withField(Field.DATE, schedule.nextExecution())
+                    .log();
+
+            info(log).withEvent(Event.APPLICATION_BOOTSTRAP_COMPLETED).log();
         }
-        info(log).withEvent(Event.NEXT_PLATFORM_SYNCHRONIZATION_SCHEDULED)
-                .withField(Field.DATE, schedule.nextExecution())
-                .log();
-
-        info(log).withEvent(Event.APPLICATION_BOOTSTRAP_COMPLETED).log();
     }
 }

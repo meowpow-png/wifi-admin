@@ -19,7 +19,8 @@ import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Objects;
 
-import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.Event;
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.debug;
 
 @Component
 final class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {

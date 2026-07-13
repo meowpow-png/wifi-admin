@@ -17,7 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.Event;
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.debug;
 
 /**
  * REST controller exposing authentication endpoints.
@@ -48,6 +49,10 @@ public final class AuthenticationController {
             @Valid @RequestBody LoginRequest request,
             HttpServletRequest httpRequest
     ) {
+        debug(log).withEvent(Event.AUTHENTICATION_ATTEMPT)
+                .withRequest(httpRequest)
+                .log();
+
         var token = authentication.authenticate(
                 request.username(),
                 request.password()

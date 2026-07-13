@@ -46,7 +46,7 @@ public class PlatformAdministrationService implements PlatformAdministration {
     public WifiConfiguration retrieveConfiguration(String cpeId) {
         Objects.requireNonNull(cpeId, "cpeId must not be null");
 
-        info(log).withMessage("Retrieving Wi-Fi configuration")
+        info(log).withEvent(Event.RETRIEVE_WIFI_CONFIGURATION_STARTED)
                 .withField(Field.CPE_ID, cpeId)
                 .log();
 
@@ -68,7 +68,7 @@ public class PlatformAdministrationService implements PlatformAdministration {
     public WifiConfiguration updateConfiguration(WifiConfiguration configuration) {
         Objects.requireNonNull(configuration, "configuration must not be null");
 
-        info(log).withMessage("Updating Wi-Fi configuration")
+        info(log).withEvent(Event.UPDATE_WIFI_CONFIGURATION_STARTED)
                 .withField(Field.CPE_ID, configuration.cpeId())
                 .log();
 
@@ -83,7 +83,7 @@ public class PlatformAdministrationService implements PlatformAdministration {
             return repository.findByCpeId(cpeId);
         }
         catch (PersistenceException e) {
-            warn(log).withMessage("Failed to retrieve Wi-Fi configuration from repository")
+            warn(log).withEvent(Event.RETRIEVE_WIFI_CONFIGURATION_FAILED)
                     .withField(Field.CPE_ID, cpeId)
                     .withCause(e)
                     .log();

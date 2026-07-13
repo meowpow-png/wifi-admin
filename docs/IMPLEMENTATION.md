@@ -229,9 +229,103 @@ Operational events are logged at the following severity levels:
 - **WARN** – Recoverable issues, such as missing resources
 - **ERROR** – Unexpected failures, such as network or platform errors
 
-Log entries include contextual information, such as the operation, CPE identifier, and correlation ID, to support request tracing.
-
 Sensitive information, including Wi-Fi passwords, user passwords, JWTs, and authorization headers, is never written to the logs. Where appropriate, sensitive values are partially obfuscated for troubleshooting.
+
+### Trace Correlation
+
+Each application execution is assigned a unique trace identifier that is automatically included in structured log entries. Trace identifiers enable all log messages produced during a single execution to be correlated, including those emitted by synchronous and asynchronous processing.
+
+For example, a successful administrator login produces multiple log entries that share the same trace identifier. In Grafana, filtering by the trace identifier reconstructs the complete execution:
+
+```text
+2026-07-07 16:13:54.703 DEBUG AUTHENTICATION_ATTEMPT b80b424a
+2026-07-07 16:13:54.880 DEBUG AUTHENTICATION_SUCCEEDED b80b424a
+```
+
+More complex operations span multiple application components while retaining the same trace identifier. For example, retrieving a Wi-Fi configuration correlates the REST request, platform communication, and asynchronous persistence:
+
+```text
+2026-07-07 16:14:44.738 INFO  RETRIEVE_WIFI_CONFIGURATION_STARTED a8d83385
+2026-07-07 16:14:44.739 DEBUG WIFI_CONFIGURATION_NOT_FOUND a8d83385
+2026-07-07 16:14:44.745 TRACE OUTBOUND_SOAP_REQUEST a8d83385
+2026-07-07 16:14:44.783 TRACE INBOUND_SOAP_RESPONSE a8d83385
+2026-07-07 16:14:44.785 DEBUG PERSIST_RETRIEVED_CONFIGURATION_STARTED a8d83385
+2026-07-07 16:14:44.791 DEBUG PERSIST_RETRIEVED_CONFIGURATION_COMPLETED a8d83385
+```
+
+Structured log fields remain available for filtering and inspection. For example, the correlated log entry below includes the associated CPE identifier:
+
+```json
+{
+  "trace_id": "a8d83385-fe0f-4a77-9c0b-10da98c31c15",
+  "event": "PERSIST_RETRIEVED_CONFIGURATION_STARTED",
+  "cpe_id": "CPE_002"
+}
+```
+
+Logging contexts are established only at application entry points, such as HTTP requests, scheduled tasks, and application bootstrap. Downstream components participate in the active logging context without requiring trace identifiers to be passed through method parameters.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Filter as TraceContextFilter
+    participant Security
+    participant Controller
+    participant Service
+    participant Handler as ExceptionHandler
+
+    Client->>Filter: HTTP request
+    activate Filter
+    Note over Filter: Open logging context (trace_id=a8d83385)
+
+    Filter->>Security: Authenticate request
+    Note over Security: AUTHENTICATION_ATTEMPT
+
+    Security->>Controller: Invoke endpoint
+    Controller->>Service: Execute use case
+    Note over Service: RETRIEVE_WIFI_CONFIGURATION_STARTED
+
+    alt Success
+        Service-->>Controller: Result
+        Controller-->>Client: Response
+    else Exception
+        Service-->>Handler: Exception
+        Note over Handler: REQUEST_BODY_PARSE_FAILED
+        Handler-->>Client: Error response
+    end
+
+    Note over Filter: Close logging context (trace_id=a8d83385)
+    deactivate Filter
+```
+
+Asynchronous processing propagates the logging context to worker threads, ensuring that event listeners and other asynchronous operations continue the originating trace rather than starting a new one.
+
+```mermaid
+sequenceDiagram
+    participant Main as Main Thread
+    participant Publisher as EventPublisher
+    participant Decorator as MdcTaskDecorator
+    participant Worker as Virtual Thread
+    participant Listener as EventListener
+
+    Note over Main: trace_id=a8d83385
+
+    Main->>Publisher: Publish event
+    Publisher->>Decorator: Submit task
+    Note over Decorator: Capture logging context
+
+    Decorator->>Worker: Execute task
+    activate Worker
+    Note over Worker: Restore logging context (trace_id=a8d83385)
+
+    Worker->>Listener: Handle event
+    Note over Listener: PERSIST_RETRIEVED_CONFIGURATION_STARTED
+
+    Listener-->>Worker: Complete
+
+    Note over Worker: Clear logging context
+    deactivate Worker
+```
 
 ### Health & Metrics
 

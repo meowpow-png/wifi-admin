@@ -72,14 +72,14 @@ public final class StructuredLog {
      */
     public enum Field {
 
+        TRACE_ID("trace_id"),
+
         HTTP_METHOD("http_method"),
         HTTP_PATH("http_path"),
         CLIENT_IP("client_ip"),
         USER_AGENT("user_agent"),
 
-        USERNAME("username"),
         CPE_ID("cpe_id"),
-
         VALIDATION_MESSAGE("validation_message"),
 
         DATE("date"),
@@ -109,17 +109,33 @@ public final class StructuredLog {
 
         SCHEDULED_SYNCHRONIZATION_TRIGGERED("Scheduled synchronization triggered"),
         PLATFORM_SYNCHRONIZATION_STARTED("Starting platform synchronization"),
+        PLATFORM_SYNCHRONIZATION_TRACKING_STARTED("Starting platform synchronization tracking"),
         CPE_SYNCHRONIZATION_STARTED("Synchronizing CPE"),
         NEXT_PLATFORM_SYNCHRONIZATION_SCHEDULED("Next platform synchronization scheduled"),
+
+        PLATFORM_SYNCHRONIZATION_PROGRESS_UPDATED("Platform synchronization progress updated"),
         PLATFORM_SYNCHRONIZATION_DISPATCH_COMPLETED("Platform synchronization dispatching completed"),
         PLATFORM_SYNCHRONIZATION_COMPLETED("Platform synchronization completed"),
         PLATFORM_SYNCHRONIZATION_ABORTED("Platform synchronization aborted"),
 
-        RETRIEVED_CONFIGURATION_PERSISTENCE_STARTED("Persisting retrieved configuration"),
-        UPDATED_CONFIGURATION_PERSISTENCE_STARTED("Persisting updated configuration"),
+        PERSIST_RETRIEVED_CONFIGURATION_STARTED("Persisting retrieved configuration"),
+        PERSIST_RETRIEVED_CONFIGURATION_COMPLETED("Completed persisting retrieved configuration"),
+        PERSIST_UPDATED_CONFIGURATION_STARTED("Persisting updated configuration"),
+        PERSIST_UPDATED_CONFIGURATION_COMPLETED("Completed persisting updated configuration"),
 
+        RETRIEVE_WIFI_CONFIGURATION_STARTED("Retrieving Wi-Fi configuration"),
+        RETRIEVE_WIFI_CONFIGURATION_FAILED("Failed to retrieve Wi-Fi configuration"),
+        UPDATE_WIFI_CONFIGURATION_STARTED("Updating Wi-Fi configuration"),
+
+        OUTBOUND_SOAP_REQUEST("Outbound SOAP request"),
+        INBOUND_SOAP_RESPONSE("Inbound SOAP response"),
+        SOAP_PAYLOAD_FORMATTING_FAILED("Failed to format SOAP payload"),
+
+        AUTHENTICATION_ATTEMPT("Authentication attempt"),
         AUTHENTICATION_SUCCEEDED("Authentication succeeded"),
         AUTHENTICATION_FAILED("Authentication failed"),
+
+        ADMINISTRATOR_PASSWORD_CHANGE_ATTEMPT("Administrator password change attempt"),
         ADMINISTRATOR_PASSWORD_CHANGED("Administrator password changed"),
 
         REQUEST_VALIDATION_FAILED("Request validation failed"),

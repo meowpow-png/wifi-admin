@@ -1,7 +1,5 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap.logging;
 
-import hr.ht.rnd.wifiadmin.common.StructuredLog;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +16,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
+
 final class SoapPayloadLogger {
 
     private static final String NAME = "hr.ht.rnd.wifiadmin.infra.transport.soap.payload";
@@ -30,19 +30,19 @@ final class SoapPayloadLogger {
     }
 
     static void logRequest(String payload) {
-        log.trace("Outbound SOAP request:\n{}\n{}\n{}",
-                "==================== SOAP Request ====================",
-                XmlFormatter.format(payload),
-                "======================================================="
-        );
+        var request = XmlFormatter.format(payload);
+
+        trace(log).withEvent(Event.OUTBOUND_SOAP_REQUEST)
+                .withField("soap_payload", '\n' + request)
+                .log();
     }
 
     static void logResponse(String payload) {
-        log.trace("Inbound SOAP response:\n{}\n{}\n{}",
-                "==================== SOAP Response ====================",
-                XmlFormatter.format(payload),
-                "======================================================="
-        );
+        var response = XmlFormatter.format(payload);
+
+        trace(log).withEvent(Event.INBOUND_SOAP_RESPONSE)
+                .withField("soap_payload", '\n' + response)
+                .log();
     }
 
     @SuppressWarnings("HttpUrlsUsage")
@@ -94,8 +94,7 @@ final class SoapPayloadLogger {
                 return removeBlankLines(writer.toString());
             }
             catch (Exception e) {
-                StructuredLog.warn(log)
-                        .withMessage("Failed to format SOAP payload")
+                warn(log).withEvent(Event.SOAP_PAYLOAD_FORMATTING_FAILED)
                         .withCause(e)
                         .log();
 

@@ -52,8 +52,12 @@ public class SecurityConfiguration {
                         .anyRequest().hasRole("ADMIN")
                 )
                 .addFilterBefore(
-                        jwtAuthenticationFilter,
+                        new TraceContextFilter(),
                         UsernamePasswordAuthenticationFilter.class
+                )
+                .addFilterAfter(
+                        jwtAuthenticationFilter,
+                        TraceContextFilter.class
                 )
                 .build();
     }
