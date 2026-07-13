@@ -20,32 +20,32 @@ This document describes how the architecture defined in [ARCHITECTURE.md](ARCHIT
 
 ## Project Structure
 
-The project is organized into separate top-level packages for the **WiFi Administration** bounded context, shared abstractions, and infrastructure. This structure reflects the architectural module boundaries while keeping implementation concerns isolated.
+The project is organized into top-level packages that reflect the logical architecture. Each package corresponds to a single architectural module and groups related implementation concerns.
 
 ```text
 src/main/java
-├── wifi
-│   ├── api
-│   ├── internal
-│   └── model
-├── common
-└── infra
+└── hr
+    └── ht
+        └── rnd
+            └── wifiadmin
+                ├── application
+                ├── common
+                ├── domain
+                └── infra
 ```
 
-| Package         | Responsibility                      |
-|-----------------|-------------------------------------|
-| `wifi`          | WiFi Administration bounded context |
-| `wifi.api`      | Public API and contracts            |
-| `wifi.internal` | Internal implementation             |
-| `wifi.model`    | Domain model                        |
-| `common`        | Shared abstractions and contracts   |
-| `infra`         | Infrastructure implementations      |
+| Package       | Responsibility                              |
+|---------------|---------------------------------------------|
+| `application` | Use cases, application services, and ports  |
+| `domain`      | Domain model and business rules             |
+| `infra`       | REST, SOAP, persistence, and configuration  |
+| `common`      | Shared utilities and cross-cutting concerns |
 
 ## Platform Integration
 
-The application integrates with the external WiFi platform using Apache CXF. SOAP client classes are generated from the provided WSDL and confined to the integration layer.
+The application integrates with the external WiFi platform using Apache CXF. SOAP client classes are generated directly from the published WSDL and confined to the integration layer, where they are translated into the domain model through dedicated mappers.
 
-The SOAP client is configured with connection and read timeouts. Transient communication failures are handled using Resilience4j with a configurable retry policy and exponential backoff strategy.
+The SOAP client is configured with connection and read timeouts. Additional client configuration ensures compatibility with the target platform by preferring HTTP/1.1 transport and explicit namespace prefixes. Transient communication failures are handled using Resilience4j with a configurable retry policy and exponential backoff strategy.
 
 SOAP faults and transport exceptions are translated into domain-specific exceptions before leaving the integration layer.
 
