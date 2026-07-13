@@ -9,63 +9,17 @@
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
+      "grafana.app/folder": "",
       "grafana.app/managedBy": "classic-file-provisioning",
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "WiFi Admin",
-      "grafana.app/sourceChecksum": "3e89a835a13bde2f3e33ba3a64486985",
+      "grafana.app/saved-from-ui": "Grafana v13.1.0 (b309c9bb3b)",
+      "grafana.app/sourceChecksum": "26793992477d783dd7e97f1efde2ac7c",
       "grafana.app/sourcePath": "/etc/grafana/dashboards/backend.json",
-      "grafana.app/sourceTimestamp": "1783430629000"
-    },
-    "managedFields": [
-      {
-        "manager": "grafana",
-        "operation": "Update",
-        "apiVersion": "dashboard.grafana.app/v1",
-        "time": "2026-07-07T13:24:33Z",
-        "fieldsType": "FieldsV1",
-        "fieldsV1": {
-          "f:metadata": {
-            "f:annotations": {
-              ".": {},
-              "f:grafana.app/managedBy": {},
-              "f:grafana.app/managerAllowsEdits": {},
-              "f:grafana.app/managerId": {},
-              "f:grafana.app/sourceChecksum": {},
-              "f:grafana.app/sourcePath": {},
-              "f:grafana.app/sourceTimestamp": {}
-            }
-          },
-          "f:spec": {
-            "f:annotations": {
-              ".": {},
-              "f:list": {}
-            },
-            "f:editable": {},
-            "f:fiscalYearStartMonth": {},
-            "f:graphTooltip": {},
-            "f:id": {},
-            "f:liveNow": {},
-            "f:panels": {},
-            "f:preload": {},
-            "f:refresh": {},
-            "f:schemaVersion": {},
-            "f:time": {
-              ".": {},
-              "f:from": {},
-              "f:to": {}
-            },
-            "f:timepicker": {
-              ".": {},
-              "f:refresh_intervals": {}
-            },
-            "f:timezone": {},
-            "f:title": {},
-            "f:uid": {},
-            "f:version": {}
-          }
-        }
-      }
-    ]
+      "grafana.app/sourceTimestamp": "1783431288000",
+      "grafana.app/updatedBy": "user:afrechwuliz9cb",
+      "grafana.app/updatedTimestamp": "2026-07-07T14:27:21Z"
+    }
   },
   "spec": {
     "annotations": {
@@ -87,7 +41,6 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "links": [],
     "liveNow": false,
     "panels": [
       {
@@ -120,7 +73,7 @@
           "sortOrder": "Descending",
           "timestampResolution": "ms",
           "unwrappedColumns": false,
-          "wrapLogMessage": true
+          "wrapLogMessage": false
         },
         "pluginVersion": "13.1.0",
         "targets": [
@@ -198,7 +151,6 @@
         "options": {
           "dedupStrategy": "none",
           "displayedFields": [
-            "logger_class",
             "message"
           ],
           "enableInfiniteScrolling": false,
@@ -247,7 +199,7 @@
           "dedupStrategy": "none",
           "displayedFields": [
             "event",
-            "trace_id"
+            "trace_short"
           ],
           "enableInfiniteScrolling": false,
           "enableLogDetails": true,
@@ -255,6 +207,7 @@
           "prettifyLogMessage": true,
           "showControls": false,
           "showFieldSelector": false,
+          "showLabels": false,
           "showLevel": true,
           "showTime": true,
           "sortOrder": "Descending",
@@ -283,10 +236,6 @@
     "preload": false,
     "refresh": "",
     "schemaVersion": 42,
-    "tags": [],
-    "templating": {
-      "list": []
-    },
     "time": {
       "from": "now-6h",
       "to": "now"
@@ -306,7 +255,6 @@
       ]
     },
     "timezone": "Europe/Zagreb",
-    "title": "Backend",
-    "weekStart": ""
+    "title": "Backend"
   }
 }

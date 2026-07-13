@@ -19,6 +19,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import jakarta.servlet.DispatcherType;
+
 import java.util.Base64;
 import java.util.List;
 import javax.crypto.SecretKey;
@@ -48,7 +50,10 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(authenticationEntryPoint)
                 )
                 .authorizeHttpRequests(authorize -> authorize
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(properties.publicEndpoints().toArray(String[]::new)).permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
                         .anyRequest().hasRole("ADMIN")
                 )
                 .addFilterBefore(

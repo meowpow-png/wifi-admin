@@ -17,7 +17,11 @@ import org.slf4j.LoggerFactory;
 
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackageClasses = {
+        AuthenticationController.class,
+        AdministrationController.class,
+        WifiController.class
+})
 class RestExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
