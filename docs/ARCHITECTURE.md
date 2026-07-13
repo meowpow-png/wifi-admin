@@ -242,7 +242,7 @@ The application provides authentication and authorization capabilities. Sensitiv
 
 Related architectural decisions:
 
-- [ADR-004: Use Token-Based Authentication](adr/004-adr-token-based-authentication.md).
+- [ADR-004: Use Token-Based Authentication](adr/004-adr-token-based-authentication.md)
 
 ## Persistence Strategy
 
@@ -252,11 +252,12 @@ The following persistence policies are applied:
 
 - WiFi configurations are read from the database by default
 - Missing configurations are retrieved from the platform and stored in the database
-- Configuration changes are persisted only after they have been successfully applied on the platform
+- Configuration changes are persisted after successful platform updates
+- Database failures during retrieval fall back to the external platform when possible
 
 Related architectural decisions:
 
-- [ADR-001: Use a Local Database](adr/001-adr-local-database.md).
+- [ADR-001: Use a Local Database](adr/001-adr-local-database.md)
 
 ## Synchronization Strategy
 
@@ -273,7 +274,7 @@ Note that synchronization strategy maintains only the current platform state. Hi
 
 Related architectural decisions:
 
-- [ADR-002: Synchronize Platform Data](adr/002-adr-synchronize-platform-data.md).
+- [ADR-002: Synchronize Platform Data](adr/002-adr-synchronize-platform-data.md)
 
 ## Testing Strategy
 

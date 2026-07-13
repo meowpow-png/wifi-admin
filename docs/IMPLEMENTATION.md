@@ -72,7 +72,9 @@ SOAP faults and transport exceptions are translated into domain-specific excepti
 
 WiFi configurations are persisted in PostgreSQL using Spring Data JPA. Database schema changes are managed through Flyway versioned migrations.
 
-The application maintains a local replica of the WiFi configurations stored in the external platform. Retrieved configurations are persisted locally, while configuration updates are written to the database only after they have been successfully applied on the platform.
+The application maintains a local replica of the WiFi configurations stored in the external platform. Repository operations are encapsulated behind application ports, allowing the persistence implementation to remain isolated from the application layer.
+
+Retrieved configurations are served from the local database when available and fall back to the external platform on cache misses or repository failures. Configuration updates are persisted **asynchronously** after successful platform updates, ensuring the external platform remains the authoritative source of truth while preventing local persistence from delaying client responses.
 
 ## Synchronization
 
@@ -191,19 +193,27 @@ sequenceDiagram
 
 Authentication and authorization are performed within the application. Access to protected endpoints is restricted to authenticated users with the `ADMIN` role.
 
-## Logging
-
-The application uses SLF4J with Logback to produce structured JSON logs suitable for centralized log aggregation and analysis.
-
-Incoming HTTP requests, outgoing SOAP requests, retry attempts, unexpected exceptions, and synchronization summaries are logged to provide operational visibility. Every request is assigned a unique correlation ID that is propagated throughout the application and included in all related log entries.
-
-Sensitive information, including WiFi passwords, user passwords, JWTs, and authorization headers, is partially obfuscated before being written to the logs to support troubleshooting while preventing disclosure of sensitive data.
-
 ## Observability
 
-The application uses Spring Boot Actuator and Micrometer to expose operational health information and application metrics.
+### Logging
 
-Custom health indicators verify the availability of PostgreSQL and the external SOAP platform. In addition to the standard Spring Boot metrics, the application exposes the following application-specific metrics:
+The application uses SLF4J with Logback to produce **structured application logs** suitable for centralized log aggregation and analysis.
+
+Operational events are logged at the following severity levels:
+
+- **TRACE** – Low-level protocol details, such as SOAP request and response payloads
+- **DEBUG** – Diagnostic information, such as outbound SOAP interactions
+- **INFO** – Successful operations, such as retrieving or updating Wi-Fi configurations
+- **WARN** – Recoverable issues, such as missing resources
+- **ERROR** – Unexpected failures, such as network or platform errors
+
+Log entries include contextual information, such as the operation, CPE identifier, and correlation ID, to support request tracing.
+
+Sensitive information, including Wi-Fi passwords, user passwords, JWTs, and authorization headers, is never written to the logs. Where appropriate, sensitive values are partially obfuscated for troubleshooting.
+
+### Health & Metrics
+
+The application uses custom health indicators to verify the availability of PostgreSQL and the external SOAP platform. Micrometer is used to expose standard Spring Boot metrics together with the following application-specific metrics:
 
 - SOAP request latency
 - Retry count

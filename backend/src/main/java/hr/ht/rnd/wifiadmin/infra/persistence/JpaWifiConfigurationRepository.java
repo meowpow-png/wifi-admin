@@ -1,6 +1,6 @@
 package hr.ht.rnd.wifiadmin.infra.persistence;
 
-import hr.ht.rnd.wifiadmin.application.outbound.PersistenceException;
+import hr.ht.rnd.wifiadmin.application.exception.PersistenceException;
 import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationRepository;
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
 
