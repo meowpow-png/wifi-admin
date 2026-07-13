@@ -1,0 +1,9 @@
+# Java
+*.class
+
+# Gradle
+.gradle/
+build/
+out/
+lib/
+!gradle/wrapper/gradle-wrapper.jar
