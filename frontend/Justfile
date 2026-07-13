@@ -1,0 +1,7 @@
+set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
+
+import 'just/docker.just'
+
+# List available recipes
+default:
+    @just --list

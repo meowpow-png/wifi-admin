@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-noble
+FROM node:26-bookworm-slim
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -7,11 +7,6 @@ RUN apt-get update && \
         curl \
         git \
         gosu && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN curl -fsSL https://deb.nodesource.com/setup_26.x | bash - && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends nodejs && \
     npm install --global @openai/codex@0.143.0 && \
     rm -rf /var/lib/apt/lists/*
 

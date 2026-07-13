@@ -15,18 +15,13 @@ chown -R "${LOCAL_UID}:${LOCAL_GID}" "$HOME"
 echo "Updating ownership of /workspace..."
 chown "${LOCAL_UID}:${LOCAL_GID}" /workspace
 
-echo "Precompiling project classes..."
-if ! gosu "${LOCAL_UID}:${LOCAL_GID}" \
-    env \
-        HOME="$HOME" \
-        GRADLE_USER_HOME="$HOME/.gradle" \
-    ./gradlew --no-daemon --console=plain --quiet compileAllClasses; then
-    echo "Warning: Failed to precompile project classes."
-fi
+echo "Installing npm dependencies..."
+gosu "${LOCAL_UID}:${LOCAL_GID}" \
+    env HOME="$HOME" \
+    npm ci
 
 exec env \
     HOME="$HOME" \
     CODEX_HOME="$HOME/.codex" \
-    GRADLE_USER_HOME="$HOME/.gradle" \
     gosu "${LOCAL_UID}:${LOCAL_GID}" \
     "$@"

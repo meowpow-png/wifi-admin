@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="wifi-admin-dev" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="dev" />
-    <module name="wifi-admin-backend.main" />
+    <module name="wifi-admin-api.main" />
     <selectedOptions>
       <option name="environmentVariables" />
     </selectedOptions>

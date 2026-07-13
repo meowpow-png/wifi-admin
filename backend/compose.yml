@@ -22,6 +22,7 @@ services:
   platform-mock:
     image: mockoon/cli:9.2.0
     container_name: platform-mock
+    init: true
     command:
       - --data
       - /data/platform-mock.json
