@@ -9,6 +9,11 @@
 
 Wifi Admin is an assignment project for managing Wi-Fi configuration on CPE devices.
 
+<p align="center">
+  <img src="./docs/assets/login-page.png" width="48%" alt="Login Page">
+  <img src="./docs/assets/dashboard.png" width="48%" alt="Dashboard">
+</p>
+
 ## Overview
 
 The project began as a backend assignment to build a REST wrapper around an existing SOAP platform for managing Wi-Fi configuration on CPE devices. It has since grown into a full-stack application with a React frontend, local persistence, authentication, synchronization, and observability.
