@@ -1,0 +1,65 @@
+name: wifi-admin
+
+include:
+  - compose-soap.yml
+  - backend/compose-prod.yml
+  - frontend/compose-prod.yml
+
+services:
+  web:
+    depends_on:
+      api:
+        condition: service_started
+
+  api:
+    depends_on:
+      platform-mock:
+        condition: service_started
+    environment:
+      SOAP_ENDPOINT: http://platform-mock:3000/platform
+
+  loki:
+    image: grafana/loki:3.7.3
+    ports:
+      - "3100"
+    volumes:
+      - ./docker/loki.config.yml:/etc/loki/config.yaml:ro,Z
+    healthcheck:
+      test: ["CMD", "loki", "-health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  alloy:
+    image: grafana/alloy:v1.17.1
+    depends_on:
+      loki:
+        condition: service_healthy
+    user: root
+    ports:
+      - "12345"
+    security_opt:
+      - label=disable
+    volumes:
+      - ./docker/config.alloy:/etc/alloy/config.alloy:ro,Z
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command:
+      - run
+      - /etc/alloy/config.alloy
+      - --server.http.listen-addr=0.0.0.0:12345
+
+  grafana:
+    image: grafana/grafana:13.0.3-distroless-slim
+    depends_on:
+      loki:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./docker/grafana/dashboards:/etc/grafana/dashboards:ro,Z
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro,Z
+
+volumes:
+  grafana-data:

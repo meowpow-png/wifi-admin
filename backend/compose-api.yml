@@ -1,0 +1,18 @@
+services:
+  api:
+    image: hr-telekom/wifi-admin-api:1.0.0
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME:?DB_NAME is required}
+      DB_USER: ${DB_USER:?DB_USER is required}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      AES_KEY: ${AES_KEY:?AES_KEY is required}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      JAVA_TOOL_OPTIONS: -Duser.timezone=Europe/Zagreb
+    ports:
+      - "8081:8081"
+      - "8082:8082"

@@ -18,7 +18,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "links": [],
   "liveNow": false,
   "panels": [
     {
@@ -27,7 +26,7 @@
         "uid": "loki"
       },
       "gridPos": {
-        "h": 10,
+        "h": 8,
         "w": 12,
         "x": 0,
         "y": 0
@@ -35,11 +34,50 @@
       "id": 1,
       "options": {
         "dedupStrategy": "none",
-        "displayedFields": [
-          "thread_name",
-          "logger_class",
-          "message"
-        ],
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "fontSize": "small",
+        "prettifyLogMessage": true,
+        "showControls": false,
+        "showFieldSelector": false,
+        "showLevel": true,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "timestampResolution": "ms",
+        "unwrappedColumns": false,
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "13.0.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{service=\"api\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Backend",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "dedupStrategy": "none",
         "enableInfiniteScrolling": false,
         "enableLogDetails": true,
         "fontSize": "small",
@@ -53,7 +91,7 @@
         "unwrappedColumns": false,
         "wrapLogMessage": false
       },
-      "pluginVersion": "13.1.0",
+      "pluginVersion": "13.0.3",
       "targets": [
         {
           "datasource": {
@@ -62,12 +100,12 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{service=\"backend\"} | json | __error__ = \"\"",
+          "expr": "{service=\"platform-mock\"}",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Server Logs",
+      "title": "SOAP Platform",
       "type": "logs"
     },
     {
@@ -76,10 +114,54 @@
         "uid": "loki"
       },
       "gridPos": {
-        "h": 10,
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 6,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "fontSize": "small",
+        "prettifyLogMessage": true,
+        "showControls": false,
+        "showFieldSelector": false,
+        "showLevel": true,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "timestampResolution": "ms",
+        "unwrappedColumns": false,
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "13.0.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{service=\"postgres\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "PostgreSQL",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
+      "gridPos": {
+        "h": 7,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 8
       },
       "id": 2,
       "options": {
@@ -97,7 +179,7 @@
         "unwrappedColumns": false,
         "wrapLogMessage": false
       },
-      "pluginVersion": "13.1.0",
+      "pluginVersion": "13.0.3",
       "targets": [
         {
           "datasource": {
@@ -106,12 +188,12 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{service=\"backend\"}",
+          "expr": "{service=\"loki\"}",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Container Logs",
+      "title": "Loki",
       "type": "logs"
     },
     {
@@ -120,17 +202,14 @@
         "uid": "loki"
       },
       "gridPos": {
-        "h": 10,
+        "h": 7,
         "w": 12,
         "x": 0,
-        "y": 10
+        "y": 15
       },
       "id": 3,
       "options": {
         "dedupStrategy": "none",
-        "displayedFields": [
-          "message"
-        ],
         "enableInfiniteScrolling": false,
         "enableLogDetails": true,
         "fontSize": "small",
@@ -138,13 +217,13 @@
         "showControls": false,
         "showFieldSelector": false,
         "showLevel": true,
-        "showTime": true,
+        "showTime": false,
         "sortOrder": "Descending",
         "timestampResolution": "ms",
         "unwrappedColumns": false,
-        "wrapLogMessage": true
+        "wrapLogMessage": false
       },
-      "pluginVersion": "13.1.0",
+      "pluginVersion": "13.0.3",
       "targets": [
         {
           "datasource": {
@@ -153,12 +232,12 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{service=\"backend\"}\n| json\n| logger_name =~ \"^hr\\\\.ht\\\\.rnd\\\\.wifiadmin.*\"",
+          "expr": "{service=\"alloy\"}",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Application Logs",
+      "title": "Alloy",
       "type": "logs"
     },
     {
@@ -167,33 +246,28 @@
         "uid": "loki"
       },
       "gridPos": {
-        "h": 10,
+        "h": 7,
         "w": 12,
         "x": 12,
-        "y": 10
+        "y": 15
       },
       "id": 4,
       "options": {
         "dedupStrategy": "none",
-        "displayedFields": [
-          "event",
-          "trace_short"
-        ],
         "enableInfiniteScrolling": false,
         "enableLogDetails": true,
         "fontSize": "small",
         "prettifyLogMessage": true,
         "showControls": false,
         "showFieldSelector": false,
-        "showLabels": false,
         "showLevel": true,
-        "showTime": true,
+        "showTime": false,
         "sortOrder": "Descending",
         "timestampResolution": "ms",
         "unwrappedColumns": false,
-        "wrapLogMessage": true
+        "wrapLogMessage": false
       },
-      "pluginVersion": "13.1.0",
+      "pluginVersion": "13.0.3",
       "targets": [
         {
           "datasource": {
@@ -202,22 +276,18 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{service=\"backend\"}\n| json\n| event != \"\"",
+          "expr": "{service=\"grafana\"}",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Event Logs",
+      "title": "Grafana",
       "type": "logs"
     }
   ],
   "preload": false,
   "refresh": "",
   "schemaVersion": 42,
-  "tags": [],
-  "templating": {
-    "list": []
-  },
   "time": {
     "from": "now-6h",
     "to": "now"
@@ -236,9 +306,8 @@
       "1d"
     ]
   },
-  "timezone": "Europe/Zagreb",
-  "title": "Backend",
-  "uid": "xb7tqnr",
-  "version": 2,
-  "weekStart": ""
+  "timezone": "browser",
+  "title": "Docker",
+  "uid": "adtj8qs",
+  "version": 2
 }

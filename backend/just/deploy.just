@@ -1,6 +1,6 @@
 # Deploy backend locally in production mode
 deploy-prod:
-    @just compose-build
+    @just api-build
     @just compose-prod up -d
 
 # Redeploy backend locally in production mode
@@ -10,7 +10,7 @@ redeploy-prod:
 
 # Deploy backend locally in development mode
 deploy-dev:
-    @just compose-build
+    @just api-build
     @just compose-dev up -d
 
 # Redeploy backend locally in development mode

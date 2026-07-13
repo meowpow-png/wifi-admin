@@ -17,8 +17,8 @@ on:
       - '!**/*.md'
 
 jobs:
-  build-test:
-    name: Build & Test
+  backend-build-test:
+    name: Build & Test Backend
     runs-on: ubuntu-latest
 
     steps:

@@ -1,16 +1,16 @@
-name: wifi-admin
+name: wifi-admin-api
 
 services:
   postgres:
     image: postgres:16
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:?DB_NAME is required}
+      POSTGRES_USER: ${DB_USER:?DB_USER is required}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
-      - "${DB_PORT}:5432"
+      - "${DB_PORT:-5432}:5432"
     command: postgres -c timezone=Europe/Zagreb
     restart: unless-stopped
     healthcheck:
@@ -18,22 +18,6 @@ services:
       interval: 1s
       timeout: 3s
       retries: 30
-
-  platform-mock:
-    image: mockoon/cli:9.2.0
-    container_name: platform-mock
-    init: true
-    command:
-      - --data
-      - /data/platform-mock.json
-      - --port
-      - "3000"
-      - --hostname
-      - 0.0.0.0
-    volumes:
-      - ./mockoon/platform-mock.json:/data/platform-mock.json:ro,Z
-    ports:
-      - "8080:3000"
 
 volumes:
   postgres-data:

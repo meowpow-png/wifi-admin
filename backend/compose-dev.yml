@@ -1,30 +1,15 @@
-name: wifi-admin-api
+include:
+  - compose.yml
+  - compose-api.yml
 
 services:
   api:
     build: .
-    image: hr-telekom/wifi-admin-api:1.0.0
-    depends_on:
-      postgres:
-        condition: service_healthy
-      platform-mock:
-        condition: service_started
     environment:
-      AES_KEY: ${AES_KEY}
-      JWT_SECRET: ${JWT_SECRET}
-      SOAP_ENDPOINT: http://platform-mock:3000/platform
-      DB_HOST: postgres
-      DB_PORT: ${DB_PORT}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
+      SOAP_ENDPOINT: ${SOAP_ENDPOINT:?SOAP_ENDPOINT is required}
       SPRING_PROFILES_ACTIVE: dev
-      JAVA_TOOL_OPTIONS: -Duser.timezone=Europe/Zagreb
-    ports:
-      - "8081:8081"
-      - "8082:8082"
 
-  codex:
+  api-codex:
     image: hr-telekom/wifi-admin-codex:21-jdk
     build:
       context: ./docker/codex
