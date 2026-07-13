@@ -2,6 +2,10 @@ include:
   - compose.yml
 
 services:
+  web:
+    ports:
+      - "5173:80"
+
   web-codex:
     image: hr-telekom/wifi-admin-codex:26-node
     build:

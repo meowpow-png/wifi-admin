@@ -6,6 +6,7 @@ services:
   api:
     build: .
     environment:
+      SOAP_ENDPOINT: ${SOAP_ENDPOINT:?SOAP_ENDPOINT is required}
       SPRING_PROFILES_ACTIVE: dev
 
   api-codex:

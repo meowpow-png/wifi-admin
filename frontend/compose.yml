@@ -7,5 +7,3 @@ services:
         API_UPSTREAM: api:8081
     build:
       context: .
-    ports:
-      - "5173:80"

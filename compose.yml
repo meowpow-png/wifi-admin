@@ -10,13 +10,13 @@ services:
     depends_on:
       api:
         condition: service_started
-    ports:
-      - "80:80"
 
   api:
     depends_on:
       platform-mock:
         condition: service_started
+    environment:
+      SOAP_ENDPOINT: http://platform-mock:3000/platform
 
   loki:
     image: grafana/loki:3.7.3
