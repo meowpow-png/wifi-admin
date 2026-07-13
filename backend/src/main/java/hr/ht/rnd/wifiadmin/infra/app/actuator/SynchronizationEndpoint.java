@@ -7,7 +7,7 @@ import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
 import org.springframework.stereotype.Component;
 
 @Component
-@Endpoint(id = "sync")
+@Endpoint(id = ActuatorEndpoints.SYNCHRONIZATION)
 class SynchronizationEndpoint {
 
     private final PlatformSynchronizer synchronizer;

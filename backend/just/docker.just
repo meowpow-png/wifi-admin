@@ -19,7 +19,7 @@ compose-prod *args:
 
 # Build the backend Docker image
 compose-build *args:
-    @./gradlew clean build -x test
+    @./gradlew clean assemble
     @just compose-dev build {{args}}
 
 # Build codex agent docker image
@@ -29,4 +29,13 @@ codex-build *args:
 # Start and enter codex agent docker container
 codex-run:
     @just codex-build
+    @./gradlew compileAllClasses
     @just compose-dev run --rm codex
+
+# Start an interactive shell in the codex container
+codex-shell:
+    @just codex-build
+    docker compose {{compose_dev}} run \
+        --rm \
+        --user root \
+        --entrypoint sh codex

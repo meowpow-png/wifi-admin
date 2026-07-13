@@ -1,6 +1,7 @@
 # IntelliJ IDEA
 .idea/*
 !.idea/codeStyles/
+!.idea/runConfigurations
 
 # Java
 *.class
@@ -11,6 +12,9 @@ build/
 out/
 lib/
 !gradle/wrapper/gradle-wrapper.jar
+
+# Codex
+.codex/*
 
 # JWT tokens
 .jwt

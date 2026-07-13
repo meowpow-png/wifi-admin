@@ -1,5 +1,7 @@
 package hr.ht.rnd.wifiadmin.infra.app.actuator;
 
+import hr.ht.rnd.wifiadmin.common.LoggerNames;
+
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
@@ -14,7 +16,7 @@ import static hr.ht.rnd.wifiadmin.common.StructuredLog.Event;
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.info;
 
 @Component
-@Endpoint(id = "payload-logging")
+@Endpoint(id = ActuatorEndpoints.PAYLOAD_LOGGING)
 class PayloadLoggingEndpoint extends LoggingEndpoint {
 
     private static final Logger log = LoggerFactory.getLogger(PayloadLoggingEndpoint.class);
@@ -25,7 +27,7 @@ class PayloadLoggingEndpoint extends LoggingEndpoint {
 
     @Override
     String loggerName() {
-        return "hr.ht.rnd.wifiadmin.infra.transport.soap.payload";
+        return LoggerNames.SOAP_PAYLOAD;
     }
 
     @WriteOperation

@@ -4,15 +4,11 @@
 
 Use the following annotations consistently throughout the test suite:
 
-- `@UnitTest` — marks unit tests
 - `@IntegrationTest` — marks integration tests
 - `@Nested` — groups related test scenarios
 - `@DisplayName` — provides a readable description in test reports
 
-Nested classes inherit the test type and tags from their enclosing class. They should not declare additional `@UnitTest` or`@IntegrationTest` annotations.
-
 ```java
-@UnitTest
 class ExampleServiceTest {
 
     @Nested
@@ -200,3 +196,120 @@ Interact with the class exclusively through its public API and assert only obser
 ### Mocking
 
 Use mocks only to isolate external collaborators. Keep stubbing minimal and limited to behavior required by the test. Prefer simple fakes when they express the scenario more clearly than mocks.
+
+## Integration Testing
+
+### Selection
+
+Select integration tests for behaviors whose correctness depends on real infrastructure, framework-managed behavior, or communication across integration boundaries. A good integration test verifies interactions that cannot be reliably reproduced using mocks or isolated unit tests.
+
+Good candidates include:
+
+- REST controllers and request validation
+- Database persistence and repository queries
+- Client integrations with external systems
+- JSON or XML serialization and deserialization
+- Spring-managed behavior such as transactions, scheduling, or event handling
+- Messaging or file storage integrations
+
+Poor candidates include:
+
+- Pure business logic
+- Validators
+- Mappers and converters
+- Utility classes
+- Parsers
+
+When in doubt, ask:
+
+> If this behavior were implemented incorrectly while preserving the public API, could a unit test reliably detect the regression without involving Spring, the database, the network, or other real infrastructure?
+
+### Planning
+
+Plan integration tests from the observable behaviors of each integration boundary. An integration boundary is any interaction whose correctness depends on real infrastructure, framework-managed behavior, or communication with external systems.
+
+Plan tests in the following order:
+
+1. Identify the integration boundary
+2. Determine the observable behaviors of that boundary
+3. Write one focused test for each meaningful behavior
+4. Stop once every meaningful boundary behavior has been verified
+
+If multiple scenarios exercise the same integration behavior and produce the same observable outcome, prefer a single representative test unless the boundary explicitly defines different outcomes.
+
+### Scope
+
+Exercise the system through its public integration points and assert only observable outcomes. Verify interactions that depend on real infrastructure or framework-managed behavior, without asserting implementation details or internal interactions that are not part of the integration boundary.
+
+### Infrastructure
+
+<!-- TODO: Document the shared integration test infrastructure, including the custom @IntegrationTest annotation, application startup, supporting services, and common test configuration inherited by all integration tests. -->
+
+### Test Data
+
+<!-- TODO: Document how integration tests prepare, isolate, and clean up test data, including any shared fixtures, helper utilities, or database initialization strategy used throughout the test suite. -->
+
+### External Services
+
+<!-- TODO: Document how integration tests interact with external services, including the use of mock implementations, configuring service behavior, and conventions for verifying integrations with external dependencies. -->
+
+## Wiring Tests
+
+Wiring tests verify Spring configuration, bean registration, and framework-managed behavior without starting the full application. They provide a fast, isolated way to validate application context wiring and framework configuration.
+
+### Auto-Configuration
+
+Auto-configuration tests verify that configuration classes register the expected beans under different application configurations. They are typically used to validate conditional bean registration based on configuration properties, available dependencies, or other conditions.
+
+```java
+TestApplicationContextRunner.from(runner)
+        .withPropertyValues("feature.enabled=true")
+        .hasBean(FeatureService.class)
+        .doesNotFail();
+```
+
+### Bean Wiring
+
+Bean wiring tests verify that the application context contains the expected beans and that Spring can successfully resolve their dependencies. They provide confidence that the application context is assembled correctly and that changes to configuration do not unintentionally break dependency injection.
+
+```java
+TestApplicationContextRunner.from(runner)
+        .hasBean(UserService.class)
+        .hasBean("passwordEncoder")
+        .doesNotFail();
+```
+
+### Properties
+
+Configuration property tests verify that application properties are correctly bound and influence the application context as intended. They are typically used to validate default values, custom configuration, and property-driven conditional behavior.
+
+```java
+TestApplicationContextRunner.from(runner)
+        .withPropertyValues("retry.max-attempts=5")
+        .withBean(RetryProperties.class, properties ->
+                assertThat(properties.maxAttempts()).isEqualTo(5))
+        .doesNotFail();
+```
+
+### Transactions
+
+Transaction management tests verify that transactional boundaries are applied to the expected service methods. They help ensure that Spring's transaction management is configured correctly and continues to protect operations that require transactional behavior.
+
+```java
+TestApplicationContextRunner.from(runner)
+        .withTransactionManagement()
+        .hasTransactionalMethods(UserService.class)
+        .doesNotFail();
+```
+
+### Scheduling
+
+Scheduling tests verify that scheduled tasks are registered with Spring and configured as intended. They help ensure that scheduled methods remain discoverable and continue to use the expected scheduling configuration as the application evolves.
+
+```java
+TestApplicationContextRunner.from(runner)
+        .withSchedulingEnabled()
+        .hasScheduledMethod(SynchronizationScheduler.class, "synchronize")
+        .usesCronFrom("synchronizationProperties")
+        .doesNotFail();
+```

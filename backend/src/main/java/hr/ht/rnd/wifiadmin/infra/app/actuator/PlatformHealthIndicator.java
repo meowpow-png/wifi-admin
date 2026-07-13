@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.infra.app;
+package hr.ht.rnd.wifiadmin.infra.app.actuator;
 
 import hr.ht.rnd.wifiadmin.application.exception.CpeNotFoundException;
 import hr.ht.rnd.wifiadmin.application.exception.PlatformException;
@@ -10,7 +10,7 @@ import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component(ActuatorEndpoints.HEALTH)
 class PlatformHealthIndicator implements HealthIndicator {
 
     private final SoapPlatformClient client;

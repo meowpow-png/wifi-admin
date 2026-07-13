@@ -10,6 +10,7 @@ import hr.ht.rnd.wifiadmin.infra.transport.soap.retry.SoapRetryLoggingListener;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiPlatformPortType;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiPlatformService;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -129,6 +130,7 @@ public class PlatformConfiguration {
 
     @Bean
     @Primary
+    @ConditionalOnMissingBean(PlatformClient.class)
     PlatformClient platformClient(RetryTemplate template, SoapPlatformClient delegate) {
         return new ResilientSoapPlatformClient(template, delegate);
     }

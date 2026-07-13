@@ -2,6 +2,8 @@
 
 import hr.ht.rnd.wifiadmin.env.api.Environment
 import hr.ht.rnd.wifiadmin.env.api.EnvironmentExtension
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.kotlin.dsl.the
 
 buildscript {
@@ -14,6 +16,8 @@ buildscript {
 plugins {
     java
     id("jvm-test-suite")
+    id("java-test-fixtures")
+    id("jacoco")
     id("org.springframework.boot") version "4.1.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.flywaydb.flyway") version "12.10.0"
@@ -59,6 +63,23 @@ testing {
         register<JvmTestSuite>("integrationTest") {
             dependencies {
                 implementation(project())
+                implementation(testFixtures(project()))
+                implementation(libs.spring.boot.starter.test)
+                implementation(libs.spring.boot.starter.security)
+                implementation(libs.spring.boot.starter.actuator)
+                implementation(libs.spring.boot.jpa.test)
+                implementation(libs.spring.boot.webmvc.test)
+                implementation(libs.cxf.spring.boot.starter.jaxws)
+                implementation(libs.springdoc.openapi.starter.webmvc.ui)
+
+                implementation(platform(libs.mockito.bom))
+                implementation(libs.mockito.junit.jupiter)
+
+                implementation(libs.okhttp3.mockwebserver)
+
+                implementation(platform(libs.testcontainers.bom))
+                implementation(libs.testcontainers.postgres)
+                implementation(libs.testcontainers.jdbc)
             }
         }
         register<JvmTestSuite>("architectureTest") {
@@ -103,7 +124,15 @@ dependencies {
     runtimeOnly(libs.jjwt.jackson)
 
     testImplementation(libs.spring.boot.starter.test)
+    testFixturesImplementation(platform(libs.jjwt.bom))
+    testFixturesImplementation(libs.jjwt.api)
+    testFixturesImplementation(libs.jjwt.impl)
 }
+val wsdlPackage = "hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl"
+val wsdlPath = wsdlPackage.replace('.', '/')
+val wsdlInputDir = layout.projectDirectory.dir("src/main/resources/wsdl")
+val wsdlOutputDir = layout.buildDirectory.dir("generated/sources/wsdl")
+val wsdlFile = layout.projectDirectory.file("src/main/resources/wsdl/wifi-platform.wsdl")
 
 tasks.register<JavaExec>("wsdl2java") {
     group = "soap"
@@ -112,17 +141,85 @@ tasks.register<JavaExec>("wsdl2java") {
     classpath = cxfCodegen
     mainClass.set("org.apache.cxf.tools.wsdlto.WSDLToJava")
 
+    inputs.dir(wsdlInputDir)
+    outputs.dir(wsdlOutputDir)
+
     args(
         "-d",
-        layout.buildDirectory.dir("generated/sources/wsdl").get().asFile.absolutePath,
+        wsdlOutputDir.get().asFile.absolutePath,
         "-p",
-        "hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl",
+        wsdlPackage,
         "-wsdlLocation",
         "classpath:wsdl/wifi-platform.wsdl",
-        "${projectDir}/src/main/resources/wsdl/wifi-platform.wsdl"
+        wsdlFile.asFile.absolutePath
     )
+}
+
+tasks.register("compileAllClasses") {
+    group = LifecycleBasePlugin.BUILD_GROUP
+    description = "Compiles all project source sets."
+
+    dependsOn(
+        tasks.named("classes"),
+        tasks.named("testClasses"),
+        tasks.named("testFixturesClasses"),
+        tasks.named("integrationTestClasses"),
+        tasks.named("architectureTestClasses")
+    )
+}
+
+tasks.withType<Test>().configureEach {
+    outputs.upToDateWhen { false }
+    useJUnitPlatform()
+    testLogging {
+        events(
+            TestLogEvent.PASSED,
+            TestLogEvent.SKIPPED,
+            TestLogEvent.FAILED,
+        )
+        exceptionFormat = TestExceptionFormat.FULL
+        showCauses = true
+    }
+}
+
+tasks.register<JacocoReport>("coverage") {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = "Generates an aggregate code coverage report."
+
+    executionData(
+        tasks.named<Test>("test").get(),
+        tasks.named<Test>("integrationTest").get(),
+    )
+    sourceDirectories.setFrom(sourceSets.main.get().allSource.srcDirs)
+    classDirectories.setFrom(
+        files(
+            sourceSets.main.get().output.asFileTree.matching {
+                exclude("$wsdlPath/**")
+            }
+        )
+    )
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        csv.required.set(false)
+    }
 }
 
 tasks.compileJava {
     dependsOn(tasks.named("wsdl2java"))
+}
+val test = tasks.named<Test>("test")
+val integrationTest = tasks.named<Test>("integrationTest")
+val coverage = tasks.named("coverage")
+
+integrationTest {
+    mustRunAfter(test)
+}
+
+coverage {
+    mustRunAfter(test, integrationTest)
+}
+
+tasks.check {
+    finalizedBy(integrationTest)
 }

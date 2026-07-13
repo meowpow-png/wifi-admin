@@ -27,18 +27,22 @@ import javax.crypto.spec.GCMParameterSpec;
 final class AesPasswordEncryptor implements PasswordEncryptor {
 
     private static final String CIPHER_ALGORITHM = "AES/GCM/NoPadding";
-    private static final String CIPHERTEXT_PREFIX = "enc:v1:";
 
     private static final int NONCE_LENGTH = 12;
     private static final int AUTHENTICATION_TAG_LENGTH = 128;
 
     private final SecretKey key;
+    private final String cipherTextPrefix;
     private final SecureRandom secureRandom;
 
-    AesPasswordEncryptor(SecretKey key) {
+    AesPasswordEncryptor(SecretKey key, String ciphertextPrefix) {
         Objects.requireNonNull(key, "key must not be null");
-
+        Objects.requireNonNull(ciphertextPrefix, "ciphertextPrefix must not be null");
+        if (ciphertextPrefix.isBlank()) {
+            throw new IllegalArgumentException("ciphertextPrefix must not be blank");
+        }
         this.key = key;
+        this.cipherTextPrefix = ciphertextPrefix;
         this.secureRandom = new SecureRandom();
     }
 
@@ -116,17 +120,17 @@ final class AesPasswordEncryptor implements PasswordEncryptor {
         return nonce;
     }
 
-    private static String encodeCiphertext(byte[] payload) {
+    private String encodeCiphertext(byte[] payload) {
         var encoded = Base64.getEncoder().encodeToString(payload);
-        return CIPHERTEXT_PREFIX + encoded;
+        return cipherTextPrefix + encoded;
     }
 
-    private static byte[] decodeCiphertext(String password) {
-        if (!password.startsWith(CIPHERTEXT_PREFIX)) {
+    private byte[] decodeCiphertext(String password) {
+        if (!password.startsWith(cipherTextPrefix)) {
             var message = "Unsupported ciphertext format, expected %s<base64>";
-            throw new IllegalArgumentException(message.formatted(CIPHERTEXT_PREFIX));
+            throw new IllegalArgumentException(message.formatted(cipherTextPrefix));
         }
-        var encoded = password.substring(CIPHERTEXT_PREFIX.length());
+        var encoded = password.substring(cipherTextPrefix.length());
 
         byte[] payload;
         try {

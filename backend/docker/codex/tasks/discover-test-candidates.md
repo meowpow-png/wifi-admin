@@ -1,15 +1,18 @@
-# Discover Unit Test Candidates
+# Discover Test Candidates
 
-Identify classes that are suitable candidates for unit testing
+Identify classes that are suitable candidates for testing.
 
 ## Setup
 
 - Read `TESTING.md`
+- Determine which testing types you are instructed to discover candidates for
+- If the testing types are not clearly defined, ask for clarification before proceeding
 
 ## Steps
 
 - Analyze the repository
-- Identify all classes that are suitable candidates for unit testing
+- As each candidate is identified, narrate the reasoning in a single concise sentence
+- Identify all classes that are suitable candidates for the given testing types
 
 ## Output
 

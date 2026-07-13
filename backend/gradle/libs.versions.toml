@@ -5,6 +5,10 @@ cxf = "4.2.2"
 jjwt = "0.13.0"
 springdoc = "3.0.3"
 slf4j = "2.0.18"
+
+mockito = "5.23.0"
+testcontainers = "1.21.4"
+mockwebserver = "5.4.0"
 archunit = "1.4.2"
 
 [libraries]
@@ -14,7 +18,10 @@ spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
 spring-boot-starter-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test" }
+spring-boot-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test" }
 
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
@@ -32,6 +39,15 @@ jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson" }
 
 springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+
+mockito-bom = { module = "org.mockito:mockito-bom", version.ref = "mockito" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter" }
+
+testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
+testcontainers-postgres = { module = "org.testcontainers:postgresql" }
+testcontainers-jdbc = { module = "org.testcontainers:jdbc" }
+
+okhttp3-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "mockwebserver" }
 
 tngtech-archunit = { module = "com.tngtech.archunit:archunit", version.ref = "archunit" }
 tngtech-archunit-junit5 = { module = "com.tngtech.archunit:archunit-junit5", version.ref = "archunit" }
