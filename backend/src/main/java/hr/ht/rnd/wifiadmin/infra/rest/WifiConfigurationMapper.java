@@ -1,6 +1,10 @@
 package hr.ht.rnd.wifiadmin.infra.rest;
 
 import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.infra.rest.dto.WifiConfigurationRequest;
+import hr.ht.rnd.wifiadmin.infra.rest.dto.WifiConfigurationResponse;
+
+import java.util.Objects;
 
 /**
  * Maps Wi-Fi configurations between
@@ -11,14 +15,15 @@ final class WifiConfigurationMapper {
     private WifiConfigurationMapper() {}
 
     /**
-     * Maps a REST API model to the domain model.
+     * Maps a REST API request to the domain model.
      *
-     * @param source the REST API model
+     * @param source the REST API request
+     *
      * @return the mapped domain model
-     *
      * @throws NullPointerException if {@code source} is {@code null}
      */
-    static WifiConfiguration toDomain(WifiConfigurationDto source) {
+    static WifiConfiguration toDomain(WifiConfigurationRequest source) {
+        Objects.requireNonNull(source, "source must not be null");
         return new WifiConfiguration(
                 source.cpeId(),
                 source.wifiBand(),
@@ -29,15 +34,16 @@ final class WifiConfigurationMapper {
     }
 
     /**
-     * Maps the domain model to a REST API model.
+     * Maps the domain model to a REST API response.
      *
      * @param source the domain model
-     * @return the mapped REST API model
      *
+     * @return the mapped REST API response
      * @throws NullPointerException if {@code source} is {@code null}
      */
-    static WifiConfigurationDto toDto(WifiConfiguration source) {
-        return new WifiConfigurationDto(
+    static WifiConfigurationResponse toResponse(WifiConfiguration source) {
+        Objects.requireNonNull(source, "source must not be null");
+        return new WifiConfigurationResponse(
                 source.cpeId(),
                 source.wifiBand(),
                 source.ssid(),

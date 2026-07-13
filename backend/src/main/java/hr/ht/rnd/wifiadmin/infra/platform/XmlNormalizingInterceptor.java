@@ -9,6 +9,7 @@ import org.apache.cxf.phase.Phase;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 /**
@@ -26,6 +27,8 @@ import java.util.Arrays;
  */
 public final class XmlNormalizingInterceptor extends AbstractPhaseInterceptor<Message> {
 
+    private static final byte[] XML_PREFIX = "<?xml".getBytes(StandardCharsets.US_ASCII);
+
     public XmlNormalizingInterceptor() {
         super(Phase.RECEIVE);
     }
@@ -39,39 +42,47 @@ public final class XmlNormalizingInterceptor extends AbstractPhaseInterceptor<Me
     @Override
     public void handleMessage(Message message) throws Fault {
         InputStream in = message.getContent(InputStream.class);
-
         if (in == null) {
             return;
         }
         try {
             byte[] bytes = IOUtils.readBytesFromStream(in);
-            int offset = 0;
+            int offset = skipLeadingWhitespace(bytes);
 
-            while (offset < bytes.length) {
-                byte b = bytes[offset];
-                if (b == ' ' || b == '\t' || b == '\r' || b == '\n') {
-                    offset++;
-                    continue;
-                }
-                break;
-            }
-            if (offset > 0
-                    && offset + 5 <= bytes.length
-                    && bytes[offset] == '<'
-                    && bytes[offset + 1] == '?'
-                    && bytes[offset + 2] == 'x'
-                    && bytes[offset + 3] == 'm'
-                    && bytes[offset + 4] == 'l') {
-
+            if (startsWithXmlDeclaration(bytes, offset)) {
                 bytes = Arrays.copyOfRange(bytes, offset, bytes.length);
             }
-            message.setContent(
-                    InputStream.class,
-                    new ByteArrayInputStream(bytes)
-            );
+            message.setContent(InputStream.class, new ByteArrayInputStream(bytes));
         }
         catch (IOException ex) {
             throw new Fault(ex);
         }
+    }
+
+    private static int skipLeadingWhitespace(byte[] bytes) {
+        int offset = 0;
+
+        while (offset < bytes.length) {
+            byte b = bytes[offset];
+            if (b == ' ' || b == '\t' || b == '\r' || b == '\n') {
+                offset++;
+            }
+            else {
+                break;
+            }
+        }
+        return offset;
+    }
+
+    private static boolean startsWithXmlDeclaration(byte[] bytes, int offset) {
+        if (offset == 0 || offset + XML_PREFIX.length > bytes.length) {
+            return false;
+        }
+        for (int i = 0; i < XML_PREFIX.length; i++) {
+            if (bytes[offset + i] != XML_PREFIX[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }
