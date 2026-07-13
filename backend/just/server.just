@@ -4,7 +4,7 @@ server-shutdown:
 
 # Start backend server
 server-start:
-    @./gradlew bootRun
+    @just gradle bootRun
 
 # Check application health
 server-health:

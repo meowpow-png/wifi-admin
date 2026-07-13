@@ -1,4 +1,4 @@
-name: wifi-admin
+name: wifi-admin-api
 
 services:
   postgres:
@@ -18,22 +18,6 @@ services:
       interval: 1s
       timeout: 3s
       retries: 30
-
-  platform-mock:
-    image: mockoon/cli:9.2.0
-    container_name: platform-mock
-    init: true
-    command:
-      - --data
-      - /data/platform-mock.json
-      - --port
-      - "3000"
-      - --hostname
-      - 0.0.0.0
-    volumes:
-      - ./mockoon/platform-mock.json:/data/platform-mock.json:ro,Z
-    ports:
-      - "8080:3000"
 
 volumes:
   postgres-data:

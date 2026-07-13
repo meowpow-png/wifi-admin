@@ -5,3 +5,8 @@ import 'just/docker.just'
 # List available recipes
 default:
     @just --list
+
+# Run npm
+[arg("args", help="Arguments passed to npm")]
+npm *args:
+    npm {{args}}

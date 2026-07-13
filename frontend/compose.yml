@@ -4,43 +4,8 @@ services:
   web:
     image: hr-telekom/wifi-admin-web:1.0.0
     environment:
-      API_UPSTREAM: http://api:8081
+        API_UPSTREAM: api:8081
     build:
       context: .
     ports:
-      - "8083:80"
-
-  codex:
-    image: hr-telekom/wifi-admin-codex:26-node
-    build:
-      context: ./docker/codex
-    working_dir: /workspace
-    security_opt:
-      - seccomp=unconfined
-    environment:
-      LOCAL_UID: ${LOCAL_UID:-0}
-      LOCAL_GID: ${LOCAL_GID:-0}
-      HOME: /home/codex
-    stdin_open: true
-    tty: true
-    init: true
-    volumes:
-      - codex-home:/home/codex
-      - ./.codex:/workspace/shared:Z
-      - ./docker/codex/AGENTS.md:/workspace/AGENTS.md:ro,Z
-      - ./docker/codex/tasks:/workspace/tasks:ro,Z
-      - ./docker/codex/figma.json:/workspace/figma.json:ro,Z
-      - ./docs:/workspace/docs:Z
-      - ./index.html:/workspace/index.html:Z
-      - ./public:/workspace/public:Z
-      - ./src:/workspace/src:Z
-      - ./package.json:/workspace/package.json:Z
-      - ./package-lock.json:/workspace/package-lock.json:Z
-      - ./tsconfig.json:/workspace/tsconfig.json:Z
-      - ./tsconfig.app.json:/workspace/tsconfig.app.json:Z
-      - ./tsconfig.node.json:/workspace/tsconfig.node.json:Z
-      - ./vite.config.ts:/workspace/vite.config.ts:Z
-      - ./eslint.config.js:/workspace/eslint.config.js:Z
-
-volumes:
-  codex-home:
+      - "5173:80"
