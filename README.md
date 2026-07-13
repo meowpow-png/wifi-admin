@@ -7,14 +7,14 @@
 [![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 
-Wifi Admin is an assignment project for managing Wi-Fi configuration on CPE devices.
-
 <p align="center">
   <img src="./docs/assets/login-page.png" width="48%" alt="Login Page">
   <img src="./docs/assets/dashboard.png" width="48%" alt="Dashboard">
 </p>
 
-## Overview
+## What is This?
+
+Wifi Admin is an assignment project developed for Hrvatski Telekom that enables administrators to manage Wi-Fi configuration on CPE devices
 
 The project began as a backend assignment to build a REST wrapper around an existing SOAP platform for managing Wi-Fi configuration on CPE devices. It has since grown into a full-stack application with a React frontend, local persistence, authentication, synchronization, and observability.
 
