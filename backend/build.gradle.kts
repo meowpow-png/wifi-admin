@@ -1,5 +1,9 @@
 @file:Suppress("UnstableApiUsage")
 
+import hr.ht.rnd.wifiadmin.env.api.Environment
+import hr.ht.rnd.wifiadmin.env.api.EnvironmentExtension
+import org.gradle.kotlin.dsl.the
+
 buildscript {
     dependencies {
         classpath(libs.postgresql)
@@ -13,6 +17,7 @@ plugins {
     id("org.springframework.boot") version "4.1.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.flywaydb.flyway") version "12.10.0"
+    id("hr.ht.rnd.wifiadmin.environment")
 }
 
 group = "hr.ht.rnd"
@@ -32,29 +37,17 @@ sourceSets {
         }
     }
 }
-
-fun loadEnv(file: File): Map<String, String> {
-    if (!file.exists()) {
-        return emptyMap()
-    }
-    return file.readLines()
-        .filter { it.isNotBlank() && !it.startsWith("#") }
-        .associate {
-            val (key, value) = it.split("=", limit = 2)
-            key to value
-        }
-}
-val env = loadEnv(file(".env")) + System.getenv()
+val env: Environment = the<EnvironmentExtension>().environment
 
 tasks.bootRun {
-    environment(env)
+    environment(env.toMap())
     systemProperty("spring.profiles.active", "dev")
 }
 
 flyway {
-    url = "jdbc:postgresql://localhost:${env["DB_PORT"]}/${env["DB_NAME"]}"
-    user = env["DB_USER"]
-    password = env["DB_PASSWORD"]
+    url = "jdbc:postgresql://localhost:${env.dbPort()}/${env.dbName()}"
+    user = env.dbUser()
+    password = env.dbPassword()
     cleanDisabled = false
 }
 

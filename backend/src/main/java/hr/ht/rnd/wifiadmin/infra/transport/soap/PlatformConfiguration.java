@@ -1,19 +1,27 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap;
 
+import hr.ht.rnd.wifiadmin.application.exception.PlatformConnectionException;
+import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.cxf.CxfFaultLoggingPolicy;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapCxfFaultLoggingPolicy;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.logging.SoapRequestLoggingInterceptor;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.logging.SoapResponseLoggingInterceptor;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.retry.SoapRetryLoggingListener;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiPlatformPortType;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiPlatformService;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.retry.RetryPolicy;
+import org.springframework.core.retry.RetryTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxb.JAXBDataBinding;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
 import jakarta.xml.ws.BindingProvider;
 
@@ -37,10 +45,16 @@ public class PlatformConfiguration {
      * explicit namespace prefixes required by the target platform contract.
      */
     @Bean
-    WifiPlatformPortType platformPort(PlatformProperties properties) {
+    WifiPlatformPortType platformPort(
+            PlatformProperties properties,
+            HTTPClientPolicy httpClientPolicy
+    ) {
         var service = new WifiPlatformService();
         var port = service.getWifiPlatformPort();
         var client = ClientProxy.getClient(port);
+
+        var conduit = (HTTPConduit) client.getConduit();
+        conduit.setClient(httpClientPolicy);
 
         var inInterceptors = client.getInInterceptors();
         var outInterceptors = client.getOutInterceptors();
@@ -75,5 +89,47 @@ public class PlatformConfiguration {
                 schedule.getMinute(),
                 schedule.getHour()
         );
+    }
+
+    @Bean
+    HTTPClientPolicy platformHttpClientPolicy(PlatformProperties properties) {
+        var policy = new HTTPClientPolicy();
+
+        policy.setConnectionTimeout(
+                properties.connectionTimeout().toMillis()
+        );
+        policy.setReceiveTimeout(
+                properties.receiveTimeout().toMillis()
+        );
+        return policy;
+    }
+
+    @Bean
+    RetryPolicy platformRetryPolicy(PlatformProperties properties) {
+        var retry = properties.retry();
+
+        return RetryPolicy.builder()
+                .maxRetries(retry.maxAttempts() - 1)
+                .delay(retry.delay())
+                .maxDelay(retry.maxDelay())
+                .multiplier(retry.delayMultiplier())
+                .includes(PlatformConnectionException.class)
+                .build();
+    }
+
+    @Bean
+    RetryTemplate platformRetryTemplate(RetryPolicy policy) {
+        var retryTemplate = new RetryTemplate();
+
+        retryTemplate.setRetryPolicy(policy);
+        retryTemplate.setRetryListener(new SoapRetryLoggingListener());
+
+        return retryTemplate;
+    }
+
+    @Bean
+    @Primary
+    PlatformClient platformClient(RetryTemplate template, SoapPlatformClient delegate) {
+        return new ResilientSoapPlatformClient(template, delegate);
     }
 }

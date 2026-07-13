@@ -22,9 +22,9 @@ public record WifiPassword(String value) {
      * @throws IllegalArgumentException if {@code value} is blank
      */
     public WifiPassword {
-        Objects.requireNonNull(value, "value must not be null");
+        Objects.requireNonNull(value, "Password value must not be null");
         if (value.isBlank()) {
-            throw new IllegalArgumentException("value must not be blank");
+            throw new IllegalArgumentException("Password value must not be blank");
         }
     }
 

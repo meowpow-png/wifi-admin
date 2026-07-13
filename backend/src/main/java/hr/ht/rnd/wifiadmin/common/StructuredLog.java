@@ -81,6 +81,8 @@ public final class StructuredLog {
 
         CPE_ID("cpe_id"),
         VALIDATION_MESSAGE("validation_message"),
+        PLATFORM_REQUEST_CONTEXT("request_context"),
+        RETRY_COUNT("retry_count"),
 
         DATE("date"),
         TIME_ZONE("time_zone"),
@@ -150,6 +152,9 @@ public final class StructuredLog {
         CPE_NOT_FOUND("CPE not found"),
         PLATFORM_RESPONSE_INVALID("SOAP platform returned an invalid response"),
         PLATFORM_COMMUNICATION_FAILED("SOAP platform communication failed"),
+
+        PLATFORM_RETRY_ATTEMPT("Retrying platform communication"),
+        PLATFORM_RETRY_EXHAUSTED("Platform communication retry exhausted"),
 
         ADMINISTRATOR_ACCOUNT_NOT_FOUND("Administrator account not found"),
         UNHANDLED_ASYNC_EXCEPTION("Unhandled exception in async method"),

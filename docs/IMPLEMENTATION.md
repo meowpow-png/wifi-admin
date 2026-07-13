@@ -64,9 +64,20 @@ application
 
 The application integrates with the external WiFi platform using Apache CXF. SOAP client classes are generated directly from the published WSDL and confined to the integration layer, where they are translated into the domain model through dedicated mappers.
 
-The SOAP client is configured with connection and read timeouts. Additional client configuration ensures compatibility with the target platform by preferring HTTP/1.1 transport and explicit namespace prefixes. Transient communication failures are handled using Resilience4j with a configurable retry policy and exponential backoff strategy.
+The SOAP client is configured with connection and read timeouts. Additional client configuration ensures compatibility with the target platform by preferring HTTP/1.1 transport and explicit namespace prefixes. Transient communication failures are handled with a configurable retry policy and exponential backoff strategy.
 
 SOAP faults and transport exceptions are translated into domain-specific exceptions before leaving the integration layer.
+
+## Resilience
+
+Communication with the external SOAP platform is hardened against transient failures through configurable resilience mechanisms. These mechanisms improve availability during temporary network interruptions and platform unavailability while preventing requests from blocking indefinitely.
+
+The resilience implementation provides the following capabilities:
+
+- Configurable connection and read timeouts for SOAP communication
+- Configurable retry policy with exponential backoff for transient transport failures
+- Automatic translation of SOAP client transport failures into domain-specific platform exceptions
+- Structured logging of retry attempts and exhausted retry policies for operational monitoring
 
 ## Persistence
 

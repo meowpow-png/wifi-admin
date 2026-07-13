@@ -1,7 +1,6 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap;
 
 import hr.ht.rnd.wifiadmin.application.exception.CpeNotFoundException;
-import hr.ht.rnd.wifiadmin.application.exception.PlatformConnectionException;
 import hr.ht.rnd.wifiadmin.application.exception.PlatformResponseException;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
 import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
@@ -17,7 +16,6 @@ import jakarta.xml.ws.WebServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.ConnectException;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -27,7 +25,7 @@ import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
  * SOAP-based implementation of {@link PlatformClient}.
  */
 @Component
-final class SoapPlatformClient implements PlatformClient {
+public final class SoapPlatformClient implements PlatformClient {
 
     private static final Logger log = LoggerFactory.getLogger(SoapPlatformClient.class);
 
@@ -97,21 +95,11 @@ final class SoapPlatformClient implements PlatformClient {
             return call.get();
         }
         catch (WebServiceException e) {
-            if (hasCause(e, ConnectException.class)) {
-                var message = "Platform could not be reached";
-                throw new PlatformConnectionException(message, e);
+            if (SoapFaultDecoder.isSoapFault(e)) {
+                throw SoapFaultDecoder.decode(e);
             }
-            throw SoapFaultDecoder.decode(e);
+            throw PlatformExceptionMapper.toTransportException(e)
+                    .orElseThrow(() -> e);
         }
-    }
-
-    private static boolean hasCause(Throwable throwable, Class<? extends Throwable> type) {
-        while (throwable != null) {
-            if (type.isInstance(throwable)) {
-                return true;
-            }
-            throwable = throwable.getCause();
-        }
-        return false;
     }
 }
