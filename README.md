@@ -67,6 +67,12 @@ Set up the backend:
 just setup
 ```
 
+Build application images:
+
+```shell
+just build
+```
+
 Start the production-style local stack:
 
 ```shell
