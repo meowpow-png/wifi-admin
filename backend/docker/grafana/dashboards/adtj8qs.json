@@ -56,7 +56,7 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{service=\"backend\"}",
+          "expr": "{service=\"api\"}",
           "queryType": "range",
           "refId": "A"
         }
@@ -309,6 +309,5 @@
   "timezone": "browser",
   "title": "Docker",
   "uid": "adtj8qs",
-  "version": 2,
-  "weekStart": ""
+  "version": 2
 }

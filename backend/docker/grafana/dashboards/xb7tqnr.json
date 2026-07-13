@@ -18,7 +18,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "links": [],
   "liveNow": false,
   "panels": [
     {
@@ -53,7 +52,7 @@
         "unwrappedColumns": false,
         "wrapLogMessage": false
       },
-      "pluginVersion": "13.1.0",
+      "pluginVersion": "13.0.3",
       "targets": [
         {
           "datasource": {
@@ -62,7 +61,7 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{service=\"backend\"} | json | __error__ = \"\"",
+          "expr": "{service=\"api\"} | json | __error__ = \"\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -97,7 +96,7 @@
         "unwrappedColumns": false,
         "wrapLogMessage": false
       },
-      "pluginVersion": "13.1.0",
+      "pluginVersion": "13.0.3",
       "targets": [
         {
           "datasource": {
@@ -106,7 +105,7 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{service=\"backend\"}",
+          "expr": "{service=\"api\"}",
           "queryType": "range",
           "refId": "A"
         }
@@ -144,7 +143,7 @@
         "unwrappedColumns": false,
         "wrapLogMessage": true
       },
-      "pluginVersion": "13.1.0",
+      "pluginVersion": "13.0.3",
       "targets": [
         {
           "datasource": {
@@ -153,7 +152,7 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{service=\"backend\"}\n| json\n| logger_name =~ \"^hr\\\\.ht\\\\.rnd\\\\.wifiadmin.*\"",
+          "expr": "{service=\"api\"}\n| json\n| logger_name =~ \"^hr\\\\.ht\\\\.rnd\\\\.wifiadmin.*\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -193,7 +192,7 @@
         "unwrappedColumns": false,
         "wrapLogMessage": true
       },
-      "pluginVersion": "13.1.0",
+      "pluginVersion": "13.0.3",
       "targets": [
         {
           "datasource": {
@@ -202,7 +201,7 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{service=\"backend\"}\n| json\n| event != \"\"",
+          "expr": "{service=\"api\"}\n| json\n| event != \"\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -214,10 +213,6 @@
   "preload": false,
   "refresh": "",
   "schemaVersion": 42,
-  "tags": [],
-  "templating": {
-    "list": []
-  },
   "time": {
     "from": "now-6h",
     "to": "now"
@@ -239,6 +234,5 @@
   "timezone": "Europe/Zagreb",
   "title": "Backend",
   "uid": "xb7tqnr",
-  "version": 2,
-  "weekStart": ""
+  "version": 2
 }
