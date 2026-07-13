@@ -112,7 +112,6 @@ Expand the automated test suite to verify functional correctness, architectural 
 - Implement unit tests
 - Implement integration tests
 - Implement architecture tests
-- Implement resilience tests
 
 **Deliverable:** The application is supported by a comprehensive automated test suite that verifies its correctness, architecture, and resilience.
 
@@ -121,7 +120,6 @@ Expand the automated test suite to verify functional correctness, architectural 
 - Unit tests verify business logic in isolation
 - Integration tests verify interactions with external dependencies
 - Architecture tests verify architectural constraints
-- Resilience tests verify the application's behavior under transient platform failures
 
 ## Stage 7: React Frontend
 

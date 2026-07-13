@@ -14,7 +14,7 @@ This document describes how the architecture defined in [ARCHITECTURE.md](ARCHIT
 | Validation    | Jakarta Bean Validation                             |
 | Security      | Spring Security                                     |
 | Logging       | SLF4J, Logback                                      |
-| Observability | Spring Boot Actuator, Micrometer                    |
+| Observability | Spring Boot Actuator                                |
 | Testing       | JUnit 5, Mockito, Testcontainers, ArchUnit, Gatling |
 | Deployment    | Docker, Docker Compose                              |
 
@@ -82,7 +82,7 @@ Retrieved configurations are served from the local database when available and f
 
 Synchronization is implemented using Spring Scheduling with a configurable execution schedule and set of synchronized devices. Platform configurations are retrieved sequentially and published as application events. Persistence and other follow-up processing execute asynchronously, allowing the scheduler to continue retrieving the next configuration without waiting for local processing to complete.
 
-This event-driven approach provides a natural extension point for additional processing, such as metrics collection, audit logging, or notifications.
+This event-driven approach provides a natural extension point for additional future processing, such as metrics collection, audit logging, or notifications.
 
 ```mermaid
 sequenceDiagram
@@ -132,8 +132,6 @@ flowchart TD
 ```
 
 ### Observability
-
-Synchronization activity is instrumented through Micrometer metrics and structured logging, enabling synchronization duration, success and failure counts, persistence latency, and retry activity to be monitored in production.
 
 ## Configuration
 
@@ -327,14 +325,29 @@ sequenceDiagram
     deactivate Worker
 ```
 
-### Health & Metrics
+### Health
 
-The application uses custom health indicators to verify the availability of PostgreSQL and the external SOAP platform. Micrometer is used to expose standard Spring Boot metrics together with the following application-specific metrics:
+The application exposes a health endpoint that reports the health of its infrastructure dependencies. Built-in health indicators monitor application availability, the PostgreSQL database, and available disk space, while a custom health indicator verifies connectivity with the external SOAP platform. The overall health status is derived by aggregating the individual health indicators.
 
-- SOAP request latency
-- Retry count
-- Synchronization duration
-- Synchronization success and failure counts
+The backend container uses this endpoint as its Docker health check, allowing container orchestration to detect when the application is ready to accept requests and to monitor its runtime health.
+
+## Management
+
+### Interface
+
+Application management is implemented using Spring Boot Actuator, which hosts the management interface on port `8082`, separate from the public REST API.
+
+During development, the management interface is exposed to simplify administration and testing. In production, it is intended to remain internal and be protected by infrastructure such as a reverse proxy or firewall, preventing management endpoints from being exposed to public networks.
+
+### Commands
+
+The management interface exposes the following Actuator endpoints:
+
+- `health` reports the health of the application and its infrastructure dependencies
+- `shutdown` gracefully terminates the application
+- `sync` triggers an on-demand synchronization with the external SOAP platform
+- `logging` changes the application log level at runtime
+- `payload-logging` enables or disables SOAP payload logging for troubleshooting
 
 ## Testing
 
@@ -349,25 +362,3 @@ Integration tests execute against production-like infrastructure using Testconta
 ### Architecture Tests
 
 Architecture tests are implemented using ArchUnit to verify package structure, dependency rules, and architectural boundaries.
-
-### Resilience Tests
-
-Resilience tests are implemented as end-to-end system tests using Gatling against the containerized application stack. They verify the application's behavior under transient platform failures, including retry logic, exponential backoff, and timeout handling.
-
-The external SOAP platform is accessed through an Nginx reverse proxy. During normal test execution, requests are forwarded to the reference Mockoon platform. During resilience scenarios, Nginx routes requests to a dedicated WireMock instance that simulates transient failures such as timeouts and temporary server errors.
-
-```mermaid
-flowchart LR
-    G[Gatling]
-    B[Spring Boot]
-    N[Nginx Reverse Proxy]
-    M[Mockoon SOAP Platform]
-    W[WireMock Fault Simulator]
-
-    G -->|HTTP| B
-    B -->|SOAP| N
-    N -->|Normal scenarios| M
-    N -->|Resilience scenarios| W
-```
-
-This approach validates the application's resilience under realistic runtime conditions without modifying either the application or the reference SOAP platform. Fault scenarios are isolated within the test environment, allowing retry and recovery behavior to be verified against the complete containerized stack.

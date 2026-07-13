@@ -310,7 +310,3 @@ Integration tests verify interactions between application components and externa
 ### Architecture Tests
 
 Architecture tests enforce the project's structural rules. They verify module boundaries, dependency rules, and architectural constraints to prevent architectural drift as the codebase evolves.
-
-### Resilience Tests
-
-Resilience tests verify the application's behavior under transient infrastructure failures. They ensure retry policies, timeout handling, and error recovery mechanisms behave correctly when communicating with the external SOAP platform.

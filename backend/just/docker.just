@@ -15,3 +15,8 @@ compose-dev *args:
 [arg("args", help="Arguments passed to docker compose")]
 compose-prod *args:
     @docker compose {{compose_prod}} {{args}}
+
+# Build the backend Docker image
+compose-build:
+    @./gradlew clean build
+    @just compose-dev build

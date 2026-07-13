@@ -48,6 +48,7 @@ val env = loadEnv(file(".env")) + System.getenv()
 
 tasks.bootRun {
     environment(env)
+    systemProperty("spring.profiles.active", "dev")
 }
 
 flyway {
