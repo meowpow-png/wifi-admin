@@ -25,6 +25,7 @@ clean:
 # Setup project
 setup:
     @just backend::gradle setup
+    @just frontend::npm ci
 
 # Build all modules
 build:
