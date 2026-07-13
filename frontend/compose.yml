@@ -1,6 +1,15 @@
 name: wifi-admin-web
 
 services:
+  web:
+    image: hr-telekom/wifi-admin-web:1.0.0
+    environment:
+      API_UPSTREAM: http://api:8081
+    build:
+      context: .
+    ports:
+      - "8083:80"
+
   codex:
     image: hr-telekom/wifi-admin-codex:26-node
     build:

@@ -3,6 +3,7 @@ name: wifi-admin
 services:
   api:
     image: hr-telekom/wifi-admin-api:1.0.0
+    container_name: wifi-admin-api
     depends_on:
       postgres:
         condition: service_healthy
