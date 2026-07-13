@@ -2,6 +2,7 @@
 cxf = "4.2.2"
 springdoc = "3.0.3"
 slf4j = "2.0.18"
+archunit = "1.4.2"
 
 [libraries]
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
@@ -15,3 +16,6 @@ cxf-spring-boot-starter-jaxws = { module = "org.apache.cxf:cxf-spring-boot-start
 
 springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+
+tngtech-archunit = { module = "com.tngtech.archunit:archunit", version.ref = "archunit" }
+tngtech-archunit-junit5 = { module = "com.tngtech.archunit:archunit-junit5", version.ref = "archunit" }

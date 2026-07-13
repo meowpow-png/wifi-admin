@@ -1,5 +1,8 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     java
+    id("jvm-test-suite")
     id("org.springframework.boot") version "4.0.6"
     id("io.spring.dependency-management") version "1.1.7"
 }
@@ -18,6 +21,28 @@ sourceSets {
     main {
         java {
             srcDir(layout.buildDirectory.dir("generated/sources/wsdl"))
+        }
+    }
+}
+
+testing {
+    suites {
+        withType<JvmTestSuite> {
+            useJUnitJupiter()
+        }
+        register<JvmTestSuite>("integrationTest") {
+            dependencies {
+                implementation(project())
+            }
+        }
+        register<JvmTestSuite>("architectureTest") {
+            dependencies {
+                implementation(project())
+                implementation(libs.tngtech.archunit)
+                implementation(libs.tngtech.archunit.junit5)
+
+                implementation(libs.spring.boot.starter.web)
+            }
         }
     }
 }
@@ -44,7 +69,7 @@ dependencies {
 
 tasks.register<JavaExec>("wsdl2java") {
     group = "soap"
-    description = "Generates SOAP client classes from the WSDL."
+    description = "Generates SOAP client classes from WSDL."
 
     classpath = cxfCodegen
     mainClass.set("org.apache.cxf.tools.wsdlto.WSDLToJava")

@@ -1,5 +1,8 @@
 package hr.ht.rnd.wifiadmin.domain;
 
+/**
+ * Supported Wi-Fi encryption types.
+ */
 public enum WifiEncryptionType {
     OPEN,
     WEP,
