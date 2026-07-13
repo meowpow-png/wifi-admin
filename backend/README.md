@@ -424,7 +424,7 @@ The `setup` task is provided by the project's internal environment Gradle plugin
 | `just compose <args>`                                                       | Run `docker compose` with arbitrary arguments                        |
 | `just compose-dev <args>`                                                   | Run Docker Compose with development overlays                         |
 | `just compose-prod <args>`                                                  | Run Docker Compose with production overlays                          |
-| `just compose-build <args>`                                                 | Assemble the application and build the `wifi-admin-api` Docker image |
+| `just api-build <args>`                                                     | Assemble the application and build the `wifi-admin-api` Docker image |
 | `just server-start`                                                         | Start the backend with Gradle                                        |
 | `just server-shutdown`                                                      | Shut down the backend through Actuator                               |
 | `just server-health`                                                        | Read platform health through Actuator                                |
@@ -435,9 +435,6 @@ The `setup` task is provided by the project's internal environment Gradle plugin
 | `just wifi-get <cpe-id>`                                                    | Retrieve Wi-Fi configuration through the REST API                    |
 | `just wifi-update <cpe-id> <ssid> [wifi-band] [encryption-type] [password]` | Update Wi-Fi configuration through the REST API                      |
 | `just change-password <current-password> <new-password>`                    | Change the authenticated administrator password                      |
-| `just soap-get <cpe-id>`                                                    | Retrieve Wi-Fi configuration directly from the SOAP platform         |
-| `just soap-put <cpe-id> <ssid> [wifi-band] [encryption-type] [password]`    | Update Wi-Fi configuration directly on the SOAP platform             |
-| `just grafana-export`                                                       | Export provisioned Grafana dashboards                                |
 | `just codex-run`                                                            | Start the interactive Codex CLI                                      |
 | `just codex-shell`                                                          | Open a root shell inside the Codex container                         |
 
@@ -514,7 +511,7 @@ The backend emits structured logs through Logback and exposes operational state 
 
 The application uses trace identifiers to correlate synchronous REST handling, SOAP platform calls, asynchronous event handling, and persistence follow-up work. SOAP payload logging is controlled separately from the main application logging level because payloads may contain sensitive data.
 
-Production Docker Compose deployment includes Grafana, Loki, and Alloy for log aggregation and dashboards.
+The root Docker Compose deployment includes Grafana, Loki, and Alloy for log aggregation and dashboards.
 
 ## Deployment
 
@@ -532,4 +529,4 @@ Production-style local deployment:
 just deploy-prod
 ```
 
-Read [DEPLOYMENT](docs/DEPLOYMENT.md) for more information.
+Read [DEPLOYMENT](../docs/DEPLOYMENT.md) for more information.
