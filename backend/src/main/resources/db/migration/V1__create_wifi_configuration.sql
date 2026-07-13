@@ -7,5 +7,6 @@ CREATE TABLE wifi_configuration (
     wifi_band VARCHAR NOT NULL,
     ssid VARCHAR NOT NULL,
     encryption_type VARCHAR NOT NULL,
-    password VARCHAR
+    password VARCHAR,
+    last_synchronized DATE NULL
 );

@@ -1,11 +1,13 @@
 package hr.ht.rnd.wifiadmin.infra.persistence;
 
-import hr.ht.rnd.wifiadmin.domain.WifiBand;
-import hr.ht.rnd.wifiadmin.domain.WifiEncryptionType;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiBand;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiEncryptionType;
 
 import jakarta.persistence.*;
 
 import org.jspecify.annotations.Nullable;
+
+import java.time.LocalDate;
 
 @Entity
 @SuppressWarnings("unused")
@@ -31,6 +33,10 @@ public class WifiConfigurationEntity {
     @Nullable
     private String password;
 
+    @Nullable
+    @Column(nullable = false)
+    private LocalDate lastSynchronized;
+
     protected WifiConfigurationEntity() {}
 
     WifiConfigurationEntity(
@@ -38,13 +44,15 @@ public class WifiConfigurationEntity {
             WifiBand wifiBand,
             String ssid,
             WifiEncryptionType encryptionType,
-            @Nullable String password
+            @Nullable String password,
+            @Nullable LocalDate lastSynchronized
     ) {
         this.cpeId = cpeId;
         this.wifiBand = wifiBand;
         this.ssid = ssid;
         this.encryptionType = encryptionType;
         this.password = password;
+        this.lastSynchronized = lastSynchronized;
     }
 
     public String getCpeId() {
@@ -66,5 +74,10 @@ public class WifiConfigurationEntity {
     @Nullable
     public String getPassword() {
         return password;
+    }
+
+    @Nullable
+    public LocalDate getLastSynchronized() {
+        return lastSynchronized;
     }
 }

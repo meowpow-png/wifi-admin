@@ -18,7 +18,7 @@ Refresh the local database from the platform before serving every read request.
 
 This ensures fresh data but removes most of the benefits of maintaining a local database by introducing a platform call for every request.
 
-### Event-driven synchronization
+### Platform-driven synchronization
 
 Update the local database whenever the platform publishes change events.
 
@@ -36,7 +36,9 @@ I decided to synchronize the local database with the external platform using a p
 
 Periodic synchronization provides a simple and reliable way to keep the local database reasonably up to date while preserving the performance benefits of serving read requests locally. It also avoids unnecessary load on the external platform by eliminating the need to refresh data on every request.
 
-The external platform does not support publishing change events, making event-driven synchronization unavailable. Running synchronization during periods of lower platform activity further reduces operational impact while remaining configurable for different deployment environments.
+The external platform does not support publishing change events, making platform-driven synchronization unavailable. Running synchronization during periods of lower platform activity further reduces operational impact while remaining configurable for different deployment environments.
+
+Platform configurations are retrieved sequentially to avoid placing unnecessary load on the external platform while keeping synchronization predictable and resilient. Each synchronized configuration is then published as an event, allowing persistence and other follow-up processing, such as metrics collection or audit logging, to run independently. This keeps the synchronization workflow focused on retrieving data while local processing continues in parallel with subsequent platform requests.
 
 ## Consequences
 

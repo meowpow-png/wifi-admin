@@ -74,19 +74,21 @@ WiFi configurations are persisted in PostgreSQL using Spring Data JPA. Database 
 
 The application maintains a local replica of the WiFi configurations stored in the external platform. Repository operations are encapsulated behind application ports, allowing the persistence implementation to remain isolated from the application layer.
 
-Retrieved configurations are served from the local database when available and fall back to the external platform on cache misses or repository failures. Configuration updates are persisted **asynchronously** after successful platform updates, ensuring the external platform remains the authoritative source of truth while preventing local persistence from delaying client responses.
+Retrieved configurations are served from the local database when available and fall back to the external platform on cache misses or repository failures. Successful platform interactions publish application events that are handled asynchronously to persist retrieved or updated configurations to the local database. This keeps orchestration services focused on communicating with the external platform while allowing persistence and other follow-up processing to execute independently without delaying client responses.
 
 ## Synchronization
 
-Synchronization is implemented using Spring Scheduling with a configurable execution schedule and set of synchronized devices. Retrieved platform configurations are published as application events, allowing persistence to execute asynchronously and independently of the synchronization workflow.
+### Execution
 
-This event-driven approach separates configuration retrieval from persistence while providing a natural extension point for additional synchronization processing, such as metrics collection, audit logging, or notifications.
+Synchronization is implemented using Spring Scheduling with a configurable execution schedule and set of synchronized devices. Platform configurations are retrieved sequentially and published as application events. Persistence and other follow-up processing execute asynchronously, allowing the scheduler to continue retrieving the next configuration without waiting for local processing to complete.
+
+This event-driven approach provides a natural extension point for additional processing, such as metrics collection, audit logging, or notifications.
 
 ```mermaid
 sequenceDiagram
     participant Scheduler
     participant Platform
-    participant Publisher as ApplicationEventPublisher
+    participant Publisher as EventPublisher
     participant Listener
     participant Database
 
@@ -94,16 +96,44 @@ sequenceDiagram
         Scheduler->>Platform: Retrieve configuration
         Platform-->>Scheduler: WiFi configuration
 
-        Scheduler-)Publisher: publish(ConfigurationSynchronizedEvent)
+        Scheduler-)Publisher: publish(Event)
+        Scheduler->>Platform: Retrieve next configuration
 
-        Publisher-)Listener: ConfigurationSynchronizedEvent
-        activate Listener
-        Listener->>Database: Persist configuration
-        deactivate Listener
+        par Async persistence
+            Publisher-)Listener: Event
+            activate Listener
+            Listener->>Database: Persist configuration
+            deactivate Listener
+        and Next platform request
+            Platform-->>Scheduler: Next WiFi configuration
+        end
     end
 ```
 
-Synchronization activity is instrumented through Micrometer metrics and structured logging, enabling synchronization duration, success and failure counts, and retry activity to be monitored in production.
+Platform requests are intentionally performed one at a time to keep synchronization predictable and avoid making assumptions about the external platform's ability to handle concurrent requests. If higher synchronization throughput is ever required, concurrent retrieval can be introduced later without changing the overall workflow.
+
+### Consistency
+
+To prevent stale configurations from being removed after a partially completed synchronization, synchronized configurations are tracked until all persistence operations complete successfully. Only then are configurations missing from the current synchronization removed from the local database.
+
+```mermaid
+flowchart TD
+    A[Start synchronization] --> B[Track synchronization progress]
+
+    B --> C[Retrieve next configuration]
+    C --> D[Persist configuration]
+    D --> E[Mark configuration as completed]
+
+    E --> F{All configurations persisted?}
+
+    F -- No --> C
+    F -- Yes --> G[Remove stale configurations]
+    G --> H[Synchronization completed]
+```
+
+### Observability
+
+Synchronization activity is instrumented through Micrometer metrics and structured logging, enabling synchronization duration, success and failure counts, persistence latency, and retry activity to be monitored in production.
 
 ## Configuration
 
@@ -174,24 +204,16 @@ All error responses use the common `ErrorBody` model defined by the OpenAPI spec
 
 ## Security
 
-The application secures the REST API using Spring Security with JWT-based authentication. Clients authenticate by submitting their credentials to the authentication endpoint. Upon successful authentication, the application issues a signed JWT, which clients present in the `Authorization` header when accessing protected endpoints.
+The application secures administrator access through stateless authentication and protects sensitive data using appropriate cryptographic techniques. Security measures include:
 
-```mermaid
-sequenceDiagram
-    actor Client
-    participant API
-    participant Authentication
-    participant JWT
+- JWT-based authentication and authorization
+- BCrypt hashing of administrator passwords
+- AES encryption of persisted WiFi passwords
+- Externalized cryptographic keys and security configuration
+- Centralized authentication and exception handling
+- Exclusion of sensitive information from logs and error responses
 
-    Client->>API: POST /auth/login
-    API->>Authentication: Authenticate credentials
-    Authentication-->>API: Success
-    API->>JWT: Generate token
-    JWT-->>API: JWT
-    API-->>Client: 200 OK + JWT
-```
-
-Authentication and authorization are performed within the application. Access to protected endpoints is restricted to authenticated users with the `ADMIN` role.
+See [SECURITY.md](SECURITY.md) for more implementation details.
 
 ## Observability
 

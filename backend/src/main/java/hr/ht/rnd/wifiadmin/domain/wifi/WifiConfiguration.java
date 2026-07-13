@@ -1,4 +1,4 @@
-package hr.ht.rnd.wifiadmin.domain;
+package hr.ht.rnd.wifiadmin.domain.wifi;
 
 import org.jspecify.annotations.Nullable;
 
@@ -12,7 +12,7 @@ public record WifiConfiguration(
         WifiBand wifiBand,
         String ssid,
         WifiEncryptionType encryptionType,
-        @Nullable String password
+        @Nullable WifiPassword password
 ) {
 
     /**
@@ -24,7 +24,9 @@ public record WifiConfiguration(
      * @param encryptionType the encryption type, or {@code null} to use {@link WifiEncryptionType#OPEN}
      * @param password the wireless network password, or {@code null} if not specified
      *
-     * @throws NullPointerException if {@code cpeId}, {@code wifiBand}, or {@code ssid} is {@code null}
+     * @throws NullPointerException if {@code cpeId}, {@code wifiBand},
+     * or {@code ssid} is {@code null}, or if {@code password} is
+     * {@code null} and the encryption type requires a password
      * @throws IllegalArgumentException if {@code cpeId} or {@code ssid} is blank
      */
     public WifiConfiguration(
@@ -32,7 +34,7 @@ public record WifiConfiguration(
             WifiBand wifiBand,
             String ssid,
             @Nullable WifiEncryptionType encryptionType,
-            @Nullable String password
+            @Nullable WifiPassword password
     ) {
         Objects.requireNonNull(cpeId, "cpeId must not be null");
         Objects.requireNonNull(wifiBand, "wifiBand must not be null");
@@ -49,11 +51,8 @@ public record WifiConfiguration(
                 WifiEncryptionType.OPEN
         );
         if (encryptionType.requiresPassword()) {
-            Objects.requireNonNull(password, "password must not be null for " + encryptionType);
-            if (password.isBlank()) {
-                var message = "password must not be blank for " + encryptionType;
-                throw new IllegalArgumentException(message);
-            }
+            var message = "password must not be null for " + encryptionType;
+            Objects.requireNonNull(password, message);
         }
         this.cpeId = cpeId;
         this.wifiBand = wifiBand;

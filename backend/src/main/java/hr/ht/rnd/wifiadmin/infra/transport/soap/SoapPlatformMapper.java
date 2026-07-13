@@ -1,8 +1,9 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap;
 
-import hr.ht.rnd.wifiadmin.domain.WifiBand;
-import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
-import hr.ht.rnd.wifiadmin.domain.WifiEncryptionType;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiBand;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiEncryptionType;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiPassword;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.EncryptionType;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiBandType;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiConfigurationType;
@@ -26,12 +27,13 @@ final class SoapPlatformMapper {
      * @throws IllegalArgumentException if SOAP model contains unsupported enum values
      */
     static WifiConfiguration toDomain(WifiConfigurationType source) {
+        var password = source.getPassword();
         return new WifiConfiguration(
                 source.getCpeId(),
                 toDomain(source.getWifiBand()),
                 source.getSsid(),
                 toDomain(source.getEncryptionType()),
-                source.getPassword()
+                password != null ? new WifiPassword(password) : null
         );
     }
 
@@ -46,12 +48,13 @@ final class SoapPlatformMapper {
      */
     static WifiConfigurationType toPlatform(WifiConfiguration source) {
         var target = new WifiConfigurationType();
+        var password = source.password();
 
         target.setCpeId(source.cpeId());
         target.setWifiBand(toPlatform(source.wifiBand()));
         target.setSsid(source.ssid());
         target.setEncryptionType(toPlatform(source.encryptionType()));
-        target.setPassword(source.password());
+        target.setPassword(password != null ? password.value() : null);
 
         return target;
     }

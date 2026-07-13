@@ -3,7 +3,7 @@ package hr.ht.rnd.wifiadmin.application.outbound;
 import hr.ht.rnd.wifiadmin.application.exception.CpeNotFoundException;
 import hr.ht.rnd.wifiadmin.application.exception.PlatformResponseException;
 import hr.ht.rnd.wifiadmin.application.exception.PlatformTransportException;
-import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 
 /**
  * Outbound port for interacting

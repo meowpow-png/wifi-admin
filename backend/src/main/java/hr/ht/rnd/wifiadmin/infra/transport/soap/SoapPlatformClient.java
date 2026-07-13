@@ -4,7 +4,7 @@ import hr.ht.rnd.wifiadmin.application.exception.CpeNotFoundException;
 import hr.ht.rnd.wifiadmin.application.exception.PlatformConnectionException;
 import hr.ht.rnd.wifiadmin.application.exception.PlatformResponseException;
 import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
-import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapFaultCode;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapFaultDecoder;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapFaultException;

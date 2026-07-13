@@ -1,7 +1,7 @@
 package hr.ht.rnd.wifiadmin.infra.transport.rest;
 
 import hr.ht.rnd.wifiadmin.application.inbound.PlatformAdministration;
-import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationRequest;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationResponse;
 
@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import java.util.Objects;
 
 /**
  * REST controller exposing Wi-Fi management endpoints.
  */
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 public final class WifiController {
 
     private final PlatformAdministration admin;

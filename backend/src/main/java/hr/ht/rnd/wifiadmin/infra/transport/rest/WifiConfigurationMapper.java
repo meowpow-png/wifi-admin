@@ -1,6 +1,7 @@
 package hr.ht.rnd.wifiadmin.infra.transport.rest;
 
-import hr.ht.rnd.wifiadmin.domain.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiPassword;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationRequest;
 import hr.ht.rnd.wifiadmin.infra.transport.rest.dto.WifiConfigurationResponse;
 
@@ -24,12 +25,14 @@ final class WifiConfigurationMapper {
      */
     static WifiConfiguration toDomain(WifiConfigurationRequest source) {
         Objects.requireNonNull(source, "source must not be null");
+
+        var password = source.password();
         return new WifiConfiguration(
                 source.cpeId(),
                 source.wifiBand(),
                 source.ssid(),
                 source.encryptionType(),
-                source.password()
+                password != null ? new WifiPassword(password) : null
         );
     }
 
@@ -43,12 +46,14 @@ final class WifiConfigurationMapper {
      */
     static WifiConfigurationResponse toResponse(WifiConfiguration source) {
         Objects.requireNonNull(source, "source must not be null");
+
+        var password = source.password();
         return new WifiConfigurationResponse(
                 source.cpeId(),
                 source.wifiBand(),
                 source.ssid(),
                 source.encryptionType(),
-                source.password()
+                password != null ? password.value() : null
         );
     }
 }

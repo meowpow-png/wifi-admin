@@ -1,16 +1,17 @@
 package hr.ht.rnd.wifiadmin.infra.transport.rest;
 
-import hr.ht.rnd.wifiadmin.application.exception.CpeNotFoundException;
-import hr.ht.rnd.wifiadmin.application.exception.PlatformResponseException;
-import hr.ht.rnd.wifiadmin.application.exception.PlatformTransportException;
+import hr.ht.rnd.wifiadmin.application.exception.*;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,24 @@ import org.slf4j.LoggerFactory;
 class RestExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AuthenticationException.class)
+    ErrorBodyDto handleAuthenticationFailure(
+            AuthenticationException ignored,
+            HttpServletRequest request
+    ) {
+        log.debug("Authentication failed for {} {} from {} ({})",
+                request.getMethod(),
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                request.getHeader(HttpHeaders.USER_AGENT)
+        );
+        return new ErrorBodyDto(
+                "Authentication failed",
+                ErrorCode.AUTHENTICATION_FAILED
+        );
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -30,7 +49,7 @@ class RestExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .orElse("Request validation failed");
 
-        log.warn("Request validation failed: {}", message);
+        log.debug("Request validation failed: {}", message);
 
         return new ErrorBodyDto(message, ErrorCode.VALIDATION_FAILED);
     }
@@ -39,7 +58,7 @@ class RestExceptionHandler {
     @ExceptionHandler(InvalidRequestException.class)
     ErrorBodyDto handleInvalidRequest(InvalidRequestException exception) {
         var message = exception.getMessage();
-        log.warn("Invalid request: {}", message);
+        log.debug("Invalid request: {}", message);
 
         return new ErrorBodyDto(message, ErrorCode.VALIDATION_FAILED);
     }
@@ -47,7 +66,7 @@ class RestExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     ErrorBodyDto handleRequestParsingFailure(HttpMessageNotReadableException ignored) {
-        log.warn("Failed to parse request body", ignored);
+        log.debug("Failed to parse request body", ignored);
 
         return new ErrorBodyDto(
                 "Invalid request body",
@@ -83,6 +102,17 @@ class RestExceptionHandler {
         return new ErrorBodyDto(
                 "Platform communication failed",
                 ErrorCode.PLATFORM_ERROR
+        );
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(AccountNotFoundException.class)
+    ErrorBodyDto handleAccountNotFound(AccountNotFoundException ignored) {
+        log.error("Administrator account not found", ignored);
+
+        return new ErrorBodyDto(
+                "Internal server error",
+                ErrorCode.INTERNAL_SERVER_ERROR
         );
     }
 

@@ -1,7 +1,7 @@
 package hr.ht.rnd.wifiadmin.infra.transport.rest.dto;
 
-import hr.ht.rnd.wifiadmin.domain.WifiBand;
-import hr.ht.rnd.wifiadmin.domain.WifiEncryptionType;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiBand;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiEncryptionType;
 
 import org.jspecify.annotations.Nullable;
 

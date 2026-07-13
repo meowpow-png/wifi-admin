@@ -238,7 +238,24 @@ Application configuration is externalized to support environment-specific deploy
 
 ### Security
 
-The application provides authentication and authorization capabilities. Sensitive information, such as WiFi passwords, is excluded from logs and error responses.
+The application protects sensitive information throughout its lifecycle by minimizing exposure, encrypting recoverable secrets, hashing authentication credentials, and externalizing cryptographic material from the application.
+
+The security architecture addresses the following threats:
+
+- Unauthorized access to application endpoints
+- Disclosure of administrator credentials through database access or backups
+- Disclosure of WiFi passwords through application logs or error responses
+- Disclosure of WiFi passwords through database access or backups
+- Disclosure of cryptographic keys through source control
+
+The following security principles are applied:
+
+- Authentication is required before protected operations can be performed  
+- Recoverable secrets and authentication credentials are protected using appropriate cryptographic techniques  
+- Sensitive information is not exposed through application interfaces or operational diagnostics  
+- Cryptographic material is managed independently of the application binary
+
+Implementation details are documented in [SECURITY.md](SECURITY.md).
 
 Related architectural decisions:
 
@@ -246,18 +263,21 @@ Related architectural decisions:
 
 ## Persistence Strategy
 
-WiFi configurations are stored in a database to reduce platform dependency, improve response times, and provide durable persistence across application restarts. The database serves read requests, while the external platform remains the authoritative source during synchronization.
+WiFi configurations are stored in a database to reduce platform dependency, improve response times, and provide durable persistence across application restarts. The database serves read requests, while the external platform remains the authoritative source of truth.
 
 The following persistence policies are applied:
 
 - WiFi configurations are read from the database by default
 - Missing configurations are retrieved from the platform and stored in the database
 - Configuration changes are persisted after successful platform updates
+- Successful platform interactions publish events that drive persistence and other follow-up processing
 - Database failures during retrieval fall back to the external platform when possible
 
 Related architectural decisions:
 
 - [ADR-001: Use a Local Database](adr/001-adr-local-database.md)
+- [ADR-002: Synchronize Platform Data](adr/002-adr-synchronize-platform-data.md)
+- [ADR-006: Model Platform Interactions as Application Events](adr/006-platform-interactions-as-application-events.md)
 
 ## Synchronization Strategy
 
@@ -269,6 +289,7 @@ The following synchronization policies are applied:
 - The set of synchronized CPEs is configurable
 - Each CPE is synchronized independently
 - Synchronization failures are logged without interrupting the overall job
+- Local data is removed only after a successful synchronization
 
 Note that synchronization strategy maintains only the current platform state. Historical configuration snapshots are outside the scope of this project.
 

@@ -2,6 +2,7 @@
 postgresql = "42.7.11"
 flyway = "12.8.1"
 cxf = "4.2.2"
+jjwt = "0.13.0"
 springdoc = "3.0.3"
 slf4j = "2.0.18"
 archunit = "1.4.2"
@@ -9,6 +10,7 @@ archunit = "1.4.2"
 [libraries]
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
 spring-boot-starter-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
@@ -21,6 +23,11 @@ cxf-tools-wsdlto-core = { module = "org.apache.cxf:cxf-tools-wsdlto-core", versi
 cxf-tools-wsdlto-frontend-jaxws = { module = "org.apache.cxf:cxf-tools-wsdlto-frontend-jaxws", version.ref = "cxf" }
 cxf-tools-wsdlto-databinding-jaxb = { module = "org.apache.cxf:cxf-tools-wsdlto-databinding-jaxb", version.ref = "cxf" }
 cxf-spring-boot-starter-jaxws = { module = "org.apache.cxf:cxf-spring-boot-starter-jaxws", version.ref = "cxf" }
+
+jjwt-bom = { module = "io.jsonwebtoken:jjwt-bom", version.ref = "jjwt" }
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson" }
 
 springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
