@@ -26,7 +26,7 @@ plugins {
 
 group = "hr.ht.rnd"
 version = "0.0.1-SNAPSHOT"
-description = "wifi-admin-backend"
+description = "wifi-admin-api"
 
 java {
     toolchain {

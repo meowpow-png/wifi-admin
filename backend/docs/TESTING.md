@@ -4,7 +4,7 @@
 
 Use the following annotations consistently throughout the test suite:
 
-- `@IntegrationTest` — marks integration tests
+- `@Test` — marks JUnit tests
 - `@Nested` — groups related test scenarios
 - `@DisplayName` — provides a readable description in test reports
 
@@ -12,6 +12,7 @@ Use the following annotations consistently throughout the test suite:
 class ExampleServiceTest {
 
     @Nested
+    @DisplayName("findUser")
     class FindUserMethodTests {
 
         @Test
@@ -111,7 +112,7 @@ void should_ThrowException_when_UserIsNotFound() {
 
 ## Assertions
 
-Use AssertJ for all assertions. Assert observable outcomes using fluent, expressive assertions that clearly communicate the expected behavior. Prefer the most direct assertion available, and keep each assertion focused on the behavior under test.
+Use AssertJ for direct value and exception assertions. Assert observable outcomes using fluent, expressive assertions that clearly communicate the expected behavior. Prefer the most direct assertion available, using framework-native assertions where they express the behavior more clearly.
 
 ```java
 // Avoid:
@@ -145,6 +146,45 @@ assertThatThrownBy(action)
 Write enough tests to provide confidence in the behavior of the system without covering unnecessary permutations or speculative edge cases. Focus on behaviors defined by the contract, business rules, or integration boundaries, and stop once those behaviors have been verified.
 
 For example, if a method accepts a `String` parameter and the behavior is identical for `"alice"` and `"bob"`, testing both values provides little additional confidence. Prefer a single representative test unless the input itself changes the expected behavior.
+
+## Test Source Sets
+
+Tests are organized by source set:
+
+- Unit tests live in `src/test/java`
+- Integration tests live in `src/integrationTest/java`
+- Architecture tests live in `src/architectureTest/java`
+- Shared test fixtures live in `src/testFixtures/java`
+- Integration test resources live in `src/integrationTest/resources`
+
+Generated SOAP classes are part of the main source set under `build/generated/sources/wsdl`. Do not write tests for generated SOAP code directly; test the project code that maps, configures, or calls it. Generated SOAP classes are excluded from the aggregate coverage report.
+
+## Test Tasks
+
+Use the Gradle test tasks according to the scope being verified:
+
+- `test` — runs unit tests
+- `integrationTest` — runs integration tests
+- `architectureTest` — runs architecture tests
+- `coverage` — generates the aggregate JaCoCo coverage report from unit and integration test execution data
+- `compileAllClasses` — compiles all project source sets without running tests
+
+The `check` task is finalized by `integrationTest`, so running `check` also triggers integration tests after the main check work completes.
+
+## Test Fixtures
+
+Prefer existing test fixtures over constructing common domain objects or configuration values from scratch. Fixtures keep tests focused on the behavior under test and reduce incidental setup.
+
+Common fixtures include:
+
+- `TestWifiConfigurations` — creates representative Wi-Fi configurations
+- `TestAccounts` — creates representative administrator accounts
+- `TestSecurityProperties` — creates valid security properties
+- `TestPlatformProperties` — creates valid platform properties
+- `TestJwts` — creates JWT issuers and verifiers for tests
+- `TestClock` — provides a stable test clock
+- `TestPasswordEncryptor` — provides test password encryption behavior
+- `TestPlatformExceptions` — creates representative platform exceptions
 
 ## Unit Testing
 
@@ -243,15 +283,33 @@ Exercise the system through its public integration points and assert only observ
 
 ### Infrastructure
 
-<!-- TODO: Document the shared integration test infrastructure, including the custom @IntegrationTest annotation, application startup, supporting services, and common test configuration inherited by all integration tests. -->
+Integration tests use custom annotations to apply consistent testing configuration and reduce boilerplate. Some annotations represent a specific integration testing scenario while sharing the common configuration provided by `@IntegrationTest`; others mark a test type or replace selected infrastructure for tests.
+
+The standard annotations are:
+
+- `@IntegrationTest` — applies the shared integration testing configuration
+- `@JpaIntegrationTest` — configures a JPA test slice for persistence testing
+- `@MockMvcIntegrationTest` — configures MockMvc for web integration testing
+- `@WiringIntegrationTest` — marks Spring wiring tests with the `wiring` tag
+- `@DisableAsync` — disables asynchronous execution
+- `@DisableEncryption` — disables password encryption
+- `@DisableHashing` — disables password hashing
 
 ### Test Data
 
-<!-- TODO: Document how integration tests prepare, isolate, and clean up test data, including any shared fixtures, helper utilities, or database initialization strategy used throughout the test suite. -->
+Integration tests run against an isolated PostgreSQL database initialized from the project's schema and test resources. Use the shared test fixtures and seed data where appropriate instead of duplicating common setup.
+
+Keep test data local to the scenario being verified. Create or modify only the data required by the test, and clean up shared mutable state when necessary to preserve test isolation.
 
 ### External Services
 
-<!-- TODO: Document how integration tests interact with external services, including the use of mock implementations, configuring service behavior, and conventions for verifying integrations with external dependencies. -->
+Use local test doubles for external services rather than communicating with real systems. Configure external service behavior through the project's shared test infrastructure and keep assertions focused on the application's observable interactions with those services.
+
+When testing HTTP or SOAP client integrations, verify that requests and responses conform to the expected contract and that the application handles successful and exceptional scenarios correctly.
+
+### MockMvc Flows
+
+Use the project's shared MockMvc test infrastructure and helper utilities to construct requests and verify responses. Keep flow tests focused on externally observable behavior, such as HTTP status codes, response bodies, persistence effects, and interactions with external services, rather than request construction or framework plumbing.
 
 ## Wiring Tests
 

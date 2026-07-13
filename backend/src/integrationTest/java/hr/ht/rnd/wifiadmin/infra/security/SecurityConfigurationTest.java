@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
 import java.util.function.Consumer;
+import javax.crypto.SecretKey;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -54,6 +55,7 @@ class SecurityConfigurationTest {
                     .hasBean("authenticationManager")
                     .hasBean("passwordEncoder")
                     .hasBean(PasswordEncryptor.class)
+                    .hasBean(SecretKey.class)
                     .hasBean(JwtAccessTokenVerifier.class)
                     .doesNotFail();
         }
@@ -87,6 +89,27 @@ class SecurityConfigurationTest {
             TestApplicationContextRunner.from(runner)
                     .withPropertyValues("security.jwt-secret=")
                     .failsWithException(BindValidationException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("jwtSigningKey")
+    class JwtSigningKeyMethodTests {
+
+        @Test
+        @DisplayName("Fails when JWT secret is not Base64 encoded")
+        void should_Fail_when_JwtSecretIsNotBase64Encoded() {
+            TestApplicationContextRunner.from(runner)
+                    .withPropertyValues("security.jwt-secret=not-base64")
+                    .failsWithException(IllegalStateException.class);
+        }
+
+        @Test
+        @DisplayName("Fails when JWT secret is too short")
+        void should_Fail_when_JwtSecretIsTooShort() {
+            TestApplicationContextRunner.from(runner)
+                    .withPropertyValues("security.jwt-secret=dG9vLXNob3J0")
+                    .failsWithException(IllegalStateException.class);
         }
     }
 

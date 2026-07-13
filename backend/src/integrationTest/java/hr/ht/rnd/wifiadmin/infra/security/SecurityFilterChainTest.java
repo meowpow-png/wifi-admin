@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import tools.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import tools.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,7 +36,7 @@ class SecurityFilterChainTest {
     public static final String PUBLIC_ENDPOINT = "/security-test/auth/login";
     public static final String PROTECTED_ENDPOINT = "/security-test/protected";
     public static final String ACTUATOR_ENDPOINT = "/actuator/security-test";
-    
+
     @Autowired
     private MockMvc mockMvc;
 

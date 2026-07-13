@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -27,10 +25,12 @@ import javax.crypto.SecretKey;
 final class JwtAccessTokenIssuer implements AccessTokenIssuer {
 
     private final SecurityProperties properties;
+    private final SecretKey signingKey;
     private final Clock clock;
 
-    JwtAccessTokenIssuer(SecurityProperties properties, Clock clock) {
+    JwtAccessTokenIssuer(SecurityProperties properties, SecretKey signingKey, Clock clock) {
         this.properties = properties;
+        this.signingKey = signingKey;
         this.clock = clock;
     }
 
@@ -46,16 +46,11 @@ final class JwtAccessTokenIssuer implements AccessTokenIssuer {
                     .subject(username)
                     .issuedAt(Date.from(now))
                     .expiration(Date.from(now.plus(properties.jwtExpiration())))
-                    .signWith(signingKey())
+                    .signWith(signingKey)
                     .compact();
         }
         catch (JwtException e) {
             throw new AuthenticationException(e);
         }
-    }
-
-    private SecretKey signingKey() {
-        var key = Decoders.BASE64.decode(properties.jwtSecret());
-        return Keys.hmacShaKeyFor(key);
     }
 }

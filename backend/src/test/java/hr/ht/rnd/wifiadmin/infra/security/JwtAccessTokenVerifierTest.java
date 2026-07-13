@@ -58,13 +58,17 @@ class JwtAccessTokenVerifierTest {
         @DisplayName("Throws AuthenticationException when token signature is invalid")
         void should_ThrowAuthenticationException_when_TokenSignatureIsInvalid() {
             var clock = TestClock.create();
-            var properties = TestSecurityProperties.builder()
-                    .withJwtSecret("invalid-secret")
+            var properties = TestSecurityProperties.builder().build();
+
+            var issuer = TestJwts.tokenIssuer(properties, clock);
+            var token = issuer.issue(TestAccounts.admin().username());
+            var verifierProperties = TestSecurityProperties.builder()
+                    .withJwtSecret("YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY=")
                     .build();
 
-            var verifier = TestJwts.tokenVerifier(properties, clock);
+            var verifier = TestJwts.tokenVerifier(verifierProperties, clock);
 
-            assertThatThrownBy(() -> verifier.verify("invalid-token"))
+            assertThatThrownBy(() -> verifier.verify(token))
                     .isInstanceOf(AuthenticationException.class);
         }
     }

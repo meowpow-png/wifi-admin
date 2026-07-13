@@ -8,19 +8,27 @@ import java.util.function.Supplier;
 public interface PlatformClientAction extends Supplier<WifiConfiguration> {
 
     static PlatformClientAction throwException(PlatformException exception) {
-        return () -> { throw exception; };
+        return () -> {
+            throw exception;
+        };
     }
 
     static PlatformClientAction failConnection() {
-        return () -> { throw TestPlatformExceptions.failedConnection(); };
+        return () -> {
+            throw TestPlatformExceptions.failedConnection();
+        };
     }
 
     static PlatformClientAction returnInvalidResponse() {
-        return () -> { throw TestPlatformExceptions.invalidResponse(); };
+        return () -> {
+            throw TestPlatformExceptions.invalidResponse();
+        };
     }
 
     static PlatformClientAction failFindingCpeId(String cpeId) {
-        return () -> { throw TestPlatformExceptions.cpeNotFound(cpeId); };
+        return () -> {
+            throw TestPlatformExceptions.cpeNotFound(cpeId);
+        };
     }
 
     static PlatformClientAction returnConfiguration(WifiConfiguration configuration) {

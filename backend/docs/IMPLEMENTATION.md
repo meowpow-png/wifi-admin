@@ -15,7 +15,7 @@ This document describes how the architecture defined in [ARCHITECTURE.md](ARCHIT
 | Security      | Spring Security                                     |
 | Logging       | SLF4J, Logback                                      |
 | Observability | Spring Boot Actuator                                |
-| Testing       | JUnit 5, Mockito, Testcontainers, ArchUnit, Gatling |
+| Testing       | JUnit 5, Mockito, Testcontainers, ArchUnit          |
 | Deployment    | Docker, Docker Compose                              |
 
 ## Project Structure
@@ -157,8 +157,6 @@ Sensitive configuration is supplied through environment variables rather than be
 - Database credentials
 - JWT signing secrets
 - External platform endpoints
-- Retry policy
-- Synchronization schedule
 
 Containerized deployments provide environment-specific configuration through Docker Compose, including:
 
@@ -358,7 +356,7 @@ The management interface exposes the following Actuator endpoints:
 - `shutdown` gracefully terminates the application
 - `sync` triggers an on-demand synchronization with the external SOAP platform
 - `logging` changes the application log level at runtime
-- `payload-logging` enables or disables SOAP payload logging for troubleshooting
+- `payloadlogging` enables or disables SOAP payload logging for troubleshooting
 
 ## Testing
 

@@ -3,22 +3,27 @@ package hr.ht.rnd.wifiadmin.infra.transport.soap;
 import hr.ht.rnd.wifiadmin.application.exception.CpeNotFoundException;
 import hr.ht.rnd.wifiadmin.application.exception.PlatformConnectionException;
 import hr.ht.rnd.wifiadmin.application.exception.PlatformResponseException;
+import hr.ht.rnd.wifiadmin.common.StructuredLog;
 import hr.ht.rnd.wifiadmin.domain.wifi.TestWifiConfigurations;
 import hr.ht.rnd.wifiadmin.test.support.PlatformClientAction;
 import hr.ht.rnd.wifiadmin.test.support.RetryableTestPlatformClient;
 import hr.ht.rnd.wifiadmin.test.support.TestPlatformExceptions;
 
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.core.retry.RetryTemplate;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@ExtendWith(OutputCaptureExtension.class)
 class ResilientSoapPlatformClientTest {
 
     private static final int MAX_ATTEMPTS = 3;
@@ -47,7 +52,7 @@ class ResilientSoapPlatformClientTest {
 
         @Test
         @DisplayName("Propagates connection failure when retries are exhausted")
-        void should_PropagateConnectionFailure_when_RetriesAreExhausted() {
+        void should_PropagateConnectionFailure_when_RetriesAreExhausted(CapturedOutput output) {
             var cpeId = TestWifiConfigurations.CPE_ID;
             delegate.onRetrieveConfiguration(
                     PlatformClientAction.failConnection(),
@@ -58,6 +63,10 @@ class ResilientSoapPlatformClientTest {
                     .isInstanceOf(PlatformConnectionException.class);
 
             assertThat(delegate.retrieveAttempts()).isEqualTo(MAX_ATTEMPTS);
+            assertThat(output)
+                    .contains(StructuredLog.Event.PLATFORM_RETRY_EXHAUSTED.name())
+                    .contains("GetCpeID")
+                    .contains(cpeId);
         }
 
         @Test

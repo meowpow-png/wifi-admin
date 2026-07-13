@@ -75,7 +75,8 @@ public final class SoapPlatformResponses {
                     <faultcode>%s</faultcode>
                     <faultstring>%s</faultstring>
                 </soap:Fault>
-                """.formatted(faultCode, escape(faultString))));
+                """.formatted(faultCode, escape(faultString)))
+        );
     }
 
     private static MockResponse soapResponse(int status, String body) {

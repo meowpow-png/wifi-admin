@@ -23,8 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @IntegrationTest
 @SpringBootTest(classes = {
-        PlatformConfiguration.class,
-        SoapPlatformClient.class
+        PlatformConfiguration.class
 })
 class SoapPlatformClientTest extends MockWebServerTest {
 

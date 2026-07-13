@@ -17,25 +17,25 @@ compose-dev *args:
 compose-prod *args:
     @docker compose {{compose_prod}} {{args}}
 
-# Build the backend Docker image
-compose-build *args:
+# Build backend Docker image
+[arg("args", help="Arguments passed to docker compose")]
+api-build *args:
     @./gradlew clean assemble
     @just compose-dev build {{args}}
 
-# Build codex agent docker image
-codex-build *args:
-    @just compose-dev build codex {{args}}
+# Execute a command inside the running Codex container
+[arg("args", help="Command to execute inside Codex container")]
+codex-exec *args:
+    @just compose-dev up -d api-codex
+    @just compose-dev exec api-codex {{args}}
 
-# Start and enter codex agent docker container
+# Start the interactive Codex CLI
 codex-run:
-    @just codex-build
-    @./gradlew compileAllClasses
-    @just compose-dev run --rm codex
+    @just codex-exec codex
 
-# Start an interactive shell in the codex container
+# Open a root shell inside the Codex container
 codex-shell:
-    @just codex-build
-    docker compose {{compose_dev}} run \
-        --rm \
+    @just compose-dev up -d api-codex
+    @docker compose {{compose_dev}} exec \
         --user root \
-        --entrypoint sh codex
+        api-codex bash

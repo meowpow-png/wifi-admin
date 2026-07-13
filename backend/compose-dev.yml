@@ -1,8 +1,9 @@
+name: wifi-admin
+
 services:
-  backend:
+  api:
     build: .
-    image: wifi-admin-backend
-    container_name: backend
+    image: hr-telekom/wifi-admin-api:1.0.0
     depends_on:
       postgres:
         condition: service_healthy
@@ -23,9 +24,8 @@ services:
       - "8081:8081"
       - "8082:8082"
 
-  codex:
-    image: wifi-admin-codex
-    container_name: codex
+  api-codex:
+    image: hr-telekom/wifi-admin-codex:21-jdk
     build:
       context: ./docker/codex
     working_dir: /workspace
@@ -34,18 +34,18 @@ services:
     environment:
       LOCAL_UID: ${LOCAL_UID:-0}
       LOCAL_GID: ${LOCAL_GID:-0}
-      CODEX_WARMUP: ${CODEX_WARMUP:-false}
       HOME: /home/codex
     stdin_open: true
     tty: true
     volumes:
       - codex-home:/home/codex
-      - ./.codex:/workspace/.codex:Z
+      - ./.codex:/workspace/shared:Z
       - ./docker/codex/AGENTS.md:/workspace/AGENTS.md:ro,Z
       - ./docker/codex/tasks:/workspace/tasks:ro,Z
-      - ./docs/TESTING.md:/workspace/TESTING.md:ro,Z
-      - ./.gradle:/workspace/.gradle:Z
-      - ./build:/workspace/build:Z
+      - ./docs:/workspace/docs:Z
+      - ./mockoon:/workspace/mockoon:ro,z
+      - ./openapi:/workspace/openapi:ro,Z
+      - ./README.md:/workspace/README.md:Z
       - ./src:/workspace/src:Z
       - ./build-logic:/workspace/build-logic:Z
       - ./build.gradle.kts:/workspace/build.gradle.kts:Z

@@ -21,15 +21,13 @@ if [ ! -f "$HOME/.codex/config.toml" ]; then
     chown "${LOCAL_UID}:${LOCAL_GID}" "$HOME/.codex/config.toml"
 fi
 
-if [ "${CODEX_WARMUP:-false}" = "true" ]; then
-    echo "Precompiling project classes..."
-    if ! gosu "${LOCAL_UID}:${LOCAL_GID}" \
-        env \
-            HOME="$HOME" \
-            GRADLE_USER_HOME="$HOME/.gradle" \
-        ./gradlew --no-daemon --console=plain --quiet compileAllClasses; then
-        echo "Warning: Failed to precompile project classes."
-    fi
+echo "Precompiling project classes..."
+if ! gosu "${LOCAL_UID}:${LOCAL_GID}" \
+    env \
+        HOME="$HOME" \
+        GRADLE_USER_HOME="$HOME/.gradle" \
+    ./gradlew --no-daemon --console=plain --quiet compileAllClasses; then
+    echo "Warning: Failed to precompile project classes."
 fi
 
 exec env \

@@ -9,8 +9,6 @@ import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapFaultDecoder;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapFaultException;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.*;
 
-import org.springframework.stereotype.Component;
-
 import jakarta.xml.ws.WebServiceException;
 
 import org.slf4j.Logger;
@@ -24,14 +22,13 @@ import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
 /**
  * SOAP-based implementation of {@link PlatformClient}.
  */
-@Component
 public final class SoapPlatformClient implements PlatformClient {
 
     private static final Logger log = LoggerFactory.getLogger(SoapPlatformClient.class);
 
     private final WifiPlatformPortType platformPort;
 
-    SoapPlatformClient(WifiPlatformPortType platformPort) {
+    public SoapPlatformClient(WifiPlatformPortType platformPort) {
         this.platformPort = platformPort;
     }
 

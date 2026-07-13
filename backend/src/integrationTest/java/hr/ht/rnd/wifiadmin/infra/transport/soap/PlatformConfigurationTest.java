@@ -1,5 +1,6 @@
 package hr.ht.rnd.wifiadmin.infra.transport.soap;
 
+import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.cxf.CxfFaultLoggingPolicy;
 import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiPlatformPortType;
 import hr.ht.rnd.wifiadmin.test.autoconfigure.WiringIntegrationTest;
@@ -7,9 +8,7 @@ import hr.ht.rnd.wifiadmin.test.support.TestApplicationContextRunner;
 import hr.ht.rnd.wifiadmin.test.support.TestPlatformExceptions;
 
 import org.springframework.boot.context.properties.bind.validation.BindValidationException;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.retry.RetryPolicy;
 import org.springframework.core.retry.RetryTemplate;
 
@@ -37,10 +36,11 @@ class PlatformConfigurationTest {
                     .withSyncSchedule(SYNC_SCHEDULE)
                     .withConnectionTimeout(CONNECTION_TIMEOUT)
                     .withReceiveTimeout(RECEIVE_TIMEOUT)
+                    .withRetryMaxAttempts(3)
                     .build();
 
     private final ApplicationContextRunner runner = new ApplicationContextRunner()
-            .withUserConfiguration(PlatformConfiguration.class, PlatformTestConfiguration.class)
+            .withUserConfiguration(PlatformConfiguration.class)
             .withPropertyValues(TestPlatformProperties.propertyValues(PLATFORM_PROPERTIES));
 
     @Nested
@@ -60,6 +60,18 @@ class PlatformConfigurationTest {
                     .hasBean(SoapPlatformClient.class)
                     .hasBean("platformClient")
                     .doesNotFail();
+        }
+
+        @Test
+        @DisplayName("Does not register resilient platform client when retry attempts are disabled")
+        void should_NotRegisterResilientPlatformClient_when_RetryAttemptsAreDisabled() {
+            runner.withPropertyValues("platform.retry.max-attempts=1")
+                    .run(context -> {
+                        assertThat(context).hasNotFailed();
+                        assertThat(context.containsBean("platformClient")).isFalse();
+                        assertThat(context.getBeansOfType(PlatformClient.class))
+                                .containsOnlyKeys("soapPlatformClient");
+                    });
         }
     }
 
@@ -151,15 +163,6 @@ class PlatformConfigurationTest {
             TestApplicationContextRunner.from(runner)
                     .withBean(RetryTemplate.class, assertion)
                     .doesNotFail();
-        }
-    }
-
-    @TestConfiguration(proxyBeanMethods = false)
-    static class PlatformTestConfiguration {
-
-        @Bean
-        SoapPlatformClient soapPlatformClient(WifiPlatformPortType platformPort) {
-            return new SoapPlatformClient(platformPort);
         }
     }
 }

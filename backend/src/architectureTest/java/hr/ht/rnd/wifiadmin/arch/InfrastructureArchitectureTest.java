@@ -15,10 +15,10 @@ class InfrastructureArchitectureTest {
     @ArchTest
     static final ArchRule platform_models_are_isolated = noClasses()
             .that()
-            .resideOutsideOfPackage("..infra.platform..")
+            .resideOutsideOfPackage("..infra.transport.soap..")
             .should()
             .dependOnClassesThat()
-            .resideInAPackage("..infra.platform.wsdl..");
+            .resideInAPackage("..infra.transport.soap.wsdl..");
 
     @ArchTest
     static final ArchRule controllers_depend_only_on_inbound_ports = noClasses()

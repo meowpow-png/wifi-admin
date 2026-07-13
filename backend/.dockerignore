@@ -2,5 +2,5 @@
 !build/*
 !build/libs/
 build/libs/*
-!build/libs/wifi-admin-backend-*.jar
+!build/libs/wifi-admin-*.jar
 build/libs/*-plain.jar

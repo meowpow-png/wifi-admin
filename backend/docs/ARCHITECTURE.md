@@ -13,7 +13,7 @@ The architecture is guided by the following principles:
 - **Separation of Concerns** – Each module has a single, well-defined responsibility
 - **Business-Centric Design** – Business logic remains independent of REST, SOAP, persistence, and framework-specific concerns
 - **Encapsulated Integrations** – External systems are isolated behind dedicated integration boundaries
-- **Observability by Default** – Logging, metrics, and tracing are built into every operation
+- **Observability by Default** – Logging, tracing, health checks, and operational endpoints are built into the application
 - **Production Readiness** – Validation, configuration, testing, and error handling are first-class concerns
 
 ## System Context
@@ -140,7 +140,7 @@ sequenceDiagram
         Application->>Platform: Retrieve configuration
         Platform-->>Application: WiFi configuration
 
-        Application->>Database: Store configuration
+        Application->>Application: Publish retrieved configuration event
     end
 
     Application-->>API: WiFi configuration
@@ -149,7 +149,7 @@ sequenceDiagram
 
 ### Update Flow
 
-Validates the request, propagates the change to the external platform, and persists the updated configuration in the database upon successful completion.
+Validates the request, propagates the change to the external platform, and publishes the updated configuration for asynchronous persistence upon successful completion.
 
 ```mermaid
 sequenceDiagram
@@ -167,10 +167,10 @@ sequenceDiagram
     Application->>Platform: Update configuration
     Platform-->>Application: Success
 
-    Application->>Database: Persist configuration
+    Application->>Application: Publish updated configuration event
 
-    Application-->>API: Success
-    API-->>Client: 204 No Content
+    Application-->>API: Confirmed WiFi configuration
+    API-->>Client: 200 OK
 ```
 
 ### Synchronization Flow
@@ -190,7 +190,7 @@ sequenceDiagram
         Application->>Platform: Retrieve configuration
         Platform-->>Application: WiFi configuration
 
-        Application->>Database: Persist configuration
+        Application->>Application: Publish retrieved configuration event
     end
 ```
 
@@ -230,7 +230,7 @@ A unique correlation ID is assigned to every request and propagated throughout r
 
 ### Observability
 
-The application exposes health information and operational metrics. Health checks verify the availability of critical dependencies.
+The application exposes health information and operational endpoints. Health checks verify the availability of critical dependencies.
 
 ### Configuration
 
@@ -269,7 +269,7 @@ The following persistence policies are applied:
 
 - WiFi configurations are read from the database by default
 - Missing configurations are retrieved from the platform and stored in the database
-- Configuration changes are persisted after successful platform updates
+- Configuration changes are published for persistence after successful platform updates
 - Successful platform interactions publish events that drive persistence and other follow-up processing
 - Database failures during retrieval fall back to the external platform when possible
 
@@ -288,7 +288,7 @@ The following synchronization policies are applied:
 - Synchronization runs on a configurable schedule
 - The set of synchronized CPEs is configurable
 - Each CPE is synchronized independently
-- Synchronization failures are logged without interrupting the overall job
+- Synchronization failures abort the current job
 - Local data is removed only after a successful synchronization
 
 Note that synchronization strategy maintains only the current platform state. Historical configuration snapshots are outside the scope of this project.
