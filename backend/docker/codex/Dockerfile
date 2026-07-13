@@ -6,6 +6,7 @@ RUN apt-get update && \
         ca-certificates \
         curl \
         git \
+        python3 \
         gosu && \
     rm -rf /var/lib/apt/lists/*
 
@@ -16,9 +17,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_26.x | bash - && \
     rm -rf /var/lib/apt/lists/*
 
 COPY config.toml /usr/local/share/codex/config.toml
+COPY hooks/ /usr/local/share/codex/hooks/
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN chmod +x \
+    /usr/local/bin/entrypoint.sh \
+    /usr/local/share/codex/hooks/prevent_repo_scan.py
 
 WORKDIR /workspace
 
