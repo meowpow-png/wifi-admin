@@ -22,6 +22,10 @@ clean:
     @just backend::gradle clean
     @just frontend::npm run clean
 
+# Setup project
+setup:
+    @just backend::gradle setup
+
 # Build all modules
 build:
     @just backend::gradle assemble
