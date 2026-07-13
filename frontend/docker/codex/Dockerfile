@@ -7,7 +7,10 @@ RUN apt-get update && \
         curl \
         git \
         gosu && \
-    npm install --global @openai/codex@0.143.0 && \
+    npm install --global \
+        @openai/codex@0.143.0 \
+        playwright && \
+    npx playwright install --with-deps chromium && \
     rm -rf /var/lib/apt/lists/*
 
 COPY config.toml /usr/local/share/codex/config.toml
