@@ -15,7 +15,6 @@ class JpaAdminAccountRepository implements AdminAccountRepository {
     private final AdminAccountJpaRepository repository;
 
     JpaAdminAccountRepository(AdminAccountJpaRepository repository) {
-        Objects.requireNonNull(repository, "repository must not be null");
         this.repository = repository;
     }
 

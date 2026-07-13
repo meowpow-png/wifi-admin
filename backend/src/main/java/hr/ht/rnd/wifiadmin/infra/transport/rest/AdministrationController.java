@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-import java.util.Objects;
-
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.Event;
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.debug;
 
@@ -35,7 +33,6 @@ public final class AdministrationController {
     private final ChangeAdminPassword password;
 
     AdministrationController(ChangeAdminPassword password) {
-        Objects.requireNonNull(password, "password must not be null");
         this.password = password;
     }
 

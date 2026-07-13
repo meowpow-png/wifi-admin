@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
-
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
 
 /**
@@ -32,9 +30,6 @@ class PlatformConfigurationEventListener {
             WifiConfigurationPersistence persistence,
             SynchronizationTracker tracker
     ) {
-        Objects.requireNonNull(persistence, "persistence must not be null");
-        Objects.requireNonNull(tracker, "tracker must not be null");
-
         this.persistence = persistence;
         this.tracker = tracker;
     }

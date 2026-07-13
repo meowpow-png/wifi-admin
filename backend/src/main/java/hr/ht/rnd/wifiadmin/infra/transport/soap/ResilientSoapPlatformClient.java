@@ -33,13 +33,10 @@ final class ResilientSoapPlatformClient
      *
      * @param retryTemplate the retry template
      * @param delegate the SOAP client to decorate
-     *
-     * @throws NullPointerException if any argument is {@code null}
      */
     ResilientSoapPlatformClient(RetryTemplate retryTemplate, SoapPlatformClient delegate) {
         super(retryTemplate);
 
-        Objects.requireNonNull(delegate, "delegate must not be null");
         this.delegate = delegate;
     }
 

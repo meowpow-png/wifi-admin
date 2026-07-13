@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.ZonedDateTime;
-import java.util.Objects;
 
 /**
  * Provides access to the platform
@@ -19,9 +18,6 @@ public final class SynchronizationSchedule {
     private final Clock clock;
 
     SynchronizationSchedule(PlatformProperties properties, Clock clock) {
-        Objects.requireNonNull(properties, "properties must not be null");
-        Objects.requireNonNull(clock, "clock must not be null");
-
         this.properties = properties;
         this.clock = clock;
     }

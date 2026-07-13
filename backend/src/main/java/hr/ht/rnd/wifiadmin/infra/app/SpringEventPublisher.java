@@ -17,7 +17,6 @@ final class SpringEventPublisher implements EventPublisher {
     private final ApplicationEventPublisher publisher;
 
     SpringEventPublisher(ApplicationEventPublisher publisher) {
-        Objects.requireNonNull(publisher, "publisher must not be null");
         this.publisher = publisher;
     }
 

@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.ZoneId;
-import java.util.Objects;
 
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
 
@@ -31,10 +30,6 @@ final class ApplicationBootstrap {
             PlatformSynchronizer synchronizer,
             SynchronizationSchedule schedule
     ) {
-        Objects.requireNonNull(properties, "properties must not be null");
-        Objects.requireNonNull(synchronizer, "synchronizer must not be null");
-        Objects.requireNonNull(schedule, "schedule must not be null");
-
         this.properties = properties;
         this.synchronizer = synchronizer;
         this.schedule = schedule;

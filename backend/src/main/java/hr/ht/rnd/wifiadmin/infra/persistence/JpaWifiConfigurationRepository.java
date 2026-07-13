@@ -23,9 +23,6 @@ class JpaWifiConfigurationRepository implements WifiConfigurationRepository {
             WifiConfigurationJpaRepository repository,
             WifiConfigurationEntityMapper mapper
     ) {
-        Objects.requireNonNull(repository, "repository must not be null");
-        Objects.requireNonNull(mapper, "mapper must not be null");
-
         this.repository = repository;
         this.mapper = mapper;
     }

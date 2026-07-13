@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.Objects;
 
 import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
 
@@ -35,11 +34,6 @@ public final class PlatformSynchronizer {
             SynchronizationTracker tracker,
             Clock clock
     ) {
-        Objects.requireNonNull(properties, "properties must not be null");
-        Objects.requireNonNull(synchronization, "synchronization must not be null");
-        Objects.requireNonNull(tracker, "tracker must not be null");
-        Objects.requireNonNull(clock, "clock must not be null");
-
         this.properties = properties;
         this.synchronization = synchronization;
         this.tracker = tracker;

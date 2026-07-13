@@ -33,7 +33,6 @@ public final class SynchronizationTracker {
     private @Nullable SynchronizationRun run;
 
     SynchronizationTracker(WifiConfigurationRepository repository) {
-        Objects.requireNonNull(repository, "repository must not be null");
         this.repository = repository;
     }
 

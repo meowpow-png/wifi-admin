@@ -20,7 +20,6 @@ final class WifiConfigurationEntityMapper {
     private final PasswordEncryptor encryptor;
 
     WifiConfigurationEntityMapper(PasswordEncryptor encryptor) {
-        Objects.requireNonNull(encryptor, "encryptor must not be null");
         this.encryptor = encryptor;
     }
 

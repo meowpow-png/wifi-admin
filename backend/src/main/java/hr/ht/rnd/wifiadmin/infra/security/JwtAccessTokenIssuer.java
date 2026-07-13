@@ -30,9 +30,6 @@ final class JwtAccessTokenIssuer implements AccessTokenIssuer {
     private final Clock clock;
 
     JwtAccessTokenIssuer(SecurityProperties properties, Clock clock) {
-        Objects.requireNonNull(properties, "properties must not be null");
-        Objects.requireNonNull(clock, "clock must not be null");
-
         this.properties = properties;
         this.clock = clock;
     }

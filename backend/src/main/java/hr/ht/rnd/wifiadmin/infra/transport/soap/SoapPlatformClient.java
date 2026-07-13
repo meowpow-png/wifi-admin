@@ -32,7 +32,6 @@ public final class SoapPlatformClient implements PlatformClient {
     private final WifiPlatformPortType platformPort;
 
     SoapPlatformClient(WifiPlatformPortType platformPort) {
-        Objects.requireNonNull(platformPort, "platformPort must not be null");
         this.platformPort = platformPort;
     }
 

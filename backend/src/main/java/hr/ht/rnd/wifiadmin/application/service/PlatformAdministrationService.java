@@ -33,10 +33,6 @@ public class PlatformAdministrationService implements PlatformAdministration {
             WifiConfigurationRepository repository,
             EventPublisher events
     ) {
-        Objects.requireNonNull(client, "client must not be null");
-        Objects.requireNonNull(repository, "repository must not be null");
-        Objects.requireNonNull(events, "events must not be null");
-
         this.client = client;
         this.repository = repository;
         this.events = events;

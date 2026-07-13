@@ -22,7 +22,6 @@ final class JwtAccessTokenVerifier implements AccessTokenVerifier {
     private final SecurityProperties properties;
 
     JwtAccessTokenVerifier(SecurityProperties properties) {
-        Objects.requireNonNull(properties, "properties must not be null");
         this.properties = properties;
     }
 

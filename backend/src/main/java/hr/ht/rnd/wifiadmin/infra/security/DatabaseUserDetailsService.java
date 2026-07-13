@@ -23,7 +23,6 @@ final class DatabaseUserDetailsService implements UserDetailsService {
     private final AdminAccountRepository repository;
 
     DatabaseUserDetailsService(AdminAccountRepository repository) {
-        Objects.requireNonNull(repository, "repository must not be null");
         this.repository = repository;
     }
 

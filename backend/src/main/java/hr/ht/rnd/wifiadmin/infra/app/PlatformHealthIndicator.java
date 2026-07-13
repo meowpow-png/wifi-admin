@@ -10,8 +10,6 @@ import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 @Component
 class PlatformHealthIndicator implements HealthIndicator {
 
@@ -19,8 +17,6 @@ class PlatformHealthIndicator implements HealthIndicator {
     private final String healthCheckCpeId;
 
     PlatformHealthIndicator(SoapPlatformClient client, PlatformProperties properties) {
-        Objects.requireNonNull(client, "client must not be null");
-
         this.client = client;
         this.healthCheckCpeId = properties.cpeIdFormat().formatted(1);
     }
