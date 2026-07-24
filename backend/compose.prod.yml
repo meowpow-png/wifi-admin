@@ -1,6 +1,6 @@
 include:
   - compose.yml
-  - compose-api.yml
+  - compose.api.yml
 
 services:
   api:

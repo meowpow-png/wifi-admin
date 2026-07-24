@@ -7,4 +7,4 @@ compose *args:
 [arg("args", help="Arguments passed to docker compose")]
 compose-dev *args:
     @LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) \
-        docker compose -f compose-dev.yml {{args}}
+        docker compose -f compose.dev.yml {{args}}

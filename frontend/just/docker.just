@@ -2,7 +2,7 @@
 [arg("args", help="Arguments passed to docker compose")]
 compose *args:
     @LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) \
-        docker compose -f compose-dev.yml {{args}}
+        docker compose -f compose.dev.yml {{args}}
 
 # Execute a command inside the running Codex container
 [arg("args", help="Command to execute inside Codex container")]

@@ -97,8 +97,8 @@ No `just`? Same idea, a little more typing:
 
 ```shell
 cd backend && ./gradlew setup && cd ..
-docker compose -f backend/compose-dev.yml build
-docker compose -f frontend/compose-dev.yml build
+docker compose -f backend/compose.dev.yml build
+docker compose -f frontend/compose.dev.yml build
 docker compose -f compose.yml up -d
 ```
 

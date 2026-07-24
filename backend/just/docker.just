@@ -1,5 +1,5 @@
-dev := "-f compose-dev.yml"
-prod := "-f compose-prod.yml"
+dev := "-f compose.dev.yml"
+prod := "-f compose.prod.yml"
 
 # Run Docker Compose
 [arg("args", help="Arguments passed to docker compose")]

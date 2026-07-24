@@ -1,4 +1,0 @@
-include:
-  - compose-soap.yml
-  - frontend/compose-dev.yml
-  - backend/compose-dev.yml

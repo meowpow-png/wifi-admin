@@ -13,13 +13,13 @@ flowchart TD
     PROD_NOTE["compose.yml"]
     PROD["web<br/>api<br/>postgres<br/>platform-mock<br/>loki<br/>alloy<br/>grafana"]
 
-    SOAP_NOTE["compose-soap.yml"]
+    SOAP_NOTE["compose.soap.yml"]
     SOAP["platform-mock"]
 
-    FRONTEND_PROD_NOTE["frontend/compose-prod.yml"]
+    FRONTEND_PROD_NOTE["frontend/compose.prod.yml"]
     FRONTEND_PROD["web port 80"]
 
-    BACKEND_PROD_NOTE["backend/compose-prod.yml"]
+    BACKEND_PROD_NOTE["backend/compose.prod.yml"]
     BACKEND_PROD["api prod profile"]
 
     PROD_NOTE --> PROD
@@ -34,16 +34,16 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    DEV_NOTE["compose-dev.yml"]
+    DEV_NOTE["compose.dev.yml"]
     DEV["web<br/>api<br/>postgres<br/>platform-mock<br/>frontend codex<br/>backend codex"]
 
-    SOAP_NOTE["compose-soap.yml"]
+    SOAP_NOTE["compose.soap.yml"]
     SOAP["platform-mock"]
 
-    FRONTEND_DEV_NOTE["frontend/compose-dev.yml"]
+    FRONTEND_DEV_NOTE["frontend/compose.dev.yml"]
     FRONTEND_DEV["web port 5173<br/>frontend codex"]
 
-    BACKEND_DEV_NOTE["backend/compose-dev.yml"]
+    BACKEND_DEV_NOTE["backend/compose.dev.yml"]
     BACKEND_DEV["api dev profile<br/>backend codex"]
 
     DEV_NOTE --> DEV

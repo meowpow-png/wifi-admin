@@ -1,9 +1,9 @@
 name: wifi-admin
 
 include:
-  - compose-soap.yml
-  - backend/compose-prod.yml
-  - frontend/compose-prod.yml
+  - compose.soap.yml
+  - backend/compose.prod.yml
+  - frontend/compose.prod.yml
 
 services:
   web:
