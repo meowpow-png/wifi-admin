@@ -8,6 +8,3 @@
 .obsidian/
 .env
 *.log
-
-# Codex
-.codex/*

@@ -1,3 +1,8 @@
+---
+name: discover
+description: Explore this repository for the first time as a newcomer, using only documentation and non-source artifacts. Trigger when asked to discover, explore, or get oriented in the project. Do not trigger for implementation or code-review tasks.
+---
+
 # Task: Discover
 
 You are an experienced software engineer who has just discovered

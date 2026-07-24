@@ -1,3 +1,8 @@
+---
+name: document
+description: Write or update project documentation for a requested topic. Trigger when asked to document, write docs for, or update documentation about a part of the project. Do not trigger for implementation work.
+---
+
 # Task: Document
 
 You are helping document this project.
