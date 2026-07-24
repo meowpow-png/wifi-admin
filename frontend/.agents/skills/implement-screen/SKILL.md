@@ -1,4 +1,7 @@
-# Implement Screen
+---
+name: implement-screen
+description: Implement a frontend screen/page from this project's design documentation. Trigger when asked to build, implement, or update a specific screen or page in the frontend. Do not trigger for backend, API, or non-UI work.
+---
 
 Implement a screen from the design documentation.
 

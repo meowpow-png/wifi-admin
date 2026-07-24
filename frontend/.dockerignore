@@ -5,7 +5,7 @@ dist
 .github
 .idea
 .vscode
-.codex
+.agents
 
 docs
 
