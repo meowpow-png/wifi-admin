@@ -80,35 +80,23 @@ The custom runtime is generated using `jdeps` and `jlink` to include only the Ja
 
 ## Codex
 
-The development deployment includes OpenAI Codex assistant containers for the frontend and backend workspaces.
-
-The assistants are intentionally configured for narrowly scoped roles within the project, providing isolated environments optimized for repository analysis and implementation while leaving architectural decisions to the developer.
+The development deployment includes OpenAI Codex assistant containers for the repository root, frontend, and backend workspaces.
 
 ### Image
 
-The Docker images package OpenAI Codex together with the tooling required to analyze, modify, and test the project. Unlike the application images, these images are intended exclusively for local development and are not part of the production deployment.
+The Codex containers run prebuilt `mipe-runtime-codex` images (`ghcr.io/meowpow-png/mipe-runtime-codex`, `-java`, and `-web` for the root, backend, and frontend workspaces respectively). Unlike the application images, these images are intended exclusively for local development and are not part of the production deployment.
 
-The images include the dependencies required to provide controlled execution environments for development tasks. They include module-specific development dependencies such as:
-
-- **OpenJDK** — executes Gradle builds and the project's automated test suite
-- **Git** — enables repository inspection and code review tasks
-- **Node.js** — provides the runtime required by the Codex CLI
-- **Codex CLI** — performs repository analysis, code generation, and review
-- **Gosu** — drops root privileges before launching Codex
-
-The images also provide a custom entrypoint that initializes the runtime environment before launching Codex. During startup, it ensures that the persistent home directory is owned by the configured unprivileged user, provisions the default Codex configuration on first use, and then drops root privileges before executing the assistant. This prevents root-owned generated files while allowing Codex to maintain its persistent runtime state across container executions.
+The images are maintained externally as part of the `mipe` runtime and are pulled rather than built from a Dockerfile in this repository, so their internal composition (base tooling, user setup, entrypoint behavior) is defined outside this project.
 
 ### Workspace
 
-The Codex workspaces intentionally expose only the subset of each module required to perform testing and code review tasks. Source code, build logic, package configuration, Gradle configuration, and task definitions are mounted into the containers, while unrelated project files remain inaccessible.
+Each Codex container bind-mounts the entire corresponding directory (repository root, `backend/`, or `frontend/`) into `/workspace`, and persists the Codex home directory (`~/.codex`) in a named `codex-home` volume across container runs.
 
-The selective workspaces reduce the amount of repository content that Codex must analyze, improving context fidelity and keeping development tasks focused on the code under review. Files that Codex is expected only to inspect, such as task definitions and generated API/mock inputs, are mounted read-only, while source code, documentation, build logic, and local helper scripts remain writable to allow implementation of code changes.
+Task scoping is no longer achieved through selective file mounts. Instead, each workspace defines Agent Skills under `.agents/skills/*/SKILL.md` (for example `discover`, `document`, `final-review`, and `git-history` at the repository root; `discover-test-candidates` and `write-unit-test-suite` in the backend; `implement-screen` and `load-design-context` in the frontend). Each skill declares its own trigger conditions and constraints, such as which files it may read and whether it may modify the project.
 
-### Environment
+### Commands
 
-Codex is configured to operate without interactive approval prompts and with unrestricted workspace access. The configuration minimizes interruptions during development tasks and avoids the limitations of the CLI's built-in sandbox. 
-
-Since each assistant executes as an unprivileged user inside a dedicated development container with a deliberately restricted workspace, this trade-off provides a more efficient development workflow without increasing exposure beyond the intended scope.
+Each workspace exposes a `just codex` recipe that starts the interactive Codex CLI in the corresponding container.
 
 ## Configuration
 
