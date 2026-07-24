@@ -435,8 +435,7 @@ The `setup` task is provided by the project's internal environment Gradle plugin
 | `just wifi-get <cpe-id>`                                                    | Retrieve Wi-Fi configuration through the REST API                    |
 | `just wifi-update <cpe-id> <ssid> [wifi-band] [encryption-type] [password]` | Update Wi-Fi configuration through the REST API                      |
 | `just change-password <current-password> <new-password>`                    | Change the authenticated administrator password                      |
-| `just codex-run`                                                            | Start the interactive Codex CLI                                      |
-| `just codex-shell`                                                          | Open a root shell inside the Codex container                         |
+| `just codex`                                                                | Start the interactive Codex CLI                                      |
 
 ## Testing
 

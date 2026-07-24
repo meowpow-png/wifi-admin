@@ -9,36 +9,13 @@ services:
       SOAP_ENDPOINT: ${SOAP_ENDPOINT:?SOAP_ENDPOINT is required}
       SPRING_PROFILES_ACTIVE: dev
 
-  api-codex:
-    image: hr-telekom/wifi-admin-codex:21-jdk
-    build:
-      context: ./docker/codex
-    working_dir: /workspace
-    security_opt:
-      - seccomp=unconfined
-    environment:
-      LOCAL_UID: ${LOCAL_UID:-0}
-      LOCAL_GID: ${LOCAL_GID:-0}
-      HOME: /home/codex
+  codex:
+    image: ghcr.io/meowpow-png/mipe-runtime-codex-java:latest
     stdin_open: true
     tty: true
-    init: true
     volumes:
-      - codex-home:/home/codex
-      - ./.codex:/workspace/shared:Z
-      - ./docker/codex/AGENTS.md:/workspace/AGENTS.md:ro,Z
-      - ./docker/codex/tasks:/workspace/tasks:ro,Z
-      - ./docs:/workspace/docs:Z
-      - ./mockoon:/workspace/mockoon:ro,z
-      - ./openapi:/workspace/openapi:ro,Z
-      - ./README.md:/workspace/README.md:Z
-      - ./src:/workspace/src:Z
-      - ./build-logic:/workspace/build-logic:Z
-      - ./build.gradle.kts:/workspace/build.gradle.kts:Z
-      - ./settings.gradle:/workspace/settings.gradle:Z
-      - ./gradle.properties:/workspace/gradle.properties:ro,Z
-      - ./gradlew:/workspace/gradlew:ro,Z
-      - ./gradle:/workspace/gradle:Z
+      - codex-home:/home/dev/.codex
+      - .:/workspace:Z
 
 volumes:
   codex-home:
