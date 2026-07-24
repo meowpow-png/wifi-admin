@@ -8,9 +8,6 @@ services:
 
   codex:
     image: ghcr.io/meowpow-png/mipe-runtime-codex-web:latest
-    environment:
-      LOCAL_UID: ${LOCAL_UID:-0}
-      LOCAL_GID: ${LOCAL_GID:-0}
     stdin_open: true
     tty: true
     volumes:
