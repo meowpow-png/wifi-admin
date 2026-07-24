@@ -1,6 +1,6 @@
 ---
 name: git-history
-description: Consolidate the dev branch's commit history into a concise sequence for the solution branch submission. Trigger when asked to clean up, consolidate, or squash git history for submission. Do not trigger for routine commits or PR work.
+description: Consolidate dev branch commit history for solution-branch submission. Use when cleaning up, consolidating, squashing history. Do not use when making routine commits or PRs.
 ---
 
 # History Consolidation

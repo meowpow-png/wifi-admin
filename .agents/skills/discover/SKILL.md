@@ -1,6 +1,6 @@
 ---
 name: discover
-description: Explore this repository for the first time as a newcomer, using only documentation and non-source artifacts. Trigger when asked to discover, explore, or get oriented in the project. Do not trigger for implementation or code-review tasks.
+description: Explore the repo for the first time using only docs, not source. Use when discovering, exploring, getting oriented. Do not use when implementing, code reviewing.
 ---
 
 # Task: Discover

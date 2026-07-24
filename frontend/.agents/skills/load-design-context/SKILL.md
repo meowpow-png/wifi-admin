@@ -1,6 +1,6 @@
 ---
 name: load-design-context
-description: Generate design context documentation under ./docs/screen/ from the Figma file referenced in references/figma.json. Trigger when asked to pull design context, sync Figma designs, or generate/update screen specs from Figma. Do not trigger for implementing a screen that already has a spec.
+description: Generate docs/screen/ context from the Figma file in references/figma.json. Use when pulling design context, syncing Figma, generating or updating screen specs. Do not use when implementing an already-specced screen.
 ---
 
 Generate concise design context documentation for each Figma node referenced in `references/figma.json`.

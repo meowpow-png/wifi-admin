@@ -1,6 +1,6 @@
 ---
 name: discover-test-candidates
-description: Identify classes in the backend that are suitable candidates for testing, per docs/TESTING.md. Trigger when asked to find, identify, or list test candidates. Do not trigger for writing the tests themselves.
+description: Identify classes in the backend that are suitable candidates for testing, per docs/TESTING.md. Use when finding, identifying, listing test candidates. Do not use when writing the tests themselves.
 ---
 
 # Discover Test Candidates

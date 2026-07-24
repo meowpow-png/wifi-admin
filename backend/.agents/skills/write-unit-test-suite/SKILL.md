@@ -1,6 +1,6 @@
 ---
 name: write-unit-test-suite
-description: Write a complete unit/integration test suite for a given backend class, per docs/TESTING.md conventions and existing testFixtures. Trigger when asked to write, add, or complete tests for a specific class. Do not trigger for identifying test candidates or running existing tests.
+description: Write a complete unit/integration test suite for a given backend class, per docs/TESTING.md conventions and existing testFixtures. Use when writing, adding, completing tests for a specific class. Do not use when identifying test candidates or running existing tests.
 ---
 
 # Write Test Suite

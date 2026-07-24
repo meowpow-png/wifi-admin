@@ -1,6 +1,6 @@
 ---
 name: document
-description: Write or update project documentation for a requested topic. Trigger when asked to document, write docs for, or update documentation about a part of the project. Do not trigger for implementation work.
+description: Write or update project documentation for a topic. Use when documenting, writing or updating docs. Do not use when implementing code.
 ---
 
 # Task: Document

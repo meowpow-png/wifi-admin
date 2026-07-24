@@ -1,6 +1,6 @@
 ---
 name: final-review
-description: Perform the final acceptance review of the submitted project against docs/ASSIGNMENT.md and the OpenAPI spec. Trigger when asked to do a final review, acceptance review, or verify assignment completion. Do not trigger for routine code review of a diff.
+description: Perform the final acceptance review against docs/ASSIGNMENT.md and the OpenAPI spec. Use when doing a final review, an acceptance review, verifying assignment completion. Do not use when reviewing a routine diff.
 ---
 
 # Final Review
