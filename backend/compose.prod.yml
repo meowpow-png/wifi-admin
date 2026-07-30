@@ -1,0 +1,9 @@
+include:
+  - compose.yml
+  - compose.api.yml
+
+services:
+  api:
+    environment:
+      SOAP_ENDPOINT: ${SOAP_ENDPOINT:?SOAP_ENDPOINT is required}
+      SPRING_PROFILES_ACTIVE: prod

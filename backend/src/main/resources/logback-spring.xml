@@ -1,0 +1,27 @@
+<configuration>
+    <logger name="hr.ht.rnd.wifiadmin" level="INFO"/>
+    <logger name="hr.ht.rnd.wifiadmin.infra.transport.soap.payload" level="OFF"/>
+    <springProfile name="dev">
+        <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>
+                    [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%thread] [%logger{0}] [%replace(%X{trace_id:-}){'^(.{6}).*','$1'}] %msg %kvp%n
+                </pattern>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="DEV_CONSOLE"/>
+        </root>
+    </springProfile>
+    <springProfile name="prod">
+        <appender name="PROD_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="org.springframework.boot.logging.logback.StructuredLogEncoder">
+                <format>${CONSOLE_LOG_STRUCTURED_FORMAT}</format>
+                <charset>${CONSOLE_LOG_CHARSET}</charset>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="PROD_CONSOLE"/>
+        </root>
+    </springProfile>
+</configuration>

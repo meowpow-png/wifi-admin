@@ -1,0 +1,9 @@
+<soapenv:Envelope
+        xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:v1="http://wifi-admin.local/platform/v1">
+    <soapenv:Body>
+        <v1:GetCpeIdRequest>
+            <v1:cpeId>${CPE_ID}</v1:cpeId>
+        </v1:GetCpeIdRequest>
+    </soapenv:Body>
+</soapenv:Envelope>

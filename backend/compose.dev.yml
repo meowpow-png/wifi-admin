@@ -1,0 +1,21 @@
+include:
+  - compose.yml
+  - compose.api.yml
+
+services:
+  api:
+    build: .
+    environment:
+      SOAP_ENDPOINT: ${SOAP_ENDPOINT:?SOAP_ENDPOINT is required}
+      SPRING_PROFILES_ACTIVE: dev
+
+  codex:
+    image: ghcr.io/meowpow-png/mipe-runtime-codex-java:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - codex-home:/home/dev/.codex
+      - .:/workspace:Z
+
+volumes:
+  codex-home:

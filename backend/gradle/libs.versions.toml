@@ -1,0 +1,53 @@
+[versions]
+postgresql = "42.7.11"
+flyway = "12.8.1"
+cxf = "4.2.2"
+jjwt = "0.13.0"
+springdoc = "3.0.3"
+slf4j = "2.0.18"
+
+mockito = "5.23.0"
+testcontainers = "1.21.4"
+mockwebserver = "5.4.0"
+archunit = "1.4.2"
+
+[libraries]
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-boot-starter-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test" }
+spring-boot-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test" }
+
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
+flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
+
+cxf-tools-wsdlto-core = { module = "org.apache.cxf:cxf-tools-wsdlto-core", version.ref = "cxf" }
+cxf-tools-wsdlto-frontend-jaxws = { module = "org.apache.cxf:cxf-tools-wsdlto-frontend-jaxws", version.ref = "cxf" }
+cxf-tools-wsdlto-databinding-jaxb = { module = "org.apache.cxf:cxf-tools-wsdlto-databinding-jaxb", version.ref = "cxf" }
+cxf-spring-boot-starter-jaxws = { module = "org.apache.cxf:cxf-spring-boot-starter-jaxws", version.ref = "cxf" }
+
+jjwt-bom = { module = "io.jsonwebtoken:jjwt-bom", version.ref = "jjwt" }
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson" }
+
+springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+
+mockito-bom = { module = "org.mockito:mockito-bom", version.ref = "mockito" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter" }
+
+testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
+testcontainers-postgres = { module = "org.testcontainers:postgresql" }
+testcontainers-jdbc = { module = "org.testcontainers:jdbc" }
+
+okhttp3-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "mockwebserver" }
+
+tngtech-archunit = { module = "com.tngtech.archunit:archunit", version.ref = "archunit" }
+tngtech-archunit-junit5 = { module = "com.tngtech.archunit:archunit-junit5", version.ref = "archunit" }

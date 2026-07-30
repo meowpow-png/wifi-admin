@@ -1,0 +1,92 @@
+package hr.ht.rnd.wifiadmin.infra.transport.soap;
+
+import hr.ht.rnd.wifiadmin.application.event.PlatformConfigurationRetrievedEvent;
+import hr.ht.rnd.wifiadmin.application.event.PlatformConfigurationUpdatedEvent;
+import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationPersistence;
+import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationProjection;
+import hr.ht.rnd.wifiadmin.application.outbound.ConfigurationChangeNotifier;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.sync.SynchronizationTracker;
+
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static hr.ht.rnd.wifiadmin.common.StructuredLog.*;
+
+/**
+ * Spring-backed listener for
+ * platform configuration events.
+ */
+@Component
+class PlatformConfigurationEventListener {
+
+    private static final Logger log = LoggerFactory.getLogger(PlatformConfigurationEventListener.class);
+
+    private final WifiConfigurationPersistence persistence;
+    private final WifiConfigurationProjection projection;
+    private final ConfigurationChangeNotifier notifier;
+    private final SynchronizationTracker tracker;
+
+    PlatformConfigurationEventListener(
+            WifiConfigurationPersistence persistence,
+            WifiConfigurationProjection projection,
+            ConfigurationChangeNotifier notifier,
+            SynchronizationTracker tracker
+    ) {
+        this.persistence = persistence;
+        this.projection = projection;
+        this.notifier = notifier;
+        this.tracker = tracker;
+    }
+
+    @Async
+    @EventListener
+    void on(PlatformConfigurationRetrievedEvent event) {
+        debug(log).withEvent(Event.PERSIST_RETRIEVED_CONFIGURATION_STARTED)
+                .withField(Field.CPE_ID, event.configuration().cpeId())
+                .log();
+
+        try {
+            persistence.persist(
+                    event.configuration(),
+                    event.lastSynchronized()
+            );
+            projection.put(event.configuration());
+            notifier.notifyConfigurationsChanged();
+
+            debug(log).withEvent(Event.PERSIST_RETRIEVED_CONFIGURATION_COMPLETED)
+                    .withField(Field.CPE_ID, event.configuration().cpeId())
+                    .log();
+
+            if (event.lastSynchronized() != null) {
+                tracker.complete(event.lastSynchronized());
+            }
+        }
+        catch (Exception e) {
+            tracker.abort();
+            throw e;
+        }
+    }
+
+    @Async
+    @EventListener
+    void on(PlatformConfigurationUpdatedEvent event) {
+        debug(log).withEvent(Event.PERSIST_UPDATED_CONFIGURATION_STARTED)
+                .withField(Field.CPE_ID, event.configuration().cpeId())
+                .log();
+
+        persistence.persist(
+                event.configuration(),
+                null
+        );
+        projection.put(event.configuration());
+        notifier.notifyConfigurationsChanged();
+
+        debug(log).withEvent(Event.PERSIST_UPDATED_CONFIGURATION_COMPLETED)
+                .withField(Field.CPE_ID, event.configuration().cpeId())
+                .log();
+    }
+}

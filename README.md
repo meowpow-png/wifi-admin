@@ -1,140 +1,234 @@
-# WiFi parametri — zadatak
+# Wifi Admin
 
-U aplikaciji MojTelekom pretplatnik može dohvatiti parametre WiFi mreže postavljene na HT routeru koji je instaliran na korisnikovoj adresi.
-Trenutno se ti parametri dohvaćaju i postavljaju putem SOAP servisa.
+[![CI](https://github.com/meowpow-png/wifi-admin/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/meowpow-png/wifi-admin/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/meowpow-png/wifi-admin/branch/dev/graph/badge.svg?token=6EmzNyAufK)](https://codecov.io/gh/meowpow-png/wifi-admin)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 
-Zadatak je implementirati REST API prema priloženoj Swagger specifikaciji koja će biti wrapper oko SOAP backenda jer je u novoj verziji aplikacije dopuštena samo REST komunikacija.
+<p align="center">
+  <img src="./docs/assets/login-page.png" width="48%" alt="Login Page">
+  <img src="./docs/assets/dashboard.png" width="48%" alt="Dashboard">
+</p>
 
-Ovaj repozitorij sadrži WSDL i Swagger specifikacije servisa te mock vanjske platforme u docker-compose datoteci.
+## What is This?
 
-Samu backend aplikaciju potrebno je napraviti kao PR na ovaj GitHub repozitorij.
+Wifi Admin is an assignment project developed for Hrvatski Telekom that enables administrators to manage Wi-Fi configuration on CPE devices
 
-## Cilj zadatka
+The project began as a backend assignment to build a REST wrapper around an existing SOAP platform for managing Wi-Fi configuration on CPE devices. It has since grown into a full-stack application with a React frontend, local persistence, authentication, synchronization, and observability.
 
-Kandidat implementira **REST API** koji:
+The deployment is production-style rather than production itself. It demonstrates the application running as a complete stack—including the web UI, backend API, database, SOAP mock, and supporting services—without pretending to be a cloud-native masterpiece that accidentally landed on Kubernetes.
 
-- izlaže dvije metode opisane u [openapi/openapi.yaml](openapi/openapi.yaml);
-- u pozadini, kao **SOAP klijent**, poziva vanjsku platformu opisanu u [wsdl/wifi-platform.wsdl](wsdl/wifi-platform.wsdl);
-- mapira isti poslovni model iz REST JSON-a u SOAP poruke i obratno.
+## How it Works?
 
-Operacija `updateCpeId` u SOAP-u i WSDL-u **mijenja WiFi konfiguraciju** CPE-a (SSID, pojas, šifriranje, lozinka itd.), iako naziv sadrži „CpeId“ — to je naziv operacije na platformi, ne samo promjena identifikatora.
+The React frontend talks to the backend through a REST API, giving administrators a straightforward way to view and update Wi-Fi configuration for CPE devices without having to think about SOAP. That's the backend's problem.
 
-## Arhitektura (tko što radi)
+The backend takes care of authentication, validation, REST-to-SOAP translation, persistence, and error handling, while treating the SOAP platform as the source of truth.
+
+PostgreSQL keeps a local replica of Wi-Fi configurations to avoid bothering the SOAP platform for every read. If data is missing locally, the backend falls back to SOAP. Updates always go to the SOAP platform first, then the confirmed configuration is persisted locally.
+
+The backend also supports scheduled synchronization and exposes an SSE endpoint for configuration changes. The frontend does not currently consume those events, but the endpoint is available for future use.
 
 ```text
-Klijent (Postman / drugi servis)
-        │  REST (JSON)
-        ▼
-  [Backend kandidata]
-        │  SOAP 1.1 (XML) + SOAPAction
-        ▼
-  [Mock platforme — Mockoon u Dockeru]
+┌──────────────┐
+│ React Web UI │
+└──────┬───────┘
+       │ HTTP / JSON
+       ▼
+┌──────────────┐
+│ Backend API  │
+└───┬──────┬───┘
+    │      │
+    │      │ SOAP
+    │      ▼
+    │  ┌───────────────┐
+    │  │ SOAP Platform │
+    │  └───────────────┘
+    │
+    ▼
+┌──────────────┐
+│ PostgreSQL   │
+└──────────────┘
 ```
 
-- **REST** je nova definicija: `GET /wifi-parameter/{cpeId}` i `PUT /wifi-parameter`.
-- **SOAP** je postojeća definicija prema platformi: operacije `getCpeID` i `updateCpeId` (vidi WSDL i `SOAPAction` zaglavlje).
+## Quick Start
 
-## Pokretanje mocka (Docker Compose)
+### Requirements
 
-```bash
-docker compose up -d
+- Docker with Docker Compose
+- `just` command runner, optional but handy
+
+### How to Run
+
+Set up the backend:
+
+```shell
+just setup
 ```
 
-- Mock je dostupan na **http://localhost:8080/platform** (HTTP POST, SOAP 1.1).
+Build application images:
 
-Zaustavljanje:
-
-```bash
-docker compose down
+```shell
+just build
 ```
 
-### SOAP UI / Apache CXF i XML prefiksi
+Start the production-style local stack:
 
-Mockoon čita polja iz **parsiranog XML-a** (isti model kao `xml-js`). Alati poput **SOAP UI** često generiraju **`soapenv:`** omot i **`v1:`** (ili drugi) prefiks za elemente u namespaceu platforme, dok curl primjeri u ovom README-u koriste **`soap:`** + **`tns:`**.
-
-Mock podržava **oba** stila (automatski se grana po sadržaju zahtjeva). Ako i dalje ne dobijete očekivani odgovor nakon što ste promijenili `mockoon/platform-mock.json` ili ga ponovno generirali, učitajte datoteku u Mockoonu:
-
-```bash
-docker compose restart platform-mock
+```shell
+just deploy
 ```
 
-**SOAPAction** s navodnicima ili bez njih — regex u mocku i dalje prepoznaje `getCpeID` / `updateCpeId`.
+Open the web UI:
 
-## Primjer SOAP poziva (curl)
-
-Zamijenite `CPE_001` jednim od seed `cpeId` iz mocka (vidi sljedeći odlomak).
-
-**getCpeID** (SOAPAction mora odgovarati WSDL-u):
-
-```bash
-curl -s -X POST "http://localhost:8080/platform" \
-  -H "Content-Type: text/xml; charset=utf-8" \
-  -H "SOAPAction: http://wifi-admin.local/platform/v1#getCpeID" \
-  -d '<?xml version="1.0" encoding="UTF-8"?>
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://wifi-admin.local/platform/v1">
-  <soap:Body>
-    <tns:GetCpeIdRequest>
-      <tns:cpeId>CPE_001</tns:cpeId>
-    </tns:GetCpeIdRequest>
-  </soap:Body>
-</soap:Envelope>'
+```text
+http://localhost
 ```
 
-**updateCpeId** (mock očekuje sve polja u `<tns:configuration>` radi predloška; za OPEN mreže pošaljite prazne ili dummy vrijednosti za opcionalna polja ako generator SOAP klijenta ne izostavlja elemente):
+Grafana is available at:
 
-```bash
-curl -s -X POST "http://localhost:8080/platform" \
-  -H "Content-Type: text/xml; charset=utf-8" \
-  -H "SOAPAction: http://wifi-admin.local/platform/v1#updateCpeId" \
-  -d '<?xml version="1.0" encoding="UTF-8"?>
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://wifi-admin.local/platform/v1">
-  <soap:Body>
-    <tns:UpdateCpeIdRequest>
-      <tns:configuration>
-        <tns:cpeId>CPE_001</tns:cpeId>
-        <tns:wifiBand>BAND_2_4_GHZ</tns:wifiBand>
-        <tns:ssid>Office-2G</tns:ssid>
-        <tns:encryptionType>WPA2_PSK</tns:encryptionType>
-        <tns:password>moja-lozinka</tns:password>
-      </tns:configuration>
-    </tns:UpdateCpeIdRequest>
-  </soap:Body>
-</soap:Envelope>'
+```text
+http://localhost:3000
 ```
 
-## Podaci u mocku (seed + in‑memory)
+Default credentials are `admin` / `admin` for both the web UI and Grafana. Ultra secure by default, naturally.
 
-- U [mockoon/platform-mock.json](mockoon/platform-mock.json) postoji **data bucket** s najmanje **12** predefiniranih CPE zapisa (`CPE_001` … `CPE_012`) s različitim kombinacijama pojasa (2.4 / 5 GHz), šifriranja i lozinke.
-- **`updateCpeId`** ažurira zapis u memoriji Mockoona (`setData` + `merge`). Nova lozinka vidljiva je na sljedećem **`getCpeID`** dok mock radi.
-- **Restart kontejnera** (`docker compose restart`) ili novo pokretanje vraća **početne seed vrijednosti** iz JSON datoteke.
-- Mock **ne zapisuje** runtime promjene natrag u datoteku na disku — to je ograničenje Mockoona, prikladno za ovaj zadatak.
+No `just`? Same idea, a little more typing:
 
-## Očekivano ponašanje rješenja
+```shell
+cd backend && ./gradlew setup && cd ..
+docker compose -f backend/compose.dev.yml build
+docker compose -f frontend/compose.dev.yml build
+docker compose -f compose.yml up -d
+```
 
-- REST sloj usklađen s OpenAPI 3.0.3 (validacija, smisleni HTTP statusi za greške).
-- SOAP klijent usklađen s WSDL-om (ispravna struktura `Envelope`/`Body`, `SOAPAction`, namespace `http://wifi-admin.local/platform/v1`).
-- Rukovanje greškama platforme (SOAP fault, mrežni timeout) i mapiranje u REST odgovore.
-- Rješenje mora biti u **Spring Boot** ili **Ktor** frameworku, napisano u Javi ili Kotlinu.
-- Potiče se korištenje AI alata za generiranje rješenja; provjeravat će se razumljivost.
+That setup command copies `backend/.env.example` to `backend/.env` if needed.
 
-## Dodatni zadaci
+To stop everything:
 
-- Izrada sloja baze podataka koji će spremati podatke s platforme te dohvat podataka o WiFi mreži vraćati iz baze, a ne s platforme.
-- Izrada schedulera koji će sinkronizirati bazu i podatke s platforme u noćnim satima (konfigurabilno vrijeme i broj CPE-ova).
-- Uspostavljanje mehanizama za logiranje, sigurnost i konfiguracijske profile.
-- Izrada front-end projekta u Reactu koji poziva REST API.
+```shell
+just compose down -v
+```
 
-## Kriteriji ocjene (smjernice)
+Without `just`:
 
-- Ispravnost kontrakta (REST + SOAP) i čitljivost koda.
-- Validacija poslovnih pravila (npr. lozinka vs. tip šifriranja) na REST sloju.
-- Struktura projekta, testovi, dokumentacija pokretanja.
+```shell
+docker compose -f compose.yml down -v
+```
 
-## Datoteke u repozitoriju
+## Development
 
-| Datoteka | Opis |
-|----------|------|
-| [openapi/openapi.yaml](openapi/openapi.yaml) | OpenAPI **3.0.3** za REST API |
-| [wsdl/wifi-platform.wsdl](wsdl/wifi-platform.wsdl) | WSDL platforme (SOAP 1.1, document/literal) |
-| [mockoon/platform-mock.json](mockoon/platform-mock.json) | Mockoon okruženje (generirano skriptom) |
-| [docker-compose.yml](docker-compose.yml) | Mockoon CLI kontejner |
+### Setup
+
+Run the same setup used by Quick Start:
+
+```shell
+just setup
+```
+
+Without `just`:
+
+```shell
+cd backend && ./gradlew setup && cd ..
+```
+
+Most day-to-day commands are wrapped by the root `Justfile`, with backend and frontend recipes exposed as `backend::...` and `frontend::...`.
+
+### Commands
+
+List available recipes:
+
+```shell
+just
+```
+
+Build everything:
+
+```shell
+just build
+```
+
+Clean everything:
+
+```shell
+just clean
+```
+
+Run the development Docker stack:
+
+```shell
+just compose-dev up -d
+```
+
+Run the production-style local stack:
+
+```shell
+just deploy
+```
+
+Note that Loki can take a little while to become healthy. The app may be ready before the logging stack finishes its morning coffee.
+
+Useful backend API helpers:
+
+```shell
+just backend::login
+just backend::wifi-get CPE_001
+just backend::wifi-update CPE_001 "Office WiFi"
+```
+
+Frontend commands go through npm:
+
+```shell
+just frontend::npm run dev
+just frontend::npm run lint
+just frontend::npm run build
+```
+
+### Testing
+
+Backend tests are split by scope:
+
+```shell
+just backend::gradle test
+just backend::gradle integrationTest
+just backend::gradle architectureTest
+```
+
+Coverage report:
+
+```shell
+just backend::gradle coverage
+```
+
+The frontend does not have a test suite; use lint and build checks there.
+
+## Further Reading
+
+### Project Documentation
+
+- [Assignment](docs/ASSIGNMENT.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Deployment](docs/DEPLOYMENT.md)
+- [Backend README](backend/README.md)
+- [Backend Architecture](backend/docs/ARCHITECTURE.md)
+- [Backend Implementation](backend/docs/IMPLEMENTATION.md)
+- [Backend Security](backend/docs/SECURITY.md)
+- [Backend Testing](backend/docs/TESTING.md)
+- [Frontend Architecture](frontend/docs/ARCHITECTURE.md)
+
+### Design Records
+
+- [ADR-001: Local Database](backend/docs/adr/001-adr-local-database.md)
+- [ADR-002: Synchronize Platform Data](backend/docs/adr/002-adr-synchronize-platform-data.md)
+- [ADR-003: Retries for Transient Failures](backend/docs/adr/003-adr-retries-for-transient-failures.md)
+- [ADR-004: Token-Based Authentication](backend/docs/adr/004-adr-token-based-authentication.md)
+- [ADR-005: Contract-First Integration Strategy](backend/docs/adr/005-adr-contract-first-integration-strategy.md)
+- [ADR-006: Platform Interactions as Application Events](backend/docs/adr/006-platform-interactions-as-application-events.md)
+
+### Notes
+
+- [SOAP Integration with Mockoon](backend/docs/notes/001-note-soap-integration-with-mockoon.md)
+- [SOAP Response Normalization](backend/docs/notes/002-note-soap-response-normalization.md)
+- [Password Validation Requirement](backend/docs/notes/003-note-password-validation-requirement.md)
+- [SOAP Fault Handling](backend/docs/notes/004-note-soap-fault-handling.md)
+- [Configurable CPE Synchronization](backend/docs/notes/005-note-configurable-cpe-synchronization.md)

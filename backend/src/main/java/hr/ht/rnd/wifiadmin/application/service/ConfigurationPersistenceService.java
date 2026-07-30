@@ -1,0 +1,29 @@
+package hr.ht.rnd.wifiadmin.application.service;
+
+import hr.ht.rnd.wifiadmin.application.inbound.WifiConfigurationPersistence;
+import hr.ht.rnd.wifiadmin.application.outbound.WifiConfigurationRepository;
+import hr.ht.rnd.wifiadmin.domain.wifi.WifiConfiguration;
+
+import org.springframework.stereotype.Service;
+
+import org.jspecify.annotations.Nullable;
+
+import java.time.LocalDate;
+import java.util.Objects;
+
+@Service
+class ConfigurationPersistenceService implements WifiConfigurationPersistence {
+
+    private final WifiConfigurationRepository repository;
+
+    ConfigurationPersistenceService(WifiConfigurationRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public void persist(WifiConfiguration configuration, @Nullable LocalDate lastSynchronized) {
+        Objects.requireNonNull(configuration, "configuration must not be null");
+
+        repository.save(configuration, lastSynchronized);
+    }
+}

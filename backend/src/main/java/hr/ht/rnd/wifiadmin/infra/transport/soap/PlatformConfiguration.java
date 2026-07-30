@@ -1,0 +1,142 @@
+package hr.ht.rnd.wifiadmin.infra.transport.soap;
+
+import hr.ht.rnd.wifiadmin.application.exception.PlatformConnectionException;
+import hr.ht.rnd.wifiadmin.application.outbound.PlatformClient;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.cxf.CxfFaultLoggingPolicy;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.fault.SoapCxfFaultLoggingPolicy;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.logging.SoapRequestLoggingInterceptor;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.logging.SoapResponseLoggingInterceptor;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.retry.SoapRetryLoggingListener;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiPlatformPortType;
+import hr.ht.rnd.wifiadmin.infra.transport.soap.wsdl.WifiPlatformService;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.retry.RetryPolicy;
+import org.springframework.core.retry.RetryTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.jaxb.JAXBDataBinding;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
+
+import jakarta.xml.ws.BindingProvider;
+
+import java.util.Map;
+
+@EnableScheduling
+@Configuration(proxyBeanMethods = false)
+@EnableConfigurationProperties(PlatformProperties.class)
+public class PlatformConfiguration {
+
+    private static final String PLATFORM_NAMESPACE = "http://wifi-admin.local/platform/v1";
+    private static final String HTTP_VERSION_PROPERTY = "org.apache.cxf.transport.http.forceVersion";
+
+    /**
+     * Creates and configures SOAP platform client.
+     * <p>
+     * <strong>Implementation Note:</strong>
+     * The client is configured to use HTTP/1.1 for compatibility
+     * with platforms that do not support HTTP/2 transport negotiation.
+     * A preferred JAXB namespace mapping is also configured to emit
+     * explicit namespace prefixes required by the target platform contract.
+     */
+    @Bean
+    WifiPlatformPortType platformPort(
+            PlatformProperties properties,
+            HTTPClientPolicy httpClientPolicy
+    ) {
+        var service = new WifiPlatformService();
+        var port = service.getWifiPlatformPort();
+        var client = ClientProxy.getClient(port);
+
+        var conduit = (HTTPConduit) client.getConduit();
+        conduit.setClient(httpClientPolicy);
+
+        var inInterceptors = client.getInInterceptors();
+        var outInterceptors = client.getOutInterceptors();
+
+        inInterceptors.add(new XmlNormalizingInterceptor());
+        inInterceptors.add(new SoapResponseLoggingInterceptor());
+        outInterceptors.add(new SoapRequestLoggingInterceptor());
+
+        var dataBinding = (JAXBDataBinding) client.getEndpoint().getService().getDataBinding();
+        dataBinding.setNamespaceMap(Map.of(PLATFORM_NAMESPACE, "tns"));
+
+        var requestContext = ((BindingProvider) port).getRequestContext();
+        requestContext.put(HTTP_VERSION_PROPERTY, "1.1");
+
+        requestContext.put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                properties.soapEndpoint()
+        );
+        return port;
+    }
+
+    @Bean
+    CxfFaultLoggingPolicy soapCxfFaultLoggingPolicy() {
+        return new SoapCxfFaultLoggingPolicy();
+    }
+
+    @Bean
+    String platformSyncCronExpression(PlatformProperties properties) {
+        var schedule = properties.syncSchedule();
+
+        return "0 %d %d * * *".formatted(
+                schedule.getMinute(),
+                schedule.getHour()
+        );
+    }
+
+    @Bean
+    HTTPClientPolicy platformHttpClientPolicy(PlatformProperties properties) {
+        var policy = new HTTPClientPolicy();
+
+        policy.setConnectionTimeout(
+                properties.connectionTimeout().toMillis()
+        );
+        policy.setReceiveTimeout(
+                properties.receiveTimeout().toMillis()
+        );
+        return policy;
+    }
+
+    @Bean
+    RetryPolicy platformRetryPolicy(PlatformProperties properties) {
+        var retry = properties.retry();
+
+        return RetryPolicy.builder()
+                .maxRetries(retry.maxAttempts() - 1)
+                .delay(retry.delay())
+                .maxDelay(retry.maxDelay())
+                .multiplier(retry.delayMultiplier())
+                .includes(PlatformConnectionException.class)
+                .build();
+    }
+
+    @Bean
+    RetryTemplate platformRetryTemplate(RetryPolicy policy) {
+        var retryTemplate = new RetryTemplate();
+
+        retryTemplate.setRetryPolicy(policy);
+        retryTemplate.setRetryListener(new SoapRetryLoggingListener());
+
+        return retryTemplate;
+    }
+
+    @Bean
+    SoapPlatformClient soapPlatformClient(WifiPlatformPortType port) {
+        return new SoapPlatformClient(port);
+    }
+
+    @Bean
+    @Primary
+    @ConditionalOnExpression("${platform.retry.max-attempts:1} > 1")
+    PlatformClient platformClient(RetryTemplate template, SoapPlatformClient client) {
+        return new ResilientSoapPlatformClient(template, client);
+    }
+}

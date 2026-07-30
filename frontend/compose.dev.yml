@@ -1,0 +1,18 @@
+include:
+  - compose.yml
+
+services:
+  web:
+    ports:
+      - "5173:80"
+
+  codex:
+    image: ghcr.io/meowpow-png/mipe-runtime-codex-web:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - codex-home:/home/dev/web/.codex
+      - .:/workspace:Z
+
+volumes:
+  codex-home:

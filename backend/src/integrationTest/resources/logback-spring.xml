@@ -1,0 +1,14 @@
+<configuration>
+    <logger name="hr.ht.rnd.wifiadmin" level="DEBUG"/>
+    <logger name="hr.ht.rnd.wifiadmin.infra.transport.soap.payload" level="TRACE"/>
+    <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                [%-5level] [%thread] [%logger{0}] [%replace(%X{trace_id:-}){'^(.{6}).*','$1'}] %msg %kvp%n
+            </pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="DEV_CONSOLE"/>
+    </root>
+</configuration>

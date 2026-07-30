@@ -1,0 +1,16 @@
+include:
+  - compose.soap.yml
+  - frontend/compose.dev.yml
+  - backend/compose.dev.yml
+
+services:
+  codex:
+    image: ghcr.io/meowpow-png/mipe-runtime-codex:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - codex-home:/home/dev/.codex
+      - .:/workspace:Z
+
+volumes:
+  codex-home:

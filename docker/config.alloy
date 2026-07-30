@@ -1,0 +1,69 @@
+logging {
+  level = "info"
+}
+
+discovery.docker "containers" {
+  host             = "unix:///var/run/docker.sock"
+  refresh_interval = "5s"
+}
+
+discovery.relabel "docker" {
+  targets = discovery.docker.containers.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    target_label  = "project"
+  }
+}
+
+loki.source.docker "docker" {
+  host             = "unix:///var/run/docker.sock"
+  targets          = discovery.docker.containers.targets
+  relabel_rules    = discovery.relabel.docker.rules
+  refresh_interval = "5s"
+  forward_to       = [loki.process.logs.receiver]
+}
+
+loki.process "logs" {
+  forward_to = [loki.write.default.receiver]
+  stage.json {
+    expressions = {
+      logger_name = "logger_name",
+      message     = "message",
+      level       = "level",
+      thread_name = "thread_name",
+      trace_id    = "trace_id",
+    }
+  }
+  stage.regex {
+    source     = "logger_name"
+    expression = "^(?:.*\\.)?(?P<logger_class>[^.]+)$"
+  }
+  stage.regex {
+    source     = "trace_id"
+    expression = "^(?P<trace_short>.{8}).*$"
+  }
+  stage.structured_metadata {
+    values = {
+      logger_class = "",
+      trace_short  = "",
+    }
+  }
+}
+
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

@@ -1,0 +1,20 @@
+set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
+
+# List available recipes
+default:
+    @just --list
+
+# Run npm
+[arg("args", help="Arguments passed to npm")]
+npm *args:
+    npm {{args}}
+
+# Run root Docker Compose
+[arg("args", help="Arguments passed to docker compose")]
+compose *args:
+    @LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) \
+        docker compose -f compose.dev.yml {{args}}
+
+# Start interactive Codex CLI
+codex:
+    @just compose run --rm codex

@@ -1,0 +1,17 @@
+# IntelliJ IDEA
+.idea/*
+!.idea/codeStyles/
+!.idea/runConfigurations
+
+# Java
+*.class
+
+# Gradle
+.gradle/
+build/
+out/
+lib/
+!gradle/wrapper/gradle-wrapper.jar
+
+# JWT tokens
+.jwt
